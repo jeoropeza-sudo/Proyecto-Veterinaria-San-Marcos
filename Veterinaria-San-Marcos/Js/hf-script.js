@@ -1,26 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("=== SCRIPT CARGADO CORRECTAMENTE ===");
+    // Lee la ruta exacta directamente desde la etiqueta script en el HTML
+    const scriptTag = document.getElementById("script-hf");
+    const rutaBase = scriptTag ? scriptTag.getAttribute("data-base") : "./";
 
     function cargarComponente(id, archivo) {
-        console.log(`Intentando buscar: ${archivo} para el ID: ${id}`);
-        fetch(archivo)
-            .then(respuesta => {
-                console.log(`Respuesta de ${archivo}: Status ${respuesta.status}`);
-                if (!respuesta.ok) {
-                    throw new Error(`No se encontró el archivo ${archivo} (Status ${respuesta.status})`);
-                }
-                return respuesta.text();
+        fetch(rutaBase + archivo)
+            .then(res => {
+                if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+                return res.text();
             })
-            .then(datos => {
+            .then(html => {
                 const contenedor = document.getElementById(id);
                 if (contenedor) {
-                    contenedor.innerHTML = datos;
-                    console.log(`✅ ¡EXITO! Se inyectó ${archivo} en #${id}`);
-                } else {
-                    console.error(`❌ ERROR: No existe la etiqueta <div id="${id}"></div> en tu HTML.`);
+                    // Corrige dinámicamente imágenes y enlaces usando la ruta que dictó el HTML
+                    contenedor.innerHTML = html
+                        .replaceAll('src="Imagenes/', `src="${rutaBase}Imagenes/`)
+                        .replaceAll('href="Index.html"', `href="${rutaBase}Index.html"`)
+                        .replaceAll('href="Paginas/', `href="${rutaBase}Paginas/`);
                 }
             })
-            .catch(error => console.error(`❌ ERROR FETCH:`, error.message));
+            .catch(err => console.error(`Fallo al cargar ${archivo}:`, err));
     }
 
     cargarComponente('header-contenedor', 'header.html');
