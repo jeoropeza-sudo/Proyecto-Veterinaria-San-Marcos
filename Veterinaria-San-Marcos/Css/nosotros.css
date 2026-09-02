@@ -72,15 +72,16 @@ body {
 
 .badge {
   display: inline-block;
-  background-color: rgba(4, 191, 173, 0.15);
-  color: var(--color-teal-dark);
-  padding: 8px 16px;
-  border-radius: 15px;
+  background-color: var(--color-teal);
+  color: #ffffff !important;           
+  padding: 6px 16px;
+  border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   margin-bottom: 15px;
   text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(4, 191, 173, 0.3);
 }
 
 .about-text h2 {
