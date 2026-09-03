@@ -1,0 +1,52 @@
+/* Css/servicios.css */
+
+:root {
+    --color-principal: #0f4c81;     /* Azul clínico principal */
+    --color-secundario: #148f77;   /* Verde médico / confianza */
+    --color-fondo-suave: #f8f9fa;
+}
+
+/* Ajuste general de las tarjetas para que se vean corporativas */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px !important;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+/* Botones principales alineados con la identidad clínica */
+.btn-primary {
+    background-color: var(--color-principal) !important;
+    border-color: var(--color-principal) !important;
+}
+
+.btn-primary:hover {
+    background-color: #0b3960 !important;
+    border-color: #0b3960 !important;
+}
+
+/* Botones de categorías outline */
+.btn-outline-dark {
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+.btn-outline-dark:hover {
+    background-color: var(--color-principal);
+    border-color: var(--color-principal);
+    color: #fff;
+}
+
+/* Precios destacados */
+.text-primary, .fs-5.text-dark {
+    color: var(--color-principal) !important;
+}
+
+.badge.bg-secondary {
+    background-color: #04BFAD !important;
+    color: #ffffff !important;
+    font-weight: 500;
+}

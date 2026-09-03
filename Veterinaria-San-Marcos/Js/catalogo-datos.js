@@ -1,11 +1,55 @@
-// Js/catalogo-datos.js
+const listaCategoriasServicios = [
+    { 
+        id: "Consultas", 
+        nombre: "Consultas Médicas", 
+        desde: 10000, 
+        imagen: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=600&auto=format&fit=crop", 
+        desc: "Evaluaciones clínicas preventivas, urgencias y controles generales de salud." 
+    },
+    { 
+        id: "Vacunación", 
+        nombre: "Vacunación", 
+        desde: 12000, 
+        imagen: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=600&auto=format&fit=crop", 
+        desc: "Programas de inmunización esenciales para perros, gatos y especies exóticas." 
+    },
+    { 
+        id: "Cirugía", 
+        nombre: "Cirugías y Pabellón", 
+        desde: 50000, 
+        imagen: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=600&auto=format&fit=crop", 
+        desc: "Esterilizaciones y procedimientos quirúrgicos bajo estrictos protocolos." 
+    },
+    { 
+        id: "Desparasitación", 
+        nombre: "Desparasitación", 
+        desde: 7500, 
+        imagen: "https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?q=80&w=600&auto=format&fit=crop", 
+        desc: "Tratamientos especializados para el control de parásitos internos y externos." 
+    },
+    { 
+        id: "Exámenes", 
+        nombre: "Exámenes de Laboratorio", 
+        desde: 22000, 
+        imagen: "https://images.unsplash.com/photo-1579165466741-7f35e4755660?q=80&w=600&auto=format&fit=crop", 
+        desc: "Hemogramas, perfiles bioquímicos e imagenología diagnóstica avanzada." 
+    },
+    { 
+        id: "Otros", 
+        nombre: "Otros Servicios", 
+        desde: 5000, 
+        imagen: "https://images.unsplash.com/photo-1548767797-d8c844163c4c?q=80&w=600&auto=format&fit=crop", 
+        desc: "Procedimientos de higiene, mantención estética y microchip de identidad." 
+    }
+];
 
 const listaServiciosOficial = [
+
     { codigo: "SV001", categoria: "Consultas", nombre: "Consulta general", especie: "Perro / Gato", duracion: "30 min", precio: 15000, detalle: "Evaluación clínica general y control de signos vitales." },
-    { codigo: "SV002", categoria: "Consultas", nombre: "Consulta urgencia", especie: "Perro / Gato", duracion: "30 min", precio: 25000, detalle: "Atención prioritaria fuera de horario o malestar agudo.", obs: "Fuera de horario +$10.000" },
+    { codigo: "SV002", categoria: "Consultas", nombre: "Consulta urgencia", especie: "Perro / Gato", duracion: "30 min", precio: 25000, detalle: "Atención prioritaria fuera de horario o malestar agudo." },
     { codigo: "SV003", categoria: "Consultas", nombre: "Control postoperatorio", especie: "Perro / Gato", duracion: "20 min", precio: 10000, detalle: "Revisión de heridas y evolución quirúrgica." },
     { codigo: "SV004", categoria: "Consultas", nombre: "Consulta ave / conejo", especie: "Ave / Conejo", duracion: "30 min", precio: 18000, detalle: "Medicina especializada para mascotas exóticas." },
-    { codigo: "SV005", categoria: "Consultas", nombre: "Segunda opinión médica", especie: "Todas", duracion: "40 min", precio: 20000, detalle: "Evaluación integral de diagnósticos complejos previos.", obs: "Requiere ficha previa" },
+    { codigo: "SV005", categoria: "Consultas", nombre: "Segunda opinión médica", especie: "Todas", duracion: "40 min", precio: 20000, detalle: "Evaluación integral de diagnósticos complejos previos." },
     
     { codigo: "VA001", categoria: "Vacunación", nombre: "Vacuna antirrábica canina", especie: "Perro", duracion: "10 min", precio: 12000, detalle: "Inmunización obligatoria por ley." },
     { codigo: "VA002", categoria: "Vacunación", nombre: "Vacuna sextuple canina", especie: "Perro", duracion: "10 min", precio: 18000, detalle: "Protección frente a múltiples enfermedades víricas." },
