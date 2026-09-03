@@ -1,98 +1,58 @@
-/* Paleta de colores */
+/* Paleta de colores extraída de la imagen */
 :root {
-  --primary-color: #2A9D8F;
-  --dark-color: #264653;
-  --bg-light: #F8F9FA;
-  --error-color: #E76F51;
-  --success-color: #2A9D8F;
+  --color-header: #153259;       /* Azul marino oscuro */
+  --color-secondary: #3B6D8C;    /* Azul grisáceo */
+  --color-primary-cyan: #36BBD9; /* Cyan brillante (Títulos / Acentos) */
+  --color-mint-dark: #00BFA5;    /* Verde turquesa / Menta */
+  --color-mint-light: #00C9A7;   /* Verde menta claro (Botones / Clicks) */
+  --bg-body: #F8F9FA;
 }
 
+/* Fondo de la página */
 body {
-  font-family: Arial, sans-serif;
-  background-color: var(--bg-light);
-  margin: 0;
-  padding: 0;
-  color: #333;
+  background-color: var(--bg-body);
 }
 
-.container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
+/* Header / Menú Superior */
+.header-custom {
+  background-color: var(--color-header) !important;
 }
 
-.contact-section h1 {
-  color: var(--dark-color);
-  margin-bottom: 10px;
+.header-custom .nav-link {
+  color: #ffffff !important;
+  transition: opacity 0.2s ease;
 }
 
-/* Formulario */
-.form-container {
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+.header-custom .nav-link:hover {
+  opacity: 0.8;
 }
 
-.form-group {
-  margin-bottom: 18px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: bold;
-  margin-bottom: 6px;
-  color: var(--dark-color);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-/* Mensajes de Validación */
-.error-message {
-  color: var(--error-color);
-  font-size: 12px;
-  margin-top: 4px;
-  display: none;
-}
-
-.success-message {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 12px;
-  border-radius: 4px;
-  margin-top: 15px;
-  text-align: center;
+.header-custom .nav-link.active {
+  color: var(--color-primary-cyan) !important;
   font-weight: bold;
 }
 
-/* Botón */
-.btn-submit {
-  background-color: var(--primary-color);
-  color: white;
+/* Título de la página */
+.title-custom {
+  color: var(--color-primary-cyan) !important;
+}
+
+/* Botón Principal */
+.btn-custom {
+  background-color: var(--color-mint-dark);
+  color: #ffffff;
   border: none;
-  padding: 12px 20px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
-.btn-submit:hover {
-  background-color: #218376;
+.btn-custom:hover {
+  background-color: var(--color-mint-light);
+  color: #ffffff;
+}
+
+/* Focus en campos de formulario */
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-primary-cyan);
+  box-shadow: 0 0 0 0.25rem rgba(54, 187, 217, 0.25);
 }
