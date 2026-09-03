@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mantenedor de Usuarios - Admin San Marcos</title>
+  
+  <!-- CDN Bootstrap 5.3.8 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  
+  <!-- Tu CSS personalizado -->
+  <link rel="stylesheet" href="../Css/contacto.css">
+  <link rel="stylesheet" href="../Css/admin.css">
+</head>
+<body class="bg-light">
+
+  <!-- Header Admin -->
+  <header class="header-custom text-white py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h2 class="h4 m-0 fw-bold">San Marcos - Panel Admin</h2>
+      <div>
+        <span class="me-3">Hola, <strong>Administrador</strong></span>
+        <a href="../index.html" class="btn btn-outline-light btn-sm">Ver Sitio Web</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container my-4">
+    <div class="row">
+      
+      <!-- Menú Navegación Admin -->
+      <div class="col-md-3 mb-4">
+        <div class="list-group shadow-sm">
+          <a href="#" class="list-group-item list-group-item-action active header-custom border-0 fw-bold">Gestión</a>
+          <a href="usuarios.html" class="list-group-item list-group-item-action fw-medium text-primary">Mantenedor de Usuarios</a>
+          <a href="servicios.html" class="list-group-item list-group-item-action fw-medium">Mantenedor de Servicios</a>
+        </div>
+      </div>
+
+      <!-- Área de Trabajo -->
+      <div class="col-md-9">
+        
+        <!-- Formulario de Creación/Edición -->
+        <div class="card p-4 shadow-sm border-0 mb-4">
+          <h3 class="title-custom h4 fw-bold mb-3">Registrar Nuevo Usuario</h3>
+          
+          <form id="form-usuario" novalidate>
+            <div class="row g-3">
+              
+              <!-- RUN -->
+              <div class="col-md-6">
+                <label for="run" class="form-label text-dark fw-medium">RUN (sin puntos ni guión):</label>
+                <input type="text" class="form-control" id="run" required placeholder="Ej: 19876543K">
+                <div class="text-danger small mt-1" id="error-run"></div>
+              </div>
+
+              <!-- Nombre Completo -->
+              <div class="col-md-6">
+                <label for="nombre" class="form-label text-dark fw-medium">Nombre Completo:</label>
+                <input type="text" class="form-control" id="nombre" required placeholder="Ej: Maria Lopez">
+                <div class="text-danger small mt-1" id="error-nombre"></div>
+              </div>
+
+              <!-- Correo -->
+              <div class="col-md-6">
+                <label for="correo" class="form-label text-dark fw-medium">Correo Electrónico:</label>
+                <input type="email" class="form-control" id="correo" required placeholder="ejemplo@sanmarcos.cl">
+                <div class="text-danger small mt-1" id="error-correo"></div>
+              </div>
+
+              <!-- Rol -->
+              <div class="col-md-6">
+                <label for="rol" class="form-label text-dark fw-medium">Rol de Usuario:</label>
+                <select class="form-select" id="rol" required>
+                  <option value="">Seleccione Rol</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Recepcionista">Recepcionista</option>
+                  <option value="Cliente">Cliente (Dueño de Mascota)</option>
+                </select>
+                <div class="text-danger small mt-1" id="error-rol"></div>
+              </div>
+
+              <!-- Región Dinámica -->
+              <div class="col-md-6">
+                <label for="select-region" class="form-label text-dark fw-medium">Región:</label>
+                <select class="form-select" id="select-region" required>
+                  <option value="">Seleccione Región</option>
+                </select>
+                <div class="text-danger small mt-1" id="error-region"></div>
+              </div>
+
+              <!-- Comuna Dinámica -->
+              <div class="col-md-6">
+                <label for="select-comuna" class="form-label text-dark fw-medium">Comuna:</label>
+                <select class="form-select" id="select-comuna" required>
+                  <option value="">Seleccione Comuna</option>
+                </select>
+                <div class="text-danger small mt-1" id="error-comuna"></div>
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-custom w-100 mt-4 py-2">Guardar Usuario</button>
+          </form>
+        </div>
+
+        <!-- Tabla de Datos -->
+        <div class="card p-4 shadow-sm border-0">
+          <h3 class="h5 fw-bold mb-3 text-secondary">Usuarios Registrados</h3>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>RUN</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th>Comuna</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-usuarios">
+                <!-- Se poblará dinámicamente desde JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Script con el arreglo de regiones -->
+  <script src="../Js/regiones.js"></script>
+  <!-- Script principal de la lógica en memoria -->
+  <script src="../Js/admin-usuarios.js"></script>
+</body>
+</html>
