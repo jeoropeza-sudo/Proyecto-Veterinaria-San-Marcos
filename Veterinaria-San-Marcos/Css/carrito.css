@@ -1,0 +1,21 @@
+html {
+    overflow-y: scroll;
+}
+
+#contenedor-carrito {
+    min-height: 480px;
+    width: 100%;
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+.card, .table, tr, td, th, button, input {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+.table tbody tr:hover {
+    background-color: transparent !important;
+}

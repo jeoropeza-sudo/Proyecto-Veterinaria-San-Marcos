@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios Médicos | Veterinaria San Marcos</title>
+    <title>Servicios de la Categoría | Veterinaria San Marcos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../Css/servicios.css">
 </head>
@@ -12,26 +12,22 @@
     <div id="header-contenedor"></div>
 
     <main class="container my-5 flex-grow-1">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold text-dark">Servicios Médicos y Prestaciones</h1>
-            <p class="text-muted">Explora y programa consultas, cirugías, exámenes o vacunas para tu mascota.</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 id="titulo-categoria" class="fw-bold text-dark">Servicios Disponibles</h1>
+            <a href="servicios.html" class="btn btn-outline-secondary">← Volver a Categorías</a>
         </div>
 
-        <div class="row g-4" id="contenedor-servicios">
+        <div class="row g-4" id="contenedor-servicios-categoria">
         </div>
     </main>
 
     <div id="footer-contenedor"></div>
 
+    <script src="../Js/reserva-storage.js"></script>
     <script src="../Js/catalogo-datos.js"></script>
-    <script src="../Js/catalogo.js"></script>
+    <script src="../Js/detalle-servicio.js"></script>
     <script src="../Js/hf-script.js" id="script-hf" data-base="../"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            renderizarCategoriasServicios("contenedor-servicios");
-        });
-    </script>
+    
 </body>
 </html>

@@ -1,52 +1,79 @@
 /* Css/servicios.css */
 
 :root {
-    --color-principal: #0f4c81;     /* Azul clínico principal */
-    --color-secundario: #148f77;   /* Verde médico / confianza */
-    --color-fondo-suave: #f8f9fa;
+    --color-azul-oscuro: #153259;
+    --color-azul-medio: #3B6D8C;
+    --color-azul-claro: #36BBD9;
+    --color-turquesa: #04BFAD;
+    --color-turquesa-hover: #04BF9D;
+    --color-fondo-gris: #f1f5f9;      /* Gris frío de fondo con buen contraste */
+    --color-tarjeta-bg: #ffffff;
 }
 
-/* Ajuste general de las tarjetas para que se vean corporativas */
-.card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 8px !important;
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-}
-
-/* Botones principales alineados con la identidad clínica */
-.btn-primary {
-    background-color: var(--color-principal) !important;
-    border-color: var(--color-principal) !important;
-}
-
-.btn-primary:hover {
-    background-color: #0b3960 !important;
-    border-color: #0b3960 !important;
-}
-
-/* Botones de categorías outline */
-.btn-outline-dark {
-    border-color: #cbd5e1;
+/* Fondo general de la página con el gris sutil */
+body {
+    background-color: var(--color-fondo-gris) !important;
     color: #334155;
 }
 
+/* Ajuste general de las tarjetas para romper el blanco plano */
+.card {
+    background-color: var(--color-tarjeta-bg);
+    border: 1px solid #e2e8f0 !important; /* Borde gris sutil */
+    border-top: 4px solid var(--color-turquesa) !important; /* Toque de color corporativo arriba */
+    border-radius: 10px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(21, 50, 89, 0.12) !important;
+}
+
+/* Estilo para los títulos dentro de las tarjetas */
+.card-title {
+    color: var(--color-azul-oscuro) !important;
+}
+
+/* Botones principales y de detalle usando tu turquesa */
+.btn-primary, .btn-detalle {
+    background-color: var(--color-turquesa) !important;
+    border-color: var(--color-turquesa) !important;
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+.btn-primary:hover, .btn-detalle:hover {
+    background-color: var(--color-turquesa-hover) !important;
+    border-color: var(--color-turquesa-hover) !important;
+}
+
+/* Botones outline o secundarios */
+.btn-outline-dark {
+    border-color: #cbd5e1;
+    color: var(--color-azul-oscuro);
+}
+
 .btn-outline-dark:hover {
-    background-color: var(--color-principal);
-    border-color: var(--color-principal);
+    background-color: var(--color-azul-medio);
+    border-color: var(--color-azul-medio);
     color: #fff;
 }
 
-/* Precios destacados */
-.text-primary, .fs-5.text-dark {
-    color: var(--color-principal) !important;
+/* Precios destacados con el azul marino fuerte */
+.text-primary, .fs-5.text-dark, .fs-5.text-primary {
+    color: var(--color-azul-oscuro) !important;
 }
 
+/* Badges o etiquetas usando los tonos de la paleta */
 .badge.bg-secondary {
-    background-color: #04BFAD !important;
+    background-color: var(--color-azul-medio) !important;
     color: #ffffff !important;
     font-weight: 500;
+}
+
+.badge.bg-light {
+    background-color: #f8fafc !important;
+    color: var(--color-azul-medio) !important;
+    border-color: #cbd5e1 !important;
 }
