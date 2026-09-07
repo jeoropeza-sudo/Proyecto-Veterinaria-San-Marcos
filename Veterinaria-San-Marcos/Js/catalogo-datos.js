@@ -83,12 +83,12 @@ const listaServiciosOficial = [
 
 const listaProductosOficial = [
     { codigo: "ME001", categoria: "Antibióticos", nombre: "Amoxibay 250mg", principio: "Amoxicilina", presentacion: "Blíster 10 comp.", especie: "Perro / Gato", stock: 45, precio: 4200, imagen: "../Imagenes/amoxibay.webp" },
-    { codigo: "ME002", categoria: "Antibióticos", nombre: "Enrox 50mg", principio: "Enrofloxacino", presentacion: "Blíster 10 comp.", especie: "Perro / Gato", stock: 30, precio: 6800, imagen: "../Imagenes/enrox.jpg" },
-    { codigo: "ME004", categoria: "Antiparasitarios", nombre: "Nexgard", principio: "Afoxolaner", presentacion: "Masticable 1 unid.", especie: "Perro", stock: 60, precio: 9500, imagen: "../Imagenes/nexgard.jpg" },
-    { codigo: "ME005", categoria: "Antiparasitarios", nombre: "Bravecto", principio: "Fluralaner", presentacion: "Masticable 1 unid.", especie: "Perro", stock: 40, precio: 18900, imagen: "../Imagenes/bravecto.jpg" },
-    { codigo: "ME006", categoria: "Antiparasitarios", nombre: "Revolution Plus", principio: "Selamectina+Sarolaner", presentacion: "Pipeta 1 unid.", especie: "Gato", stock: 35, precio: 14500, imagen: "../Imagenes/revolution.jpg" },
-    { codigo: "ME009", categoria: "Antiinflamatorios", nombre: "Meloxicam 1mg", principio: "Meloxicam", presentacion: "Blíster 10 comp.", especie: "Perro / Gato", stock: 55, precio: 4500, imagen: "../Imagenes/meloxicam.jpg" },
-    { codigo: "ME013", categoria: "Dermatología", nombre: "Apoquel 16mg", principio: "Oclacitinib", presentacion: "Blíster 10 comp.", especie: "Perro", stock: 18, precio: 22000, imagen: "../Imagenes/apoquel.jpg" },
-    { codigo: "ME018", categoria: "Vacunas", nombre: "Nobivac DHPPi", principio: "Vacuna polivalente", presentacion: "Vial 1 dosis", especie: "Perro", stock: 48, precio: 8500, imagen: "../Imagenes/nobivac.jpg" },
-    { codigo: "ME022", categoria: "Suplementos", nombre: "Condrovet forte", principio: "Condroitín+Glucosamina", presentacion: "Blíster 30 comp.", especie: "Perro", stock: 25, precio: 14500, imagen: "../Imagenes/condrovet.jpg" }
+    { codigo: "ME002", categoria: "Antibióticos", nombre: "Enrox 50mg", principio: "Enrofloxacino", presentacion: "Blíster 10 comp.", especie: "Perro / Gato", stock: 30, precio: 6800, imagen: "../Imagenes/en.jpg" },
+    { codigo: "ME004", categoria: "Antiparasitarios", nombre: "Nexgard", principio: "Afoxolaner", presentacion: "Masticable 1 unid.", especie: "Perro", stock: 60, precio: 9500, imagen: "../Imagenes/nex.webp" },
+    { codigo: "ME005", categoria: "Antiparasitarios", nombre: "Bravecto", principio: "Fluralaner", presentacion: "Masticable 1 unid.", especie: "Perro", stock: 40, precio: 18900, imagen: "../Imagenes/bra.jpg" },
+    { codigo: "ME006", categoria: "Antiparasitarios", nombre: "Revolution Plus", principio: "Selamectina+Sarolaner", presentacion: "Pipeta 1 unid.", especie: "Gato", stock: 35, precio: 14500, imagen: "../Imagenes/rev.jpg" },
+    { codigo: "ME009", categoria: "Antiinflamatorios", nombre: "Meloxicam 1mg", principio: "Meloxicam", presentacion: "Blíster 10 comp.", especie: "Perro / Gato", stock: 55, precio: 4500, imagen: "../Imagenes/melo.jpg" },
+    { codigo: "ME013", categoria: "Dermatología", nombre: "Apoquel 16mg", principio: "Oclacitinib", presentacion: "Blíster 10 comp.", especie: "Perro", stock: 18, precio: 22000, imagen: "../Imagenes/apoquel.webp" },
+    { codigo: "ME018", categoria: "Vacunas", nombre: "Nobivac DHPPi", principio: "Vacuna polivalente", presentacion: "Vial 1 dosis", especie: "Perro", stock: 48, precio: 8500, imagen: "../Imagenes/dhpp.jpeg" },
+    { codigo: "ME022", categoria: "Suplementos", nombre: "Condrovet forte", principio: "Condroitín+Glucosamina", presentacion: "Blíster 30 comp.", especie: "Perro", stock: 25, precio: 14500, imagen: "../Imagenes/condro.png" }
 ];
