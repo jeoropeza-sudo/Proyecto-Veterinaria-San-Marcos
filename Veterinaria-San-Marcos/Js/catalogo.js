@@ -1,11 +1,27 @@
-// Js/catalogo.js
+const STORAGE_KEY_PRODUCTOS = "sanmarcos_productos_v1";
+
+function obtenerProductos() {
+    const almacenados = localStorage.getItem(STORAGE_KEY_PRODUCTOS);
+    if (almacenados) {
+        return JSON.parse(almacenados);
+    } else {
+        const base = typeof listaProductosOficial !== "undefined" ? listaProductosOficial : [];
+        localStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(base));
+        return base;
+    }
+}
+
+function guardarProductos(productos) {
+    localStorage.setItem(STORAGE_KEY_PRODUCTOS, JSON.stringify(productos));
+    actualizarVistasProductos();
+}
 
 function renderizarTarjetasProductos(productos, contenedorId) {
     const contenedor = document.getElementById(contenedorId);
     if (!contenedor) return;
     contenedor.innerHTML = "";
 
-    if (productos.length === 0) {
+    if (!productos || productos.length === 0) {
         contenedor.innerHTML = `<div class="col-12 text-center py-4 text-muted">No hay productos disponibles.</div>`;
         return;
     }
@@ -28,7 +44,7 @@ function renderizarTarjetasProductos(productos, contenedorId) {
                         <span class="badge bg-light text-secondary border">Stock: ${item.stock}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-3">
-                        <span class="fw-bold fs-5 text-dark">$${item.precio.toLocaleString('es-CL')}</span>
+                        <span class="fw-bold fs-5 text-dark">$${Number(item.precio).toLocaleString('es-CL')}</span>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-outline-primary btn-detalle" data-codigo="${item.codigo}">Ver Detalle</button>
                             <button class="btn btn-sm text-white fw-bold btn-agregar-rapido" style="background-color: #04BFAD;" data-codigo="${item.codigo}">Agregar</button>
@@ -42,6 +58,106 @@ function renderizarTarjetasProductos(productos, contenedorId) {
 
     activarBotonesDetalleProductos(productos);
     activarBotonesAgregarRapido(productos);
+}
+
+function renderizarTablaAdmin() {
+    const tbody = document.getElementById("tabla-crud-productos");
+    if (!tbody) return;
+
+    const productos = obtenerProductos();
+    tbody.innerHTML = "";
+
+    productos.forEach(prod => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="font-monospace fw-bold">${prod.codigo}</td>
+            <td>${prod.nombre}</td>
+            <td><span class="badge bg-secondary">${prod.categoria}</span></td>
+            <td>${prod.stock}</td>
+            <td>$${Number(prod.precio).toLocaleString('es-CL')}</td>
+            <td>
+                <button class="btn btn-warning btn-sm me-1" onclick="cargarParaEditar('${prod.codigo}')">✏️</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarProducto('${prod.codigo}')">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("form-producto-crud")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const esEdicion = document.getElementById("crud-es-edicion").value === "true";
+        const codigo = document.getElementById("crud-codigo").value.trim().toUpperCase();
+        const nombre = document.getElementById("crud-nombre").value.trim();
+        const categoria = document.getElementById("crud-categoria").value.trim();
+        const principio = document.getElementById("crud-principio").value.trim();
+        const presentacion = document.getElementById("crud-presentacion").value.trim();
+        const especie = document.getElementById("crud-especie").value;
+        const stock = parseInt(document.getElementById("crud-stock").value);
+        const precio = parseInt(document.getElementById("crud-precio").value);
+
+        let productos = obtenerProductos();
+
+        if (esEdicion) {
+            productos = productos.map(p => p.codigo === codigo ? { codigo, nombre, categoria, principio, presentacion, especie, stock, precio } : p);
+        } else {
+            if (productos.some(p => p.codigo === codigo)) {
+                alert("El código ingresado ya existe. Utiliza un código diferente.");
+                return;
+            }
+            productos.push({ codigo, nombre, categoria, principio, presentacion, especie, stock, precio });
+        }
+
+        guardarProductos(productos);
+        limpiarFormularioCRUD();
+    });
+});
+
+function cargarParaEditar(codigo) {
+    const productos = obtenerProductos();
+    const prod = productos.find(p => p.codigo === codigo);
+    if (!prod) return;
+
+    document.getElementById("crud-es-edicion").value = "true";
+    document.getElementById("crud-codigo").value = prod.codigo;
+    document.getElementById("crud-codigo").readOnly = true;
+    document.getElementById("crud-nombre").value = prod.nombre;
+    document.getElementById("crud-categoria").value = prod.categoria;
+    document.getElementById("crud-principio").value = prod.principio || "";
+    document.getElementById("crud-presentacion").value = prod.presentacion;
+    document.getElementById("crud-especie").value = prod.especie;
+    document.getElementById("crud-stock").value = prod.stock;
+    document.getElementById("crud-precio").value = prod.precio;
+
+    document.getElementById("btn-guardar-crud").textContent = "Actualizar Producto";
+}
+
+function eliminarProducto(codigo) {
+    if (confirm(`¿Seguro que deseas eliminar el producto ${codigo}?`)) {
+        let productos = obtenerProductos();
+        productos = productos.filter(p => p.codigo !== codigo);
+        guardarProductos(productos);
+    }
+}
+
+function limpiarFormularioCRUD() {
+    document.getElementById("form-producto-crud")?.reset();
+    document.getElementById("crud-es-edicion").value = "false";
+    document.getElementById("crud-codigo").readOnly = false;
+    document.getElementById("btn-guardar-crud").textContent = "Guardar Producto";
+}
+
+function prepararFormularioCrear() {
+    limpiarFormularioCRUD();
+    renderizarTablaAdmin();
+}
+
+function actualizarVistasProductos() {
+    const productos = obtenerProductos();
+    renderizarTarjetasProductos(productos, "contenedor-productos");
+    renderizarTablaAdmin();
 }
 
 function activarBotonesDetalleProductos(productos) {
@@ -71,27 +187,25 @@ function activarBotonesAgregarRapido(productos) {
             const itemEncontrado = productos.find(i => i.codigo === codigo);
             
             if (itemEncontrado) {
-                let carrito = JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
-                const index = carrito.findIndex(p => p.codigo === itemEncontrado.codigo);
-
-                if (index !== -1) {
-                    carrito[index].cantidad += 1;
-                } else {
-                    carrito.push({
-                        codigo: itemEncontrado.codigo,
-                        nombre: itemEncontrado.nombre,
-                        precio: itemEncontrado.precio,
-                        imagen: itemEncontrado.imagen || "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=600&auto=format&fit=crop",
-                        cantidad: 1
-                    });
+                if (typeof agregarItemCarrito === "function") {
+                    agregarItemCarrito(itemEncontrado);
                 }
-
-                localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
-                alert(`¡${itemEncontrado.nombre} agregado al carrito!`);
+                if (typeof mostrarNotificacion === "function") {
+                    mostrarNotificacion(`¡${itemEncontrado.nombre} agregado a la solicitud!`);
+                }
+                if (typeof actualizarVistaReservaGlobal === "function") {
+                    actualizarVistaReservaGlobal();
+                }
             }
         });
     });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("contenedor-productos")) {
+        actualizarVistasProductos();
+    }
+});
 
 function renderizarCategoriasServicios(contenedorId) {
     const contenedor = document.getElementById(contenedorId);
@@ -132,16 +246,10 @@ function renderizarCategoriasServicios(contenedorId) {
     });
 }
 
+// Inicializador para renderizar los servicios automáticamente
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof renderizarTarjetasProductos === "function" && typeof listaProductosOficial !== "undefined") {
-        const contenedorProd = document.getElementById("contenedor-productos");
-        if (contenedorProd) {
-            renderizarTarjetasProductos(listaProductosOficial, "contenedor-productos");
-        }
-    }
-
     const contenedorServiciosCat = document.getElementById("contenedor-servicios-categorias");
-    if (contenedorServiciosCat && typeof renderizarCategoriasServicios === "function") {
+    if (contenedorServiciosCat) {
         renderizarCategoriasServicios("contenedor-servicios-categorias");
     }
 });
