@@ -69,14 +69,25 @@ function activarBotonesAgregarRapido(productos) {
         btn.addEventListener("click", (e) => {
             const codigo = e.target.getAttribute("data-codigo");
             const itemEncontrado = productos.find(i => i.codigo === codigo);
+            
             if (itemEncontrado) {
-                agregarItemCarrito({
-                    codigo: itemEncontrado.codigo,
-                    nombre: itemEncontrado.nombre,
-                    precio: itemEncontrado.precio,
-                    imagen: itemEncontrado.imagen || "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=600&auto=format&fit=crop"
-                });
-                mostrarNotificacion(`¡${itemEncontrado.nombre} agregado al carrito!`);
+                let carrito = JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
+                const index = carrito.findIndex(p => p.codigo === itemEncontrado.codigo);
+
+                if (index !== -1) {
+                    carrito[index].cantidad += 1;
+                } else {
+                    carrito.push({
+                        codigo: itemEncontrado.codigo,
+                        nombre: itemEncontrado.nombre,
+                        precio: itemEncontrado.precio,
+                        imagen: itemEncontrado.imagen || "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=600&auto=format&fit=crop",
+                        cantidad: 1
+                    });
+                }
+
+                localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
+                alert(`¡${itemEncontrado.nombre} agregado al carrito!`);
             }
         });
     });

@@ -1,108 +1,105 @@
+document.addEventListener("DOMContentLoaded", () => {
+    renderizarCarrito();
+});
+
+function obtenerCarrito() {
+    return JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
+}
+
 function renderizarCarrito() {
-    const contenedor = document.getElementById("contenedor-carrito");
-    if (!contenedor) return;
-    
     const carrito = obtenerCarrito();
+    const tablaBody = document.getElementById("tabla-carrito");
+    const subtotalEl = document.getElementById("resumen-subtotal");
+    const totalEl = document.getElementById("resumen-total");
+
+    if (!tablaBody) return;
+
+    tablaBody.innerHTML = "";
 
     if (carrito.length === 0) {
-        contenedor.innerHTML = `
-            <div class="text-center py-5 bg-white rounded shadow-sm d-flex flex-column justify-content-center align-items-center" style="min-height: 350px;">
-                <h4 class="text-muted">Tu carrito está vacío.</h4>
-                <a href="productos.html" class="btn text-white fw-bold mt-3" style="background-color: #153259;">Ir al Catálogo de Productos</a>
-            </div>
-        `;
-        return;
-    }
-
-    let htmlTabla = `
-        <div class="card shadow-sm border-0 p-4 bg-white">
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Imagen</th>
-                            <th>Ítem / Código</th>
-                            <th>Precio</th>
-                            <th style="width: 150px;">Cantidad</th>
-                            <th>Subtotal</th>
-                            <th class="text-end">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-    `;
-
-    carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        htmlTabla += `
+        tablaBody.innerHTML = `
             <tr>
-                <td>
-                    <img src="${item.imagen}" alt="${item.nombre}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
-                </td>
-                <td>
-                    <h6 class="fw-bold text-dark mb-0">${item.nombre}</h6>
-                    <small class="text-muted font-monospace">${item.codigo}</small>
-                </td>
-                <td class="text-muted">$${item.precio.toLocaleString('es-CL')}</td>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <button class="btn btn-outline-secondary btn-disminuir" data-codigo="${item.codigo}">-</button>
-                        <input type="number" class="form-control text-center input-cantidad" value="${item.cantidad}" min="1" data-codigo="${item.codigo}">
-                        <button class="btn btn-outline-secondary btn-aumentar" data-codigo="${item.codigo}">+</button>
-                    </div>
-                </td>
-                <td class="fw-bold text-dark">$${subtotal.toLocaleString('es-CL')}</td>
-                <td class="text-end">
-                    <button class="btn btn-sm btn-outline-danger btn-eliminar" data-codigo="${item.codigo}">Eliminar</button>
+                <td colspan="5" class="text-center py-4 text-muted">
+                    Tu carrito está vacío. <a href="productos.html" class="fw-bold text-decoration-none">Ver productos disponibles</a>
                 </td>
             </tr>
         `;
-    });
+        if (subtotalEl) subtotalEl.textContent = "$0";
+        if (totalEl) totalEl.textContent = "$0";
+        return;
+    }
 
-    const totalGeneral = calcularTotalCarrito();
+    let totalGeneral = 0;
 
-    htmlTabla += `
-                    </tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                <a href="productos.html" class="btn btn-outline-secondary">← Seguir Comprando</a>
-                <div class="text-end">
-                    <h3 class="fw-bold text-dark mb-3">Total: <span class="text-primary">$${totalGeneral.toLocaleString('es-CL')}</span></h3>
-                    <button class="btn text-white btn-lg px-5 fw-bold" style="background-color: #04BFAD;" onclick="alert('¡Compra/Reserva procesada con éxito! Nos pondremos en contacto.')">Confirmar Carrito</button>
+    carrito.forEach((item, index) => {
+        const cantidad = item.cantidad || 1;
+        const precio = item.precio || 0;
+        const subtotal = precio * cantidad;
+        totalGeneral += subtotal;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                <div class="d-flex align-items-center">
+                    <img src="${item.imagen}" alt="${item.nombre}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded me-3">
+                    <div>
+                        <span class="fw-bold text-dark d-block">${item.nombre}</span>
+                        <small class="text-muted font-monospace">${item.codigo}</small>
+                    </div>
                 </div>
-            </div>
-        </div>
-    `;
-
-    contenedor.innerHTML = htmlTabla;
-
-    document.querySelectorAll(".btn-disminuir").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            cambiarCantidadItem(e.target.getAttribute("data-codigo"), -1);
-            renderizarCarrito();
-        });
+            </td>
+            <td>$${precio.toLocaleString("es-CL")}</td>
+            <td class="text-center fw-bold">${cantidad}</td>
+            <td class="fw-bold">$${subtotal.toLocaleString("es-CL")}</td>
+            <td class="text-center">
+                <button onclick="eliminarDelCarrito(${index})" class="btn btn-outline-danger btn-sm" title="Quitar producto">
+                    &times;
+                </button>
+            </td>
+        `;
+        tablaBody.appendChild(row);
     });
 
-    document.querySelectorAll(".btn-aumentar").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            cambiarCantidadItem(e.target.getAttribute("data-codigo"), 1);
-            renderizarCarrito();
-        });
-    });
-
-    document.querySelectorAll(".input-cantidad").forEach(input => {
-        input.addEventListener("change", (e) => {
-            actualizarCantidadDirecta(e.target.getAttribute("data-codigo"), e.target.value);
-            renderizarCarrito();
-        });
-    });
-
-    document.querySelectorAll(".btn-eliminar").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            eliminarItemCarrito(e.target.getAttribute("data-codigo"));
-            renderizarCarrito();
-        });
-    });
+    if (subtotalEl) subtotalEl.textContent = `$${totalGeneral.toLocaleString("es-CL")}`;
+    if (totalEl) totalEl.textContent = `$${totalGeneral.toLocaleString("es-CL")}`;
 }
 
-document.addEventListener("DOMContentLoaded", renderizarCarrito);
+function eliminarDelCarrito(index) {
+    let carrito = obtenerCarrito();
+    carrito.splice(index, 1);
+    localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
+    renderizarCarrito();
+}
+
+function procesarFinalizacionCompra() {
+    const carrito = obtenerCarrito();
+
+    if (carrito.length === 0) {
+        alert("Tu carrito está vacío. Añade productos antes de realizar la compra.");
+        return;
+    }
+
+    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    const numeroOrden = "VSM-" + Math.floor(100000 + Math.random() * 900000);
+
+    const ordenIdEl = document.getElementById("orden-id");
+    const ordenTotalEl = document.getElementById("orden-total");
+
+    if (ordenIdEl) ordenIdEl.textContent = numeroOrden;
+    if (ordenTotalEl) ordenTotalEl.textContent = `$${total.toLocaleString("es-CL")}`;
+
+    localStorage.removeItem("carrito_sanmarcos");
+
+    const modalElement = document.getElementById("modalCompraExitosa");
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    } else {
+        alert(`¡Compra realizada con éxito!\nN° Orden: ${numeroOrden}\nTotal: $${total.toLocaleString("es-CL")}`);
+        window.location.href = "productos.html";
+    }
+}
+
+function cerrarModalYRedirigir() {
+    window.location.href = "productos.html";
+}

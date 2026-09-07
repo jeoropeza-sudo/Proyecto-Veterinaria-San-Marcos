@@ -1,32 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras | Veterinaria San Marcos</title>
-    <!--aqui tendriamos el estilo sacado de bootstrap con nuestro css-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../Css/carrito.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras - Veterinaria San Marcos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100">
 
-  
-    <div id="header-contenedor"></div>
-        <!--el contenedor donde regresara el mensaje si el carrito esta vacio o
-     dibuja los productos si hay en el carrito-->
+  <main class="container my-5">
+    <h2 class="fw-bold mb-4" style="color: #153259;">Mi Carrito de Compras</h2>
 
-        <main class="container my-5 flex-grow-1">
-            <h1 class="fw-bold text-dark mb-4">Carrito de Compras y Servicios</h1>
-        
-        <div id="contenedor-carrito" style="min-height: 450px;"></div>
-    </main>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="table-responsive shadow-sm rounded border">
+          <table class="table align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th class="text-center">Cantidad</th>
+                <th>Subtotal</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-carrito">
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-    <div id="footer-contenedor"></div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm p-4">
+          <h5 class="fw-bold mb-3">Resumen del Pedido</h5>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Subtotal</span>
+            <span id="resumen-subtotal" class="fw-bold">$0</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Descuento</span>
+            <span class="text-success fw-bold">$0</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-4 fs-5 fw-bold">
+            <span>Total</span>
+            <span id="resumen-total" style="color: #36BBD9;">$0</span>
+          </div>
+          <button onclick="procesarFinalizacionCompra()" class="btn btn-success w-100 py-2 fw-bold">
+            Finalizar Compra
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
 
-    <script src="../Js/reserva-storage.js"></script>
-    <script src="../Js/carrito.js"></script>
-    <script src="../Js/hf-script.js" id="script-hf" data-base="../"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="modal fade" id="modalCompraExitosa" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <div class="modal-body">
+          <h3 class="fw-bold text-dark mb-2">¡Compra Realizada con Éxito!</h3>
+          <p class="text-muted mb-4">Tu pedido ha sido registrado en Veterinaria San Marcos.</p>
+          <div class="bg-light p-3 rounded mb-4 text-start">
+            <p class="mb-1 small"><strong>N° de Orden:</strong> <span id="orden-id"></span></p>
+            <p class="mb-0 small"><strong>Total Pagado:</strong> <span id="orden-total" class="fw-bold text-success"></span></p>
+          </div>
+          <button onclick="cerrarModalYRedirigir()" class="btn btn-primary px-4 py-2 fw-bold w-100" style="background-color: #153259; border: none;">
+            Volver a Productos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../Js/carrito.js"></script>
 </body>
 </html>
