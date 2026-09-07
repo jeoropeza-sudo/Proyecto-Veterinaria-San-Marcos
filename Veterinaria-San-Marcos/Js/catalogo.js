@@ -11,10 +11,13 @@ function renderizarTarjetasProductos(productos, contenedorId) {
     }
 
     productos.forEach(item => {
+        const imagenSrc = item.imagen || "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=600&auto=format&fit=crop";
+
         const col = document.createElement("div");
         col.className = "col-md-6 col-lg-4";
         col.innerHTML = `
-            <div class="card h-100 shadow-sm border-0">
+            <div class="card h-100 shadow-sm border-0 overflow-hidden">
+                <img src="${imagenSrc}" class="card-img-top object-fit-cover" alt="${item.nombre}" style="height: 180px;">
                 <div class="card-body d-flex flex-column p-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="badge bg-secondary">${item.categoria}</span>
