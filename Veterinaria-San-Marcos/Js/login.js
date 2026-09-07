@@ -1,6 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
   const formLogin = document.getElementById("form-login");
 
+  // Script rápido para crear usuarios de prueba SOLO si no existen
+  if (!localStorage.getItem("usuarios")) {
+    const usuariosDePrueba = [
+      {
+        nombre: "Administrador Test",
+        correo: "admin@correo.cl",
+        password: "123",
+        rol: "Administrador"
+      },
+      {
+        nombre: "Cliente Test",
+        correo: "cliente@correo.cl",
+        password: "123",
+        rol: "Cliente"
+      }
+    ];
+    localStorage.setItem("usuarios", JSON.stringify(usuariosDePrueba));
+    console.log("¡Usuarios de prueba creados exitosamente!");
+  }
+
   if (formLogin) {
     formLogin.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -30,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Redirigir según el rol o al inicio
         if (usuarioValido.rol === "Administrador") {
-          window.location.href = "../admin/index.html";
+          window.location.href = "../Admin/usuarios.html";
         } else {
           window.location.href = "../index.html";
         }

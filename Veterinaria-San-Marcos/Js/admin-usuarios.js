@@ -1,7 +1,7 @@
-// Arreglo en memoria con datos de prueba
-let listaUsuarios = [
-  { run: "19876543K", nombre: "Carlos Mendoza", correo: "carlos@sanmarcos.cl", rol: "Administrador", comuna: "Rancagua" },
-  { run: "154328765", nombre: "Dra. María Lopez", correo: "mlopez@sanmarcos.cl", rol: "Recepcionista", comuna: "Machalí" }
+// Cargar desde LocalStorage o usar datos de prueba iniciales
+let listaUsuarios = JSON.parse(localStorage.getItem("usuarios")) || [
+  { run: "19876543K", nombre: "Carlos Mendoza", correo: "carlos@sanmarcos.cl", password: "123", rol: "Administrador", comuna: "Rancagua" },
+  { run: "154328765", nombre: "Dra. María Lopez", correo: "mlopez@sanmarcos.cl", password: "123", rol: "Administrador", comuna: "Machalí" }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -29,7 +29,6 @@ function renderizarTablaUsuarios() {
   listaUsuarios.forEach((usuario, index) => {
     const fila = document.createElement("tr");
     
-    // Asignar color al badge según el rol
     let badgeClass = "bg-secondary";
     if (usuario.rol === "Administrador") badgeClass = "bg-danger";
     if (usuario.rol === "Recepcionista") badgeClass = "bg-info text-dark";
@@ -56,19 +55,26 @@ function agregarUsuario() {
     run: document.getElementById("run").value.trim(),
     nombre: document.getElementById("nombre").value.trim(),
     correo: document.getElementById("correo").value.trim(),
+    password: document.getElementById("password").value.trim(), // Captura la contraseña
     rol: document.getElementById("rol").value,
     comuna: selectComuna.options[selectComuna.selectedIndex].text
   };
 
   listaUsuarios.push(nuevoUsuario);
+  
+  // Guardar cambios en LocalStorage para que el Login los reconozca
+  localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
+
   renderizarTablaUsuarios();
   document.getElementById("form-usuario").reset();
-  alert("Usuario agregado con éxito a la lista temporal.");
+  alert("Usuario agregado con éxito y guardado en el sistema.");
 }
 
 function eliminarUsuario(index) {
-  if (confirm("¿Desea eliminar este usuario de la lista?")) {
+  if (confirm("¿Desea eliminar este usuario del sistema?")) {
     listaUsuarios.splice(index, 1);
+    // Actualizar LocalStorage tras eliminar
+    localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
     renderizarTablaUsuarios();
   }
 }
@@ -92,6 +98,16 @@ function validarFormulario() {
     esValido = false;
   } else {
     errorNombre.textContent = "";
+  }
+
+  // Validación de la contraseña en el formulario de administración
+  const password = document.getElementById("password");
+  const errorPassword = document.getElementById("error-password");
+  if (password && password.value.trim().length < 4) {
+    errorPassword.textContent = "La contraseña debe tener al menos 4 caracteres.";
+    esValido = false;
+  } else if (errorPassword) {
+    errorPassword.textContent = "";
   }
 
   const rol = document.getElementById("rol");

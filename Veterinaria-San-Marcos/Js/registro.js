@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
         e.preventDefault();
 
         const nombre = document.getElementById("registro-nombre")?.value.trim();
-        const email = document.getElementById("registro-correo")?.value.trim().toLowerCase();
+        const correo = document.getElementById("registro-correo")?.value.trim().toLowerCase();
         const password = document.getElementById("registro-pass")?.value.trim();
         const confirmPassword = document.getElementById("registro-confirm-pass")?.value.trim();
 
@@ -19,9 +19,10 @@ window.addEventListener("load", () => {
             return;
         }
 
-        let usuarios = JSON.parse(localStorage.getItem("usuarios_sanmarcos")) || [];
+        // Usar simplemente "usuarios"
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-        const existe = usuarios.some(u => u.email === email);
+        const existe = usuarios.some(u => u.correo === correo);
         if (existe) {
             alert("Este correo electrónico ya se encuentra registrado.");
             return;
@@ -30,13 +31,14 @@ window.addEventListener("load", () => {
         const nuevoUsuario = {
             id: Date.now(),
             nombre: nombre,
-            email: email,
+            correo: correo, // Guardado como correo
             password: password,
-            rol: "cliente"
+            rol: "Cliente"
         };
 
         usuarios.push(nuevoUsuario);
-        localStorage.setItem("usuarios_sanmarcos", JSON.stringify(usuarios));
+        // Guardar en la clave unificada "usuarios"
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
         alert("¡Registro exitoso! Redirigiendo al inicio de sesión...");
         window.location.href = "login.html";
