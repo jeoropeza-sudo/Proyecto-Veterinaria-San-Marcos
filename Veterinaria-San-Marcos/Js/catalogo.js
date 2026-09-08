@@ -90,7 +90,7 @@ function activarBotonesAgregarRapido(productos) {
                 }
 
                 localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
-                alert(`¡${itemEncontrado.nombre} agregado al carrito!`);
+                mostrarNotificacion(`¡${itemEncontrado.nombre} agregado al carrito!`);
             }
         });
     });
@@ -148,3 +148,21 @@ document.addEventListener("DOMContentLoaded", () => {
         renderizarCategoriasServicios("contenedor-servicios-categorias");
     }
 });
+
+function mostrarNotificacion(mensaje) {
+    const alertaExistente = document.getElementById("alerta-flotante");
+    if (alertaExistente) alertaExistente.remove();
+
+    const alerta = document.createElement("div");
+    alerta.id = "alerta-flotante";
+    alerta.className = "alert alert-success position-fixed bottom-0 end-0 m-4 shadow-sm border-0 text-white fw-bold";
+    alerta.style.backgroundColor = "#04BFAD";
+    alerta.style.zIndex = "1050";
+    alerta.textContent = mensaje;
+
+    document.body.appendChild(alerta);
+
+    setTimeout(() => {
+        alerta.remove();
+    }, 2500);
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veterinaria San Marcos</title>
+    <title>Veterinaria San Marcos - Salud y Bienestar Animal</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,75 +12,136 @@
 
 <body>
     
-    <!-- Contenedor dinámico del Navbar (cargado desde Js/hf-script.js) -->
+    <!-- Contenedor dinámico del Navbar -->
     <div id="header-contenedor"></div>
 
-    <!-- Secciones principales -->
+    <!-- Sección Hero Principal -->
     <section class="py-5" style="background-color: #EAEFF4;">
       <div class="container px-4 px-lg-5 my-4">
         <div class="row align-items-center gy-4">
           <div class="col-lg-7">
+            <span class="badge px-3 py-2 rounded-pill mb-3 fw-bold text-white" style="background-color: #04BFAD;">
+              Más de 15 años de experiencia en Rancagua
+            </span>
             <h1 class="display-4 fw-bold mb-3" style="color: #153259;">Salud y bienestar para tu mejor amigo</h1>
-            <p class="lead mb-4" style="color: #3B6D8C;">En Veterinaria San Marcos de Rancagua cuidamos de tus mascotas con atención profesional, consultas médicas y planes de vacunación completos.</p>
-            <div class="d-flex gap-3">
-              <a href="Paginas/productos.html" class="btn btn-lg text-white fw-bold" style="background-color: #04BFAD;">Ver Productos</a>
-              <!-- Botón actualizado a "Ver Servicios" apuntando a servicios.html -->
-              <a href="Paginas/servicios.html" class="btn btn-lg text-white fw-bold" style="background-color: #36BBD9;">Ver Servicios</a>
+            <p class="lead mb-4" style="color: #3B6D8C;">
+              En Veterinaria San Marcos cuidamos de tus mascotas con atención profesional integral, pabellón quirúrgico, laboratorio clínico y servicios de urgencia.
+            </p>
+            <div class="d-flex flex-wrap gap-3">
+              <a href="Paginas/servicios.html" class="btn btn-lg text-white fw-bold shadow-sm" style="background-color: #153259;">Ver Servicios Médicos</a>
+              <a href="Paginas/productos.html" class="btn btn-lg text-white fw-bold shadow-sm" style="background-color: #04BFAD;">Farmacia y Productos</a>
             </div>
           </div>
 
           <div class="col-lg-5 text-center">
-            <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=600&q=80" alt="Atención Veterinaria" class="img-fluid rounded-3 shadow">
+            <img src="Imagenes/clinica-veterinaria-san marcos.jpg" alt="Instalaciones de Veterinaria San Marcos" class="img-fluid rounded-4 shadow-lg object-fit-cover" style="max-height: 380px; width: 100%;">
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-5">
+    <!-- Sección de Novedades / Beneficios Destacados -->
+    <section class="py-5 bg-white">
+      <div class="container px-4 px-lg-5">
+        <div class="text-center mb-5">
+          <h2 class="fw-bold" style="color: #153259;">Novedades y Beneficios</h2>
+          <p class="text-muted">Descubre las nuevas ventajas y prestaciones diseñadas para ti y tus mascotas</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+              <img src="Imagenes/camion-domicilio.jpeg" class="card-img-top object-fit-cover" style="height: 160px;" alt="Atención a Domicilio">
+              <div class="card-body d-flex flex-column p-4">
+                <span class="badge bg-success align-self-start mb-2">¡Nuevo!</span>
+                <h5 class="card-title fw-bold text-dark fs-6">Atención a Domicilio</h5>
+                <p class="card-text text-muted small flex-grow-1">Agenda consultas y controles preventivos directamente en la comodidad de tu hogar.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+              <img src="Imagenes/Antiparasitario.jpeg" class="card-img-top object-fit-cover" style="height: 160px;" alt="Antiparasitarios">
+              <div class="card-body d-flex flex-column p-4">
+                <span class="badge bg-primary align-self-start mb-2">Promoción</span>
+                <h5 class="card-title fw-bold text-dark fs-6">20% en Antiparasitarios</h5>
+                <p class="card-text text-muted small flex-grow-1">Aprovecha precios especiales en toda nuestra línea de pipetas y comprimidos este mes.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=600&auto=format&fit=crop" class="card-img-top object-fit-cover" style="height: 160px;" alt="Spa y Peluquería">
+              <div class="card-body d-flex flex-column p-4">
+                <span class="badge bg-success align-self-start mb-2">Especializado</span>
+                <h5 class="card-title fw-bold text-dark fs-6">Spa y Peluquería Low-Stress</h5>
+                <p class="card-text text-muted small flex-grow-1">Técnicas de manejo especializadas y exclusivas para el cuidado del pelaje de perros y gatos.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+              <img src="Imagenes/premios de perros.jpeg" class="card-img-top object-fit-cover" style="height: 160px; object-position: top center;" alt="Comunidad San Marcos">
+              <div class="card-body d-flex flex-column p-4">
+                <span class="badge bg-warning text-dark align-self-start mb-2">Comunidad</span>
+                <h5 class="card-title fw-bold text-dark fs-6">Comunidad San Marcos</h5>
+                <p class="card-text text-muted small flex-grow-1">Acumula puntos por cada compra o reserva y cámbialos por accesorios o servicios gratuitos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nuestros Servicios Principales -->
+    <section class="py-5" style="background-color: #F8F9FA;">
       <div class="container px-4 px-lg-5">
         <div class="text-center mb-5">
           <h2 class="fw-bold" style="color: #153259;">Nuestros Servicios Principales</h2>
-          <p class="text-muted">Conoce algunas de las atenciones que ofrecemos en nuestra clínica</p>
+          <p class="text-muted">Conoce algunas de las atenciones especializadas que ofrecemos en nuestra clínica de Rancagua</p>
         </div>
 
         <div class="row g-4">
           <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+              <img src="Imagenes/consulta.webp" class="card-img-top object-fit-cover" style="height: 180px;" alt="Consulta General">
               <div class="card-body text-center p-4">
-                <div class="fs-1 mb-3">🩺</div>
                 <h5 class="card-title fw-bold" style="color: #3B6D8C;">Consulta General</h5>
-                <p class="card-text text-muted">Evaluación física completa para asegurar la salud de perros y gatos.</p>
-                <span class="badge fs-6 fw-bold text-white mb-3" style="background-color: #04BFAD;">$15.000</span>
+                <p class="card-text text-muted">Evaluación física completa y diagnóstico temprano para asegurar la salud de tu regalón.</p>
+                <span class="badge fs-6 fw-bold text-white mb-3 px-3 py-2" style="background-color: #04BFAD;">Desde $15.000</span>
                 <div>
-                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Más detalles</a>
+                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Ver Categorías</a>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+              <img src="Imagenes/vacunas.webp" class="card-img-top object-fit-cover" style="height: 180px;" alt="Vacunación y Prevención">
               <div class="card-body text-center p-4">
-                <div class="fs-1 mb-3">💉</div>
-                <h5 class="card-title fw-bold" style="color: #3B6D8C;">Vacunación</h5>
-                <p class="card-text text-muted">Protección contra enfermedades infecciosas con calendario al día.</p>
-                <span class="badge fs-6 fw-bold text-white mb-3" style="background-color: #04BFAD;">Desde $12.000</span>
+                <h5 class="card-title fw-bold" style="color: #3B6D8C;">Vacunación y Prevención</h5>
+                <p class="card-text text-muted">Protección completa contra enfermedades infecciosas con planes de inmunización al día.</p>
+                <span class="badge fs-6 fw-bold text-white mb-3 px-3 py-2" style="background-color: #04BFAD;">Desde $12.000</span>
                 <div>
-                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Más detalles</a>
+                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Ver Categorías</a>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+              <img src="Imagenes/veterinaria.webp" class="card-img-top object-fit-cover" style="height: 180px;" alt="Laboratorio y Cirugía">
               <div class="card-body text-center p-4">
-                <div class="fs-1 mb-3">🔬</div>
-                <h5 class="card-title fw-bold" style="color: #3B6D8C;">Exámenes de Laboratorio</h5>
-                <p class="card-text text-muted">Diagnósticos precisos de sangre, orina y perfil bioquímico.</p>
-                <span class="badge fs-6 fw-bold text-white mb-3" style="background-color: #04BFAD;">Desde $18.000</span>
+                <h5 class="card-title fw-bold" style="color: #3B6D8C;">Laboratorio y Cirugía</h5>
+                <p class="card-text text-muted">Exámenes de sangre, perfil bioquímico y procedimientos quirúrgicos en pabellón equipado.</p>
+                <span class="badge fs-6 fw-bold text-white mb-3 px-3 py-2" style="background-color: #04BFAD;">Desde $18.000</span>
                 <div>
-                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Más detalles</a>
+                  <a href="Paginas/servicios.html" class="btn btn-sm btn-outline-primary fw-bold">Ver Categorías</a>
                 </div>
               </div>
             </div>
@@ -89,12 +150,15 @@
       </div>
     </section>
 
-    <section class="py-5" style="background-color: #F8F9FA;">
+    <!-- Sección de llamada a la acción con fondo gris y sin espacios blancos -->
+    <section class="py-5 m-0 border-0" style="background-color: #EAEFF4;">
       <div class="container px-4 px-lg-5 text-center">
-        <h3 class="fw-bold mb-3" style="color: #153259;">¿Necesitas atención inmediata o agendar una hora?</h3>
-        <p class="text-muted mb-4">Puedes registrarte en nuestra plataforma o comunicarte directamente con nuestra recepción.</p>
-        <a href="Paginas/contacto.html" class="btn btn-lg text-white fw-bold me-2" style="background-color: #36BBD9;">Contactar Clínica</a>
-        <a href="Paginas/registro.html" class="btn btn-lg text-white fw-bold" style="background-color: #04BFAD;">Crear Cuenta</a>
+        <h3 class="fw-bold mb-3" style="color: #153259;">¿Listo para cuidar la salud de tu mascota?</h3>
+        <p class="text-muted mb-4 lead fs-6">Regístrate en nuestra plataforma para gestionar tus solicitudes o comunícate con nuestro equipo médico.</p>
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+          <a href="Paginas/contacto.html" class="btn btn-lg text-white fw-bold px-4 shadow-sm" style="background-color: #36BBD9;">Contactar Clínica</a>
+          <a href="Paginas/registro.html" class="btn btn-lg text-white fw-bold px-4 shadow-sm" style="background-color: #04BFAD;">Crear una Cuenta</a>
+        </div>
       </div>
     </section>
 
