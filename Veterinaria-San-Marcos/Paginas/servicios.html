@@ -30,6 +30,10 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            if (!localStorage.getItem("servicios_sanmarcos") && typeof listaServiciosOficial !== "undefined") {
+                localStorage.setItem("servicios_sanmarcos", JSON.stringify(listaServiciosOficial));
+            }
+
             renderizarCategoriasServicios("contenedor-servicios");
         });
     </script>

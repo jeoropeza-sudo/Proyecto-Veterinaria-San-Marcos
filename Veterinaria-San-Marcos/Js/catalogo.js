@@ -25,13 +25,12 @@ function renderizarTarjetasProductos(productos, contenedorId) {
                     </div>
                     <h5 class="card-title fw-bold text-dark">${item.nombre}</h5>
                     <p class="card-text text-muted small mb-2"><strong>Principio:</strong> ${item.principio || 'N/A'}</p>
-                    <p class="card-text text-muted small flex-grow-1">${item.presentacion}</p>
+                    <p class="card-text text-muted small flex-grow-1">${item.presentacion || ''}</p>
                     <div class="mb-3">
-                        <span class="badge bg-light text-secondary border">Especie: ${item.especie}</span>
-                        <span class="badge bg-light text-secondary border">Stock: ${item.stock}</span>
+                        <span class="badge bg-light text-secondary border">Especie: ${item.especie || 'General'}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-3">
-                        <span class="fw-bold fs-5 text-dark">$${item.precio.toLocaleString('es-CL')}</span>
+                        <span class="fw-bold fs-5 text-dark">$${Number(item.precio).toLocaleString('es-CL')}</span>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm btn-outline-primary btn-detalle" data-codigo="${item.codigo}">Ver Detalle</button>
                             <button class="btn btn-sm text-white fw-bold btn-agregar-rapido" style="background-color: #04BFAD;" data-codigo="${item.codigo}">Agregar</button>
@@ -135,17 +134,79 @@ function renderizarCategoriasServicios(contenedorId) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof renderizarTarjetasProductos === "function" && typeof listaProductosOficial !== "undefined") {
-        const contenedorProd = document.getElementById("contenedor-productos");
-        if (contenedorProd) {
-            renderizarTarjetasProductos(listaProductosOficial, "contenedor-productos");
-        }
+function renderizarServiciosPorCategoria(nombreCategoria, contenedorId) {
+    const contenedor = document.getElementById(contenedorId);
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+
+    let serviciosGuardados = JSON.parse(localStorage.getItem("servicios_sanmarcos"));
+    if (!serviciosGuardados && typeof listaServiciosOficial !== "undefined") {
+        serviciosGuardados = listaServiciosOficial;
+        localStorage.setItem("servicios_sanmarcos", JSON.stringify(serviciosGuardados));
     }
 
+    const serviciosFiltrados = (serviciosGuardados || []).filter(s => 
+        s.categoria && s.categoria.toLowerCase().trim() === nombreCategoria.toLowerCase().trim()
+    );
+
+    if (serviciosFiltrados.length === 0) {
+        contenedor.innerHTML = `<div class="col-12 text-center py-4 text-muted">No hay servicios registrados en esta categoría todavía.</div>`;
+        return;
+    }
+
+    serviciosFiltrados.forEach(srv => {
+        const col = document.createElement("div");
+        col.className = "col-md-6 col-lg-4";
+        col.innerHTML = `
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary">${srv.categoria}</span>
+                        <small class="text-muted font-monospace">${srv.codigo}</small>
+                    </div>
+                    <h5 class="card-title fw-bold text-dark">${srv.nombre}</h5>
+                    <p class="card-text text-muted small flex-grow-1">${srv.detalle || srv.descripcion || 'Sin descripción detallada.'}</p>
+                    <div class="mb-3">
+                        <span class="badge bg-light text-secondary border">Duración: ${srv.duracion || 'N/A'}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-3">
+                        <span class="fw-bold fs-5 text-dark">$${Number(srv.precio).toLocaleString('es-CL')}</span>
+                        <button class="btn btn-sm text-white fw-bold btn-reservar-servicio" style="background-color: #04BFAD;" data-codigo="${srv.codigo}">Reservar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        contenedor.appendChild(col);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Cargar Productos desde localStorage (con respaldo en la lista oficial)
+    let productosGuardados = JSON.parse(localStorage.getItem("productos_sanmarcos"));
+    if (!productosGuardados && typeof listaProductosOficial !== "undefined") {
+        productosGuardados = listaProductosOficial;
+        localStorage.setItem("productos_sanmarcos", JSON.stringify(productosGuardados));
+    }
+    
+    const contenedorProd = document.getElementById("contenedor-productos");
+    if (contenedorProd && productosGuardados) {
+        renderizarTarjetasProductos(productosGuardados, "contenedor-productos");
+    }
+
+    // 2. Cargar Categorías de Servicios
     const contenedorServiciosCat = document.getElementById("contenedor-servicios-categorias");
     if (contenedorServiciosCat && typeof renderizarCategoriasServicios === "function") {
         renderizarCategoriasServicios("contenedor-servicios-categorias");
+    }
+
+    // 3. Cargar Servicios Específicos por Categoría (para detalle-servicio.html)
+    const categoriaSeleccionada = JSON.parse(localStorage.getItem("categoriaSeleccionada"));
+    const contenedorServiciosDetalle = document.getElementById("contenedor-servicios-detalle");
+    if (contenedorServiciosDetalle && categoriaSeleccionada) {
+        const tituloSeccion = document.getElementById("titulo-categoria");
+        if (tituloSeccion) tituloSeccion.textContent = categoriaSeleccionada.nombre;
+
+        renderizarServiciosPorCategoria(categoriaSeleccionada.nombre, "contenedor-servicios-detalle");
     }
 });
 

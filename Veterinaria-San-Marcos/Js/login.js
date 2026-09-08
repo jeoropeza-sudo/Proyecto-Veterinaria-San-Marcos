@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
         contrasena: "123",
         pass: "123",
         rol: "Cliente"
+      },
+      {
+        nombre: "Administrador Test",
+        correo: "admin1@correo.cl",
+        password: "1234",
+        contrasena: "1234",
+        pass: "1234",
+        rol: "Administrador"
       }
     ];
     localStorage.setItem("usuarios", JSON.stringify(usuariosDePrueba));

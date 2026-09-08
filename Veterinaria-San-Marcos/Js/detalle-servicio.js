@@ -3,8 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const contenedor = document.getElementById("contenedor-servicios-categoria");
     const tituloEl = document.getElementById("titulo-categoria");
 
+    // Obtenemos los servicios desde localStorage (respaldando con la lista oficial si no existe)
+    let serviciosDisponibles = JSON.parse(localStorage.getItem("servicios_sanmarcos"));
+    if (!serviciosDisponibles && typeof listaServiciosOficial !== "undefined") {
+        serviciosDisponibles = listaServiciosOficial;
+        localStorage.setItem("servicios_sanmarcos", JSON.stringify(serviciosDisponibles));
+    }
+
     console.log("Categoría recuperada de localStorage:", categoriaGuardada);
-    console.log("Lista de servicios oficial disponible:", typeof listaServiciosOficial !== "undefined" ? listaServiciosOficial : "NO CARGADA");
+    console.log("Servicios disponibles cargados:", serviciosDisponibles);
 
     if (!categoriaGuardada || !contenedor) {
         console.warn("Falta la categoría guardada o el contenedor HTML.");
@@ -18,14 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
         tituloEl.textContent = `Servicios de: ${categoriaGuardada.nombre}`;
     }
 
-    if (typeof listaServiciosOficial === "undefined") {
-        contenedor.innerHTML = `<div class="col-12 text-center py-4 text-muted">Error: No se encontró la lista oficial de servicios (catalogo-datos.js).</div>`;
+    if (!serviciosDisponibles) {
+        contenedor.innerHTML = `<div class="col-12 text-center py-4 text-muted">Error: No se encontró la lista de servicios.</div>`;
         return;
     }
 
     const idBuscado = (categoriaGuardada.id || categoriaGuardada.nombre || "").trim().toLowerCase();
     
-    const serviciosFiltrados = listaServiciosOficial.filter(s => {
+    const serviciosFiltrados = serviciosDisponibles.filter(s => {
         const catServicio = (s.categoria || "").trim().toLowerCase();
         return catServicio === idBuscado;
     });
@@ -54,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <span class="badge bg-light text-secondary border">Duración: ${item.duracion || 'N/A'}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-3">
-                        <span class="fw-bold fs-5 text-dark">$${item.precio.toLocaleString('es-CL')}</span>
+                        <span class="fw-bold fs-5 text-dark">$${Number(item.precio).toLocaleString('es-CL')}</span>
                         <button class="btn btn-sm text-white fw-bold btn-agregar-servicio" style="background-color: #04BFAD;" data-codigo="${item.codigo}">Agregar Reserva</button>
                     </div>
                 </div>
@@ -66,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".btn-agregar-servicio").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const codigo = e.target.getAttribute("data-codigo");
-            const servicioEncontrado = listaServiciosOficial.find(s => s.codigo === codigo);
+            // Buscamos también en los servicios actuales del localStorage para que no falle con los nuevos
+            const servicioEncontrado = serviciosDisponibles.find(s => s.codigo === codigo);
             
             if (servicioEncontrado) {
                 let carrito = JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
