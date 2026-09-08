@@ -9,100 +9,13 @@
     <link rel="stylesheet" href="../Css/servicios.css">
 </head>
 <body>
-    <!-- Contenedor del Header dinámico -->
+
     <div id="header-contenedor"></div>
 
     <main class="container my-5">
         <div class="text-center mb-5">
             <h1 class="fw-bold">Farmacia Veterinaria</h1>
             <p class="text-muted">Medicamentos, antiparasitarios y suplementos disponibles para despacho o retiro.</p>
-        </div>
-
-        <!-- Botón para Abrir Panel Admin / Formulario CRUD -->
-        <div class="d-flex justify-content-end mb-4">
-            <button class="btn text-white fw-bold shadow-sm" style="background-color: #153259;" data-bs-toggle="modal" data-bs-target="#modalAdminProductos" onclick="prepararFormularioCrear()">
-                ⚙️ Administrar Productos
-            </button>
-        </div>
-
-        <!-- Modal Administración de Productos -->
-        <div class="modal fade" id="modalAdminProductos" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header text-white" style="background-color: #153259;">
-                        <h5 class="modal-title fw-bold">Gestión de Inventario - Farmacia</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <!-- Formulario Agregar / Editar -->
-                        <form id="form-producto-crud" class="row g-3 mb-4 p-3 border rounded bg-light">
-                            <input type="hidden" id="crud-es-edicion" value="false">
-                            
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Código</label>
-                                <input type="text" class="form-control" id="crud-codigo" required placeholder="Ej: ME023">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Nombre</label>
-                                <input type="text" class="form-control" id="crud-nombre" required placeholder="Ej: Bravecto 20kg">
-                            </div>
-                            <div class="col-md-5">
-                                <label class="form-label fw-bold">Categoría</label>
-                                <input type="text" class="form-control" id="crud-categoria" required placeholder="Ej: Antiparasitarios">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Principio Activo</label>
-                                <input type="text" class="form-control" id="crud-principio" placeholder="Ej: Fluralaner">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Presentación</label>
-                                <input type="text" class="form-control" id="crud-presentacion" required placeholder="Ej: Comprimido masticable">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Especie</label>
-                                <select class="form-select" id="crud-especie" required>
-                                    <option value="Perro">Perro</option>
-                                    <option value="Gato">Gato</option>
-                                    <option value="Perro / Gato">Perro / Gato</option>
-                                    <option value="Todas">Todas</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Stock</label>
-                                <input type="number" class="form-control" id="crud-stock" min="0" required placeholder="10">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Precio ($)</label>
-                                <input type="number" class="form-control" id="crud-precio" min="0" required placeholder="15000">
-                            </div>
-                            <div class="col-12 text-end mt-3">
-                                <button type="button" class="btn btn-secondary me-2" onclick="limpiarFormularioCRUD()">Limpiar</button>
-                                <button type="submit" class="btn text-white fw-bold" style="background-color: #04BFAD;" id="btn-guardar-crud">Guardar Producto</button>
-                            </div>
-                        </form>
-
-                        <!-- Tabla de Control de Productos -->
-                        <h6 class="fw-bold mb-3">Inventario Registrado</h6>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Código</th>
-                                        <th>Nombre</th>
-                                        <th>Categoría</th>
-                                        <th>Stock</th>
-                                        <th>Precio</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-crud-productos">
-                                    <!-- Filas dinámicas -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Cuadrícula donde se inyectarán los productos mediante JavaScript -->
@@ -136,17 +49,11 @@
     <!-- Inicializador específico para productos -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof actualizarVistasProductos === "function") {
-                actualizarVistasProductos();
-            }
+            // Llamamos a la función de productos pasándole el arreglo oficial y el id del contenedor
+            renderizarTarjetasProductos(listaProductosOficial, "contenedor-productos");
+            actualizarVistaReservaGlobal();
             
-            if (typeof actualizarVistaReservaGlobal === "function") {
-                actualizarVistaReservaGlobal();
-            }
-            
-            document.getElementById("btn-vaciar")?.addEventListener("click", () => {
-                if (typeof vaciarStorage === "function") vaciarStorage();
-            });
+            document.getElementById("btn-vaciar")?.addEventListener("click", vaciarStorage);
         });
     </script>
 </body>
