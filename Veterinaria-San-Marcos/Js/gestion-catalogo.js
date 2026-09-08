@@ -1,7 +1,7 @@
-// Js/gestion-catalogo.js
+
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Inicializar LocalStorage con datos por defecto si no existen
+
     if (!localStorage.getItem("servicios_sanmarcos")) {
         localStorage.setItem("servicios_sanmarcos", JSON.stringify(listaServiciosOficial));
     }
@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("productos_sanmarcos", JSON.stringify(listaProductosOficial));
     }
 
-    // Cargar tablas al iniciar
+
     cargarTablaServicios();
     cargarTablaProductos();
 
-    // Manejadores de Formularios (Submit para Crear/Editar)
+
     const formServicio = document.getElementById("formServicio");
     if (formServicio) {
         formServicio.addEventListener("submit", guardarServicio);
@@ -25,9 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* ==========================================
-   SECCIÓN: SERVICIOS
-========================================== */
 
 function cargarTablaServicios() {
     const tbody = document.getElementById("tabla-servicios-admin");
@@ -129,10 +126,6 @@ function eliminarServicio(index) {
     }
 }
 
-
-/* ==========================================
-   SECCIÓN: PRODUCTOS (SIN STOCK)
-========================================== */
 
 function cargarTablaProductos() {
     const tbody = document.getElementById("tabla-productos-admin");
