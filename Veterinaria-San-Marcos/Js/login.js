@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Redirigir según el rol o al inicio
         if (usuarioValido.rol === "Administrador") {
-          window.location.href = "../Admin/usuarios.html";
+          window.location.href = "../Admin/index.html";
         } else {
           window.location.href = "../index.html";
         }
