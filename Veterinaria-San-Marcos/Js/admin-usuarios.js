@@ -55,14 +55,14 @@ function agregarUsuario() {
     run: document.getElementById("run").value.trim(),
     nombre: document.getElementById("nombre").value.trim(),
     correo: document.getElementById("correo").value.trim(),
-    password: document.getElementById("password").value.trim(), // Captura la contraseña
+    password: document.getElementById("password").value.trim(), 
     rol: document.getElementById("rol").value,
     comuna: selectComuna.options[selectComuna.selectedIndex].text
   };
 
   listaUsuarios.push(nuevoUsuario);
   
-  // Guardar cambios en LocalStorage para que el Login los reconozca
+  
   localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
 
   renderizarTablaUsuarios();
@@ -73,7 +73,7 @@ function agregarUsuario() {
 function eliminarUsuario(index) {
   if (confirm("¿Desea eliminar este usuario del sistema?")) {
     listaUsuarios.splice(index, 1);
-    // Actualizar LocalStorage tras eliminar
+    
     localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
     renderizarTablaUsuarios();
   }
@@ -100,7 +100,7 @@ function validarFormulario() {
     errorNombre.textContent = "";
   }
 
-  // Validación de la contraseña en el formulario de administración
+  
   const password = document.getElementById("password");
   const errorPassword = document.getElementById("error-password");
   if (password && password.value.trim().length < 4) {

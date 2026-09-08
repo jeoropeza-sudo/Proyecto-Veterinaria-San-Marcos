@@ -26,7 +26,7 @@ function cargarRegiones() {
     selectRegion.appendChild(opt);
   });
 
-  // Al cambiar Región, cargar las Comunas correspondientes
+ 
   selectRegion.addEventListener("change", (e) => {
     selectComuna.innerHTML = '<option value="">Seleccione Comuna</option>';
     const regionIdx = e.target.value;
