@@ -45,7 +45,6 @@
 
   <div class="container my-4">
     
-    <!-- Título y Descripción -->
     <div class="row mb-4">
       <div class="col-12">
         <div class="p-4 bg-white rounded-4 shadow-sm border-start border-4 border-primary" style="border-color: #153259 !important;">
@@ -55,10 +54,8 @@
       </div>
     </div>
 
-    <!-- Contenido Principal -->
     <div class="row g-4">
       
-      <!-- FORMULARIO (Arriba o Izquierda según prefieras, aquí a ancho completo superior) -->
       <div class="col-12">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden" id="card-formulario">
           <div class="p-3 text-white d-flex justify-content-between align-items-center" id="header-form" style="background-color: #153259;">
@@ -112,7 +109,6 @@
                   <select class="form-select" id="rol" required>
                     <option value="">Seleccione Rol</option>
                     <option value="Administrador">Administrador</option>
-                    <option value="Recepcionista">Recepcionista</option>
                     <option value="Cliente">Cliente (Dueño de Mascota)</option>
                   </select>
                   <div class="text-danger small mt-1" id="error-rol"></div>
@@ -150,7 +146,6 @@
         </div>
       </div>
 
-      <!-- TABLA DE USUARIOS (Abajo) -->
       <div class="col-12">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
           <div class="card-header bg-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
@@ -171,7 +166,6 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-usuarios">
-                  <!-- Se llena dinámicamente -->
                 </tbody>
               </table>
             </div>

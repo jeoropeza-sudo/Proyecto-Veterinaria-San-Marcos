@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Script de protección/guardián: Ejecutado antes del renderizado de la página -->
-  <script src="../Js/admin-guard.js"></script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Mantenedor de Productos y Servicios | Veterinaria San Marcos</title>
@@ -65,7 +62,6 @@
 
     <div class="tab-content" id="mantenedorTabContent">
       
-      <!-- SECCIÓN 1: SERVICIOS -->
       <div class="tab-pane fade show active" id="servicios-pane" role="tabpanel" tabindex="0">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <h3 class="fw-bold m-0" style="color: #153259;">Listado de Servicios Médicos</h3>
@@ -90,34 +86,6 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-servicios-admin">
-<<<<<<< Updated upstream
-                  <tr>
-                    <td class="font-monospace">SRV-01</td>
-                    <td class="fw-bold">Consulta Médica General</td>
-                    <td>Consultas</td>
-                    <td>$15.000</td>
-                    <td>30 min</td>
-                    <td><span class="badge bg-success">Activo</span></td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalServicio">Editar</button>
-                      <button class="btn btn-sm btn-outline-danger">Desactivar</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-monospace">SRV-02</td>
-                    <td class="fw-bold">Vacunación Séxtuple</td>
-                    <td>Inmunización</td>
-                    <td>$12.000</td>
-                    <td>15 min</td>
-                    <td><span class="badge bg-success">Activo</span></td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalServicio">Editar</button>
-                      <button class="btn btn-sm btn-outline-danger">Desactivar</button>
-                    </td>
-                  </tr>
-=======
-                  <!-- Renderizado dinámicamente mediante gestion-catalogo.js -->
->>>>>>> Stashed changes
                 </tbody>
               </table>
             </div>
@@ -125,7 +93,7 @@
         </div>
       </div>
 
-      <!-- SECCIÓN 2: PRODUCTOS -->
+
       <div class="tab-pane fade" id="productos-pane" role="tabpanel" tabindex="0">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <h3 class="fw-bold m-0" style="color: #153259;">Listado de Productos (Farmacia)</h3>
@@ -149,34 +117,7 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-productos-admin">
-<<<<<<< Updated upstream
-                  <tr>
-                    <td class="font-monospace">PRD-01</td>
-                    <td class="fw-bold">Antiparasitario Simparica 10-20kg</td>
-                    <td>Antiparasitarios</td>
-                    <td>15 un.</td>
-                    <td>$18.990</td>
-                    <td><span class="badge bg-success">Disponible</span></td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalProducto">Editar</button>
-                      <button class="btn btn-sm btn-outline-danger">Agotado</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-monospace">PRD-02</td>
-                    <td class="fw-bold">Amoxicilina Suspensión 250mg</td>
-                    <td>Medicamentos</td>
-                    <td>8 un.</td>
-                    <td>$9.500</td>
-                    <td><span class="badge bg-success">Disponible</span></td>
-                    <td class="text-center">
-                      <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalProducto">Editar</button>
-                      <button class="btn btn-sm btn-outline-danger">Agotado</button>
-                    </td>
-                  </tr>
-=======
-                  <!-- Renderizado dinámicamente mediante gestion-catalogo.js -->
->>>>>>> Stashed changes
+
                 </tbody>
               </table>
             </div>
@@ -187,7 +128,6 @@
     </div>
   </main>
 
-  <!-- MODAL SERVICIO -->
   <div class="modal fade" id="modalServicio" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -240,7 +180,6 @@
     </div>
   </div>
 
-  <!-- MODAL PRODUCTO -->
   <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -293,7 +232,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   
-  <!-- Scripts en orden de dependencia -->
   <script src="../Js/catalogo-datos.js"></script>
   <script src="../Js/gestion-catalogo.js"></script>
   <script src="../Js/validaciones.js"></script>

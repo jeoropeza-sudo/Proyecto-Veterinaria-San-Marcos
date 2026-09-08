@@ -1,5 +1,3 @@
-// Js/admin-usuarios.js
-
 let listaUsuarios = JSON.parse(localStorage.getItem("usuarios")) || [
   { run: "19876543K", nombre: "Carlos", apellidos: "Mendoza Silva", correo: "carlos@sanmarcos.cl", password: "123", fechaNacimiento: "1998-05-12", rol: "Administrador", comuna: "Rancagua", direccion: "Los Alerces 456" },
   { run: "15432876-5", nombre: "María", apellidos: "Lopez Soto", correo: "mlopez@sanmarcos.cl", password: "123", fechaNacimiento: "1985-11-20", rol: "Administrador", comuna: "Machalí", direccion: "San Juan 890" }
@@ -40,7 +38,6 @@ function renderizarTablaUsuarios() {
     if (usuario.rol === "Administrador") badgeClass = "bg-danger";
     if (usuario.rol === "Cliente") badgeClass = "bg-success";
 
-    // Manejar fecha de nacimiento opcional
     const fechaNac = usuario.fechaNacimiento ? usuario.fechaNacimiento : '<span class="text-muted small font-italic">No registra</span>';
 
     fila.innerHTML = `
@@ -64,7 +61,6 @@ function renderizarTablaUsuarios() {
   });
 }
 
-// Función estándar para validar RUN chileno (Módulo 11)
 function validarRunChileno(rutCompleto) {
   rutCompleto = rutCompleto.replace(/\./g, "").replace(/-/g, "").trim().toUpperCase();
   if (rutCompleto.length < 2) return false;
@@ -102,12 +98,8 @@ function guardarOModificarUsuario() {
     nombre: document.getElementById("nombre").value.trim(),
     apellidos: document.getElementById("apellidos").value.trim(),
     correo: document.getElementById("correo").value.trim(),
-<<<<<<< Updated upstream
-    password: document.getElementById("password").value.trim(), 
-=======
     password: passwordAsignada,
     fechaNacimiento: document.getElementById("fechaNacimiento").value,
->>>>>>> Stashed changes
     rol: document.getElementById("rol").value,
     comuna: selectComuna.options[selectComuna.selectedIndex].text,
     direccion: document.getElementById("direccion").value.trim()
@@ -121,10 +113,6 @@ function guardarOModificarUsuario() {
     mostrarAlertaFlotante("¡Usuario actualizado correctamente!");
   }
   
-<<<<<<< Updated upstream
-  
-=======
->>>>>>> Stashed changes
   localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
   renderizarTablaUsuarios();
   prepararNuevoUsuario();
@@ -144,7 +132,7 @@ function prepararEditarUsuario(index) {
   document.getElementById("rol").value = usuario.rol;
   document.getElementById("direccion").value = usuario.direccion || "";
 
-  // Seleccionar comuna correspondiente tras breve retardo
+
   const selectComuna = document.getElementById("select-comuna");
   if (selectComuna) {
     setTimeout(() => {
@@ -157,9 +145,9 @@ function prepararEditarUsuario(index) {
     }, 150);
   }
 
-  // Interfaz intuitiva: Cambio visual a modo edición (Color ámbar/naranja para indicar que se está modificando)
+
   const headerForm = document.getElementById("header-form");
-  headerForm.style.backgroundColor = "#D97706"; // Color ámbar distintivo de edición
+  headerForm.style.backgroundColor = "#D97706";
   document.getElementById("tituloModalUsuario").innerHTML = `<i class="fa-solid fa-user-pen me-2"></i>Modificando Usuario: ${usuario.nombre} ${usuario.apellidos || ''}`;
   document.getElementById("btn-cancelar-edicion").classList.remove("d-none");
   document.getElementById("btn-guardar-usuario").textContent = "Actualizar Cambios";
@@ -174,7 +162,7 @@ function prepararNuevoUsuario() {
 
   document.getElementById("indexUsuarioEdit").value = "";
   
-  // Regresar diseño a modo normal (Azul corporativo)
+
   const headerForm = document.getElementById("header-form");
   headerForm.style.backgroundColor = "#153259";
   document.getElementById("tituloModalUsuario").innerHTML = `<i class="fa-solid fa-user-plus me-2"></i>Registrar Nuevo Usuario`;
@@ -182,7 +170,6 @@ function prepararNuevoUsuario() {
   document.getElementById("btn-guardar-usuario").textContent = "Guardar Usuario";
   document.getElementById("btn-guardar-usuario").style.backgroundColor = "#04BFAD";
 
-  // Limpiar errores visuales
   ["error-run", "error-nombre", "error-apellidos", "error-correo", "error-password", "error-rol", "error-comuna", "error-direccion"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = "";
@@ -192,10 +179,6 @@ function prepararNuevoUsuario() {
 function eliminarUsuario(index) {
   if (confirm("¿Desea eliminar este usuario del sistema?")) {
     listaUsuarios.splice(index, 1);
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
     localStorage.setItem("usuarios", JSON.stringify(listaUsuarios));
     renderizarTablaUsuarios();
     prepararNuevoUsuario();
@@ -206,7 +189,6 @@ function eliminarUsuario(index) {
 function validarFormulario() {
   let esValido = true;
 
-  // 1. RUN: Obligatorio, sin puntos ni guion, con dígito verificador válido
   const runInput = document.getElementById("run");
   const errorRun = document.getElementById("error-run");
   const valorRun = runInput.value.trim();
@@ -220,7 +202,6 @@ function validarFormulario() {
     errorRun.textContent = "";
   }
 
-  // 2. Nombre: Obligatorio, máximo 50 caracteres
   const nombre = document.getElementById("nombre");
   const errorNombre = document.getElementById("error-nombre");
   if (nombre.value.trim() === "" || nombre.value.length > 50) {
@@ -230,10 +211,6 @@ function validarFormulario() {
     errorNombre.textContent = "";
   }
 
-<<<<<<< Updated upstream
-  
-=======
-  // 3. Apellidos: Obligatorios, máximo 100 caracteres
   const apellidos = document.getElementById("apellidos");
   const errorApellidos = document.getElementById("error-apellidos");
   if (apellidos.value.trim() === "" || apellidos.value.length > 100) {
@@ -243,7 +220,6 @@ function validarFormulario() {
     errorApellidos.textContent = "";
   }
 
-  // 4. Correo: Obligatorio, máximo 100 caracteres y formato válido
   const correo = document.getElementById("correo");
   const errorCorreo = document.getElementById("error-correo");
   if (correo.value.trim() === "" || correo.value.length > 100 || !correo.value.includes("@")) {
@@ -253,8 +229,7 @@ function validarFormulario() {
     errorCorreo.textContent = "";
   }
 
-  // Contraseña obligatoria
->>>>>>> Stashed changes
+
   const password = document.getElementById("password");
   const errorPassword = document.getElementById("error-password");
   if (password.value.trim().length < 4) {
@@ -264,7 +239,6 @@ function validarFormulario() {
     errorPassword.textContent = "";
   }
 
-  // Rol obligatorio
   const rol = document.getElementById("rol");
   const errorRol = document.getElementById("error-rol");
   if (rol.value === "") {
@@ -274,7 +248,6 @@ function validarFormulario() {
     errorRol.textContent = "";
   }
 
-  // Comuna obligatoria
   const comuna = document.getElementById("select-comuna");
   const errorComuna = document.getElementById("error-comuna");
   if (comuna.value === "") {
@@ -284,7 +257,6 @@ function validarFormulario() {
     errorComuna.textContent = "";
   }
 
-  // Dirección: Obligatoria, máximo 300 caracteres
   const direccion = document.getElementById("direccion");
   const errorDireccion = document.getElementById("error-direccion");
   if (direccion.value.trim() === "" || direccion.value.length > 300) {
