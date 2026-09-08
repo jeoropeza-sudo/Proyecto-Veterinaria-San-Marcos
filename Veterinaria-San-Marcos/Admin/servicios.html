@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Script de protección/guardián: Ejecutado antes del renderizado de la página -->
+  <script src="../Js/admin-guard.js"></script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Mantenedor de Productos y Servicios | Veterinaria San Marcos</title>
 
-  <!-- CDN Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../Css/Styles.css">
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
-  <!-- Navbar Administrativo -->
   <header style="background-color: #153259;">
     <nav class="navbar navbar-expand-lg navbar-dark container-fluid px-4">
       <a class="navbar-brand me-4 fw-bold d-flex align-items-center" href="index.html">
@@ -43,14 +44,12 @@
     </nav>
   </header>
 
-  <!-- Contenido Principal / Mantenedor -->
   <main class="container my-5 flex-grow-1">
     <div class="text-center mb-4">
       <h1 class="fw-bold" style="color: #153259;">Mantenedor de Contenido Principal</h1>
       <p class="text-muted">Administra, edita, da de alta o baja los productos de farmacia y los servicios médicos ofrecidos.</p>
     </div>
     
-    <!-- Pestañas de Navegación del Mantenedor (Servicios y Productos) -->
     <ul class="nav nav-tabs mb-4 border-bottom" id="mantenedorTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active fw-bold text-dark" id="servicios-tab" data-bs-toggle="tab" data-bs-target="#servicios-pane" type="button" role="tab">
@@ -66,7 +65,7 @@
 
     <div class="tab-content" id="mantenedorTabContent">
       
-      <!-- ================= SECCIÓN 1: SERVICIOS ================= -->
+      <!-- SECCIÓN 1: SERVICIOS -->
       <div class="tab-pane fade show active" id="servicios-pane" role="tabpanel" tabindex="0">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <h3 class="fw-bold m-0" style="color: #153259;">Listado de Servicios Médicos</h3>
@@ -91,7 +90,6 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-servicios-admin">
-                  <!-- Datos de ejemplo estáticos / Dinámicos por JS -->
                   <tr>
                     <td class="font-monospace">SRV-01</td>
                     <td class="fw-bold">Consulta Médica General</td>
@@ -123,7 +121,7 @@
         </div>
       </div>
 
-      <!-- ================= SECCIÓN 2: PRODUCTOS ================= -->
+      <!-- SECCIÓN 2: PRODUCTOS -->
       <div class="tab-pane fade" id="productos-pane" role="tabpanel" tabindex="0">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <h3 class="fw-bold m-0" style="color: #153259;">Listado de Productos (Farmacia)</h3>
@@ -148,7 +146,6 @@
                   </tr>
                 </thead>
                 <tbody id="tabla-productos-admin">
-                  <!-- Datos de ejemplo estáticos / Dinámicos por JS -->
                   <tr>
                     <td class="font-monospace">PRD-01</td>
                     <td class="fw-bold">Antiparasitario Simparica 10-20kg</td>
@@ -183,7 +180,7 @@
     </div>
   </main>
 
-  <!-- ================= MODAL: FORMULARIO CREAR / EDITAR SERVICIO ================= -->
+  <!-- MODAL SERVICIO -->
   <div class="modal fade" id="modalServicio" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -236,7 +233,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: FORMULARIO CREAR / EDITAR PRODUCTO ================= -->
+  <!-- MODAL PRODUCTO -->
   <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -289,12 +286,10 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="bg-white text-center py-3 border-top mt-auto">
     <p class="m-0 text-muted">&copy; 2026 Veterinaria San Marcos - Panel de Administración.</p>
   </footer>
 
-  <!-- CDN Bootstrap 5 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../Js/validaciones.js"></script>
 </body>
