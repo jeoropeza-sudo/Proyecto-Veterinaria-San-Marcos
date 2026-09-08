@@ -15,12 +15,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const btnReservar = document.getElementById("btn-agregar-reserva");
         if (btnReservar) {
             btnReservar.addEventListener("click", () => {
-                agregarItemCarrito({
-                    codigo: productoGuardado.codigo,
-                    nombre: productoGuardado.nombre,
-                    precio: productoGuardado.precio,
-                    imagen: productoGuardado.imagen
-                });
+                // Obtenemos el carrito actual del localStorage o iniciamos uno vacío
+                let carrito = JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
+                const index = carrito.findIndex(p => p.codigo === productoGuardado.codigo);
+
+                // Si ya existe, sumamos 1 a la cantidad; si no, lo agregamos como nuevo
+                if (index !== -1) {
+                    carrito[index].cantidad = (carrito[index].cantidad || 1) + 1;
+                } else {
+                    carrito.push({
+                        codigo: productoGuardado.codigo,
+                        nombre: productoGuardado.nombre,
+                        precio: productoGuardado.precio,
+                        imagen: productoGuardado.imagen || "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=600&auto=format&fit=crop",
+                        cantidad: 1
+                    });
+                }
+
+                // Guardamos de vuelta en el localStorage
+                localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
                 
                 mostrarNotificacion(`¡${productoGuardado.nombre} agregado al carrito!`);
             });

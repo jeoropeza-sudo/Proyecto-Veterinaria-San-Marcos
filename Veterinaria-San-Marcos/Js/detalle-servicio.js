@@ -67,13 +67,25 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener("click", (e) => {
             const codigo = e.target.getAttribute("data-codigo");
             const servicioEncontrado = listaServiciosOficial.find(s => s.codigo === codigo);
+            
             if (servicioEncontrado) {
-                agregarItemCarrito({
-                    codigo: servicioEncontrado.codigo,
-                    nombre: servicioEncontrado.nombre,
-                    precio: servicioEncontrado.precio,
-                    imagen: servicioEncontrado.imagen || "https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=600&auto=format&fit=crop"
-                });
+                let carrito = JSON.parse(localStorage.getItem("carrito_sanmarcos")) || [];
+                const index = carrito.findIndex(p => p.codigo === servicioEncontrado.codigo);
+
+                if (index !== -1) {
+                    carrito[index].cantidad = (carrito[index].cantidad || 1) + 1;
+                } else {
+                    carrito.push({
+                        codigo: servicioEncontrado.codigo,
+                        nombre: servicioEncontrado.nombre,
+                        precio: servicioEncontrado.precio,
+                        imagen: servicioEncontrado.imagen || "https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=600&auto=format&fit=crop",
+                        cantidad: 1
+                    });
+                }
+
+                localStorage.setItem("carrito_sanmarcos", JSON.stringify(carrito));
+                
                 mostrarNotificacion(`¡${servicioEncontrado.nombre} agregado al carrito!`);
             }
         });
