@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".btn-agregar-servicio").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const codigo = e.target.getAttribute("data-codigo");
-            // Buscamos también en los servicios actuales del localStorage para que no falle con los nuevos
+
             const servicioEncontrado = serviciosDisponibles.find(s => s.codigo === codigo);
             
             if (servicioEncontrado) {

@@ -181,7 +181,7 @@ function renderizarServiciosPorCategoria(nombreCategoria, contenedorId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Cargar Productos desde localStorage (con respaldo en la lista oficial)
+
     let productosGuardados = JSON.parse(localStorage.getItem("productos_sanmarcos"));
     if (!productosGuardados && typeof listaProductosOficial !== "undefined") {
         productosGuardados = listaProductosOficial;
@@ -193,13 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
         renderizarTarjetasProductos(productosGuardados, "contenedor-productos");
     }
 
-    // 2. Cargar Categorías de Servicios
+
     const contenedorServiciosCat = document.getElementById("contenedor-servicios-categorias");
     if (contenedorServiciosCat && typeof renderizarCategoriasServicios === "function") {
         renderizarCategoriasServicios("contenedor-servicios-categorias");
     }
 
-    // 3. Cargar Servicios Específicos por Categoría (para detalle-servicio.html)
+
     const categoriaSeleccionada = JSON.parse(localStorage.getItem("categoriaSeleccionada"));
     const contenedorServiciosDetalle = document.getElementById("contenedor-servicios-detalle");
     if (contenedorServiciosDetalle && categoriaSeleccionada) {

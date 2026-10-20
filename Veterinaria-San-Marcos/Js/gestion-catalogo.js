@@ -196,6 +196,12 @@ function guardarProducto(e) {
     const precio = Number(document.getElementById("precioProducto").value);
     const imagen = document.getElementById("imagenProducto").value;
 
+    if (precio <= 0) {
+        alert("El precio del producto debe ser mayor a 0.");
+        document.getElementById("precioProducto").focus();
+        return;
+    }
+
     let productos = JSON.parse(localStorage.getItem("productos_sanmarcos")) || [];
     
     let nuevoObjeto;
