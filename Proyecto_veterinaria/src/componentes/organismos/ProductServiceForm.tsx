@@ -1,4 +1,3 @@
-// src/componentes/organismos/ProductServiceForm.tsx
 import React, { useState } from 'react';
 
 export interface ProductFormData {
@@ -36,7 +35,7 @@ export const ProductServiceForm: React.FC<ProductServiceFormProps> = ({ onSubmit
       descripcion,
     });
 
-    // Limpiar el formulario
+  
     setNombre('');
     setCategoria('Servicio');
     setPrecio('');

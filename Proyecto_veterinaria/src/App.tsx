@@ -1,4 +1,3 @@
-// src/App.tsx
 import { AdminPage } from './paginas/AdminPage';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Asegura que los estilos de Bootstrap estén cargados
 
