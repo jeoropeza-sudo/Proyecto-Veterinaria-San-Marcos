@@ -40,6 +40,7 @@ export const ProductServiceList: React.FC<ProductServiceListProps> = ({ items, o
                 <td>${item.precio}</td>
                 <td>
                   <button
+                    type="button"
                     className="btn btn-danger btn-sm"
                     onClick={() => onDelete(item.id)}
                   >
