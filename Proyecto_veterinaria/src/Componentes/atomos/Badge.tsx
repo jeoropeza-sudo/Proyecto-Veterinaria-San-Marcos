@@ -1,9 +1,12 @@
+interface BadgeProps {
+  text: string;
+  variant?: string;
+}
 
-
-function Badge() {
+function Badge({ text, variant = 'primary' }: BadgeProps) {
   return (
-    <span className="badge bg-primary">
-      Nuevo
+    <span className={`badge bg-${variant}`}>
+      {text}
     </span>
   );
 }
