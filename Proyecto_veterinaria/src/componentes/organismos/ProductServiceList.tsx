@@ -1,4 +1,3 @@
-// src/componentes/organismos/ProductServiceList.tsx
 import React from 'react';
 
 export interface ItemAdmin {
