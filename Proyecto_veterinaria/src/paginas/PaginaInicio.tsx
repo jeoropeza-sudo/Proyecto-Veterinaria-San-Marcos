@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Badge from '../Componentes/atomos/Badge';
 
 export const PaginaInicio: React.FC = () => {
   return (
@@ -68,7 +69,7 @@ export const PaginaInicio: React.FC = () => {
                   alt="Atención a Domicilio"
                 />
                 <div className="card-body d-flex flex-column p-4">
-                  <span className="badge bg-success align-self-start mb-2">¡Nuevo!</span>
+                  <Badge text="¡Nuevo!" variant="success" className="align-self-start mb-2" />
                   <h5 className="card-title fw-bold text-dark fs-6">Atención a Domicilio</h5>
                   <p className="card-text text-muted small flex-grow-1">
                     Agenda consultas y controles preventivos directamente en la comodidad de tu hogar.
@@ -86,7 +87,7 @@ export const PaginaInicio: React.FC = () => {
                   alt="Antiparasitarios"
                 />
                 <div className="card-body d-flex flex-column p-4">
-                  <span className="badge bg-primary align-self-start mb-2">Promoción</span>
+                  <Badge text="Promoción" variant="primary" className="align-self-start mb-2" />
                   <h5 className="card-title fw-bold text-dark fs-6">20% en Antiparasitarios</h5>
                   <p className="card-text text-muted small flex-grow-1">
                     Aprovecha precios especiales en toda nuestra línea de pipetas y comprimidos este mes.
@@ -104,7 +105,7 @@ export const PaginaInicio: React.FC = () => {
                   alt="Spa y Peluquería"
                 />
                 <div className="card-body d-flex flex-column p-4">
-                  <span className="badge bg-success align-self-start mb-2">Especializado</span>
+                  <Badge text="Especializado" variant="success" className="align-self-start mb-2" />
                   <h5 className="card-title fw-bold text-dark fs-6">Spa y Peluquería Low-Stress</h5>
                   <p className="card-text text-muted small flex-grow-1">
                     Técnicas de manejo especializadas y exclusivas para el cuidado del pelaje de perros y gatos.
@@ -122,7 +123,7 @@ export const PaginaInicio: React.FC = () => {
                   alt="Comunidad San Marcos"
                 />
                 <div className="card-body d-flex flex-column p-4">
-                  <span className="badge bg-warning text-dark align-self-start mb-2">Comunidad</span>
+                  <Badge text="Comunidad" variant="warning" className="text-dark align-self-start mb-2" />
                   <h5 className="card-title fw-bold text-dark fs-6">Comunidad San Marcos</h5>
                   <p className="card-text text-muted small flex-grow-1">
                     Acumula puntos por cada compra o reserva y cámbialos por accesorios o servicios gratuitos.
