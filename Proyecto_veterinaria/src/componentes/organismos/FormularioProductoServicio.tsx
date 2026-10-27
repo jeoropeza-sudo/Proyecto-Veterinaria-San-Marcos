@@ -45,6 +45,7 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
   const [imagen, establecerImagen] = useState(valoresIniciales.imagen);
   const [errorNombre, establecerErrorNombre] = useState('');
   const [errorPrecio, establecerErrorPrecio] = useState('');
+  const [errorStock, establecerErrorStock] = useState('');
 
   const manejarEnvio = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,15 +61,22 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
       return;
     }
 
+    const stockNumerico = Number(stock);
+    if (categoria === 'Producto' && (!Number.isInteger(stockNumerico) || stockNumerico < 0)) {
+      establecerErrorStock('El stock debe ser un número entero igual o mayor que 0.');
+      return;
+    }
+
     establecerErrorNombre('');
     establecerErrorPrecio('');
+    establecerErrorStock('');
 
     alEnviar({
       nombre,
       categoria,
       precio: precioNumerico,
       descripcion,
-      stock: Number(stock) || 0,
+      stock: categoria === 'Producto' ? stockNumerico : 0,
       imagen,
     });
 
@@ -111,11 +119,18 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
             <input
               type="number"
               id="stock"
-              className="form-control"
+              className={`form-control ${errorStock ? 'is-invalid' : ''}`}
               min="0"
+              step="1"
+              required
+              aria-invalid={Boolean(errorStock)}
               value={stock}
-              onChange={(e) => establecerStock(e.target.value)}
+              onChange={(e) => {
+                establecerStock(e.target.value);
+                establecerErrorStock('');
+              }}
             />
+            {errorStock && <div className="invalid-feedback">{errorStock}</div>}
           </div>
           <div className="mb-3">
             <label htmlFor="imagen" className="form-label">Ruta de imagen (desde public)</label>

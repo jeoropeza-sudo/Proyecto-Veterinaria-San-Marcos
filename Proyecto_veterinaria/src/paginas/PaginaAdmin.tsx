@@ -14,6 +14,7 @@ export interface DatosFormularioProductoServicio {
 export interface ElementoAdministracion {
   codigo: string;
   nombre: string;
+  tipo: 'Producto' | 'Servicio';
   categoria: string;
   precio: number;
 }
@@ -25,6 +26,7 @@ export const PaginaAdmin: React.FC = () => {
     const itemConCodigo: ElementoAdministracion = {
       codigo: String(Date.now()),
       nombre: nuevo.nombre,
+      tipo: nuevo.categoria === 'Producto' ? 'Producto' : 'Servicio',
       categoria: nuevo.categoria,
       precio: nuevo.precio,
     };
