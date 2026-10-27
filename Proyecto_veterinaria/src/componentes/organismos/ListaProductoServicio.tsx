@@ -9,10 +9,15 @@ export interface ElementoAdministracion {
 
 interface PropiedadesListaProductoServicio {
   articulos: ElementoAdministracion[];
+  alEditar: (codigo: string) => void;
   alEliminar: (codigo: string) => void;
 }
 
-export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> = ({ articulos, alEliminar }) => {
+export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> = ({
+  articulos,
+  alEditar,
+  alEliminar,
+}) => {
   return (
     <div className="table-responsive">
       <table className="table table-striped table-bordered">
@@ -38,6 +43,13 @@ export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> =
                 <td>{articulo.categoria}</td>
                 <td>${articulo.precio}</td>
                 <td>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm me-2"
+                    onClick={() => alEditar(articulo.codigo)}
+                  >
+                    Editar
+                  </button>
                   <button
                     type="button"
                     className="btn btn-danger btn-sm"

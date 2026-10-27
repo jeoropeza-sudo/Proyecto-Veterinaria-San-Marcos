@@ -15,7 +15,13 @@ describe('Test de Lista de Productos y Servicios (Panel Admin)', () => {
 
   it('debe renderizar los elementos correctamente en la tabla', () => {
     const manejarEliminacion = vi.fn();
-    render(<ListaProductoServicio articulos={articulosSimulados} alEliminar={manejarEliminacion} />);
+    render(
+      <ListaProductoServicio
+        articulos={articulosSimulados}
+        alEditar={vi.fn()}
+        alEliminar={manejarEliminacion}
+      />,
+    );
 
     expect(screen.getByText('Control Veterinario')).toBeDefined();
     expect(screen.getByText('Antiparasitario')).toBeDefined();
@@ -24,12 +30,33 @@ describe('Test de Lista de Productos y Servicios (Panel Admin)', () => {
 
   it('debe llamar a la función onDelete con el ID correcto al hacer clic en eliminar', () => {
     const manejarEliminacion = vi.fn();
-    render(<ListaProductoServicio articulos={articulosSimulados} alEliminar={manejarEliminacion} />);
+    render(
+      <ListaProductoServicio
+        articulos={articulosSimulados}
+        alEditar={vi.fn()}
+        alEliminar={manejarEliminacion}
+      />,
+    );
 
     const botonesEliminar = screen.getAllByRole('button', { name: /Eliminar/i });
     fireEvent.click(botonesEliminar[0]);
 
     expect(manejarEliminacion).toHaveBeenCalledTimes(1);
     expect(manejarEliminacion).toHaveBeenCalledWith('1');
+  });
+
+  it('solicita editar el artículo seleccionado', () => {
+    const manejarEdicion = vi.fn();
+    render(
+      <ListaProductoServicio
+        articulos={articulosSimulados}
+        alEditar={manejarEdicion}
+        alEliminar={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getAllByRole('button', { name: /editar/i })[1]);
+
+    expect(manejarEdicion).toHaveBeenCalledWith('2');
   });
 });

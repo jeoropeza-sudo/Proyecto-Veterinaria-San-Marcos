@@ -2,6 +2,8 @@ import { useState, type ReactNode } from 'react';
 import {
   agregarProducto as guardarProducto,
   agregarServicio as guardarServicio,
+  actualizarProducto as guardarCambiosProducto,
+  actualizarServicio as guardarCambiosServicio,
   eliminarProducto as removeProducto,
   eliminarServicio as removeServicio,
   cargarCatalogo,
@@ -41,6 +43,10 @@ export function ProveedorCatalogo({ children }: { children: ReactNode }) {
 
   const agregarProducto = (producto: Omit<Producto, 'codigo'>) => actualizarCatalogo(() => guardarProducto(producto));
   const agregarServicio = (servicio: Omit<Servicio, 'codigo'>) => actualizarCatalogo(() => guardarServicio(servicio));
+  const actualizarProducto = (codigo: string, cambios: Partial<Omit<Producto, 'codigo'>>) =>
+    actualizarCatalogo(() => guardarCambiosProducto(codigo, cambios));
+  const actualizarServicio = (codigo: string, cambios: Partial<Omit<Servicio, 'codigo'>>) =>
+    actualizarCatalogo(() => guardarCambiosServicio(codigo, cambios));
   const eliminarProducto = (codigo: string) => actualizarCatalogo(() => removeProducto(codigo));
   const eliminarServicio = (codigo: string) => actualizarCatalogo(() => removeServicio(codigo));
 
@@ -50,6 +56,8 @@ export function ProveedorCatalogo({ children }: { children: ReactNode }) {
         ...estado,
         agregarProducto,
         agregarServicio,
+        actualizarProducto,
+        actualizarServicio,
         eliminarProducto,
         eliminarServicio,
       }}

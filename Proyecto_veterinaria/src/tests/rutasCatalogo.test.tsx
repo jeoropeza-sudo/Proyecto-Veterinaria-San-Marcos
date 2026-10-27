@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { ProveedorAutenticacion } from '../context/ContextoAutenticacion';
@@ -60,7 +60,7 @@ describe('Catálogo y rutas de detalle', () => {
     expect(screen.getByRole('link', { name: /volver al catálogo/i }).getAttribute('href')).toBe('/productos');
   });
 
-  it('refleja en el catálogo los productos que registra administración', () => {
+  it('permite registrar y editar productos desde administración', () => {
     renderAt('/admin');
 
     fireEvent.change(screen.getByLabelText(/correo electrónico/i), {
@@ -81,8 +81,19 @@ describe('Catálogo y rutas de detalle', () => {
       target: { value: '5000' },
     });
     fireEvent.click(screen.getByRole('button', { name: /registrar producto/i }));
+
+    const filaProducto = screen.getByRole('row', { name: /Producto nuevo de prueba/ });
+    fireEvent.click(within(filaProducto).getByRole('button', { name: /editar/i }));
+    fireEvent.change(screen.getByLabelText(/nombre del servicio\/producto/i), {
+      target: { value: 'Producto editado de prueba' },
+    });
+    fireEvent.change(screen.getByLabelText(/precio/i), {
+      target: { value: '6000' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /guardar cambios/i }));
+
     fireEvent.click(screen.getAllByRole('link', { name: 'Productos' })[0]);
 
-    expect(screen.getByRole('heading', { name: 'Producto nuevo de prueba' })).toBeTruthy();
-  });
+    expect(screen.getByRole('heading', { name: 'Producto editado de prueba' })).toBeTruthy();
+  }, 10000);
 });

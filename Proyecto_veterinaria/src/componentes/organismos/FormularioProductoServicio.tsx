@@ -11,21 +11,38 @@ export interface DatosFormularioProductoServicio {
 
 export type CategoriaFormularioProductoServicio = 'Servicio' | 'Producto' | 'Consulta' | 'Vacunacion';
 
+const valoresPredeterminados: DatosFormularioProductoServicio = {
+  nombre: '',
+  categoria: 'Servicio',
+  precio: 0,
+  descripcion: '',
+  stock: 0,
+  imagen: '/imagenes/condro.png',
+};
+
 function esCategoriaFormulario(value: string): value is CategoriaFormularioProductoServicio {
   return ['Servicio', 'Producto', 'Consulta', 'Vacunacion'].includes(value);
 }
 
 interface PropiedadesFormularioProductoServicio {
+  valoresIniciales?: DatosFormularioProductoServicio;
+  estaEditando?: boolean;
   alEnviar: (datos: DatosFormularioProductoServicio) => void;
+  alCancelar?: () => void;
 }
 
-export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoServicio> = ({ alEnviar }) => {
-  const [nombre, establecerNombre] = useState('');
-  const [categoria, establecerCategoria] = useState<CategoriaFormularioProductoServicio>('Servicio');
-  const [precio, establecerPrecio] = useState<string | number>('');
-  const [descripcion, establecerDescripcion] = useState('');
-  const [stock, establecerStock] = useState('0');
-  const [imagen, establecerImagen] = useState('/imagenes/condro.png');
+export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoServicio> = ({
+  valoresIniciales = valoresPredeterminados,
+  estaEditando = false,
+  alEnviar,
+  alCancelar,
+}) => {
+  const [nombre, establecerNombre] = useState(valoresIniciales.nombre);
+  const [categoria, establecerCategoria] = useState<CategoriaFormularioProductoServicio>(valoresIniciales.categoria);
+  const [precio, establecerPrecio] = useState<string | number>(valoresIniciales.precio);
+  const [descripcion, establecerDescripcion] = useState(valoresIniciales.descripcion);
+  const [stock, establecerStock] = useState(String(valoresIniciales.stock));
+  const [imagen, establecerImagen] = useState(valoresIniciales.imagen);
   const [errorNombre, establecerErrorNombre] = useState('');
 
   const manejarEnvio = (e: React.FormEvent) => {
@@ -48,12 +65,14 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
     });
 
   
-    establecerNombre('');
-    establecerCategoria('Servicio');
-    establecerPrecio('');
-    establecerDescripcion('');
-    establecerStock('0');
-    establecerImagen('/imagenes/condro.png');
+    if (!estaEditando) {
+      establecerNombre('');
+      establecerCategoria('Servicio');
+      establecerPrecio('');
+      establecerDescripcion('');
+      establecerStock('0');
+      establecerImagen('/imagenes/condro.png');
+    }
   };
 
   return (
@@ -74,7 +93,7 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
             if (e.target.value.trim()) establecerErrorNombre('');
           }}
         />
-        {errorNombre && <div className="invalid-mensajeAccion">{errorNombre}</div>}
+        {errorNombre && <div className="invalid-feedback">{errorNombre}</div>}
       </div>
 
       {categoria === 'Producto' && (
@@ -149,8 +168,13 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
       </div>
 
       <button type="submit" className="btn btn-primary w-100">
-        Registrar {categoria === 'Producto' ? 'Producto' : 'Servicio'}
+        {estaEditando ? 'Guardar cambios' : `Registrar ${categoria === 'Producto' ? 'Producto' : 'Servicio'}`}
       </button>
+      {estaEditando && alCancelar && (
+        <button type="button" className="btn btn-outline-secondary w-100 mt-2" onClick={alCancelar}>
+          Cancelar edición
+        </button>
+      )}
     </form>
   );
 };

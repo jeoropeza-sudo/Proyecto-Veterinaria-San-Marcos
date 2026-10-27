@@ -165,6 +165,46 @@ export function agregarServicio(servicio: Omit<Servicio, 'codigo'>): DatosCatalo
   return { ...actual, servicios };
 }
 
+export function actualizarProducto(
+  codigo: string,
+  cambios: Partial<Omit<Producto, 'codigo'>>,
+): DatosCatalogo {
+  const actual = cargarCatalogo();
+  const indice = actual.productos.findIndex((producto) => producto.codigo === codigo);
+  if (indice === -1) {
+    throw new Error(`No se encontró el producto ${codigo}.`);
+  }
+
+  const productos = [...actual.productos];
+  productos[indice] = { ...productos[indice], ...cambios, codigo };
+  guardarColeccion(CLAVE_PRODUCTOS, productos);
+  return { ...actual, productos };
+}
+
+export function actualizarServicio(
+  codigo: string,
+  cambios: Partial<Omit<Servicio, 'codigo'>>,
+): DatosCatalogo {
+  const actual = cargarCatalogo();
+  const indice = actual.servicios.findIndex((servicio) => servicio.codigo === codigo);
+  if (indice === -1) {
+    throw new Error(`No se encontró el servicio ${codigo}.`);
+  }
+
+  const servicios = [...actual.servicios];
+  const servicioActualizado = { ...servicios[indice], ...cambios, codigo };
+  const categoriaCambio = cambios.categoria !== undefined
+    && cambios.categoria !== servicios[indice].categoria;
+  servicios[indice] = {
+    ...servicioActualizado,
+    imagen: cambios.imagen
+      || (categoriaCambio ? obtenerImagenServicio(servicioActualizado.categoria) : servicioActualizado.imagen)
+      || obtenerImagenServicio(servicioActualizado.categoria),
+  };
+  guardarColeccion(CLAVE_SERVICIOS, servicios);
+  return { ...actual, servicios };
+}
+
 export function eliminarProducto(codigo: string): DatosCatalogo {
   const actual = cargarCatalogo();
   const productos = actual.productos.filter((articulo) => articulo.codigo !== codigo);

@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   agregarProducto,
   agregarServicio,
+  actualizarProducto,
+  actualizarServicio,
   eliminarProducto,
   eliminarServicio,
   cargarCatalogo,
@@ -46,6 +48,45 @@ describe('Servicio de datos del catálogo', () => {
     expect(servicioCreado.servicios.at(-1)?.imagen).toBe('/imagenes/consulta.webp');
     expect(eliminarProducto('PR001').productos.some((articulo) => articulo.codigo === 'PR001')).toBe(false);
     expect(eliminarServicio('SV006').servicios.some((articulo) => articulo.codigo === 'SV006')).toBe(false);
+  });
+
+  it('actualiza productos y servicios sin cambiar sus códigos y persiste los cambios', () => {
+    const productoAntes = cargarCatalogo().productos[0];
+    const servicioAntes = cargarCatalogo().servicios[0];
+
+    const catalogoProducto = actualizarProducto(productoAntes.codigo, {
+      nombre: 'Producto actualizado',
+      precio: 5000,
+      stock: 12,
+    });
+    const catalogoServicio = actualizarServicio(servicioAntes.codigo, {
+      nombre: 'Servicio actualizado',
+      precio: 25000,
+      categoria: 'Vacunación',
+    });
+
+    expect(catalogoProducto.productos[0]).toMatchObject({
+      codigo: productoAntes.codigo,
+      nombre: 'Producto actualizado',
+      precio: 5000,
+      stock: 12,
+      imagen: productoAntes.imagen,
+    });
+    expect(catalogoServicio.servicios[0]).toMatchObject({
+      codigo: servicioAntes.codigo,
+      nombre: 'Servicio actualizado',
+      precio: 25000,
+      categoria: 'Vacunación',
+      especie: servicioAntes.especie,
+      imagen: '/imagenes/vacunas.webp',
+    });
+    expect(cargarCatalogo().productos[0].nombre).toBe('Producto actualizado');
+    expect(cargarCatalogo().servicios[0].nombre).toBe('Servicio actualizado');
+  });
+
+  it('reporta un error al intentar actualizar un registro inexistente', () => {
+    expect(() => actualizarProducto('NO-EXISTE', { nombre: 'Producto' })).toThrow(/No se encontró el producto/i);
+    expect(() => actualizarServicio('NO-EXISTE', { nombre: 'Servicio' })).toThrow(/No se encontró el servicio/i);
   });
 
   it('reporta un error si el almacenamiento contiene una colección inválida', () => {

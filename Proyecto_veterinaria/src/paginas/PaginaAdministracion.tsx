@@ -1,9 +1,21 @@
+import { useState } from 'react';
 import { FormularioProductoServicio, type DatosFormularioProductoServicio } from '../componentes/organismos/FormularioProductoServicio';
 import { ListaProductoServicio, type ElementoAdministracion } from '../componentes/organismos/ListaProductoServicio';
 import { useCatalogo } from '../context/useCatalogo';
+import type { Producto, Servicio } from '../types';
 
 export const PaginaAdministracion = () => {
-  const { productos, servicios, agregarProducto, agregarServicio, eliminarProducto, eliminarServicio } = useCatalogo();
+  const {
+    productos,
+    servicios,
+    agregarProducto,
+    agregarServicio,
+    actualizarProducto,
+    actualizarServicio,
+    eliminarProducto,
+    eliminarServicio,
+  } = useCatalogo();
+  const [articuloEditando, establecerArticuloEditando] = useState<Producto | Servicio | null>(null);
   const articulos: ElementoAdministracion[] = [
     ...servicios.map((servicio) => ({
       codigo: servicio.codigo,
@@ -20,6 +32,41 @@ export const PaginaAdministracion = () => {
   ];
 
   const manejarRegistroProductoServicio = (datos: DatosFormularioProductoServicio) => {
+    if (articuloEditando && 'stock' in articuloEditando) {
+      actualizarProducto(articuloEditando.codigo, {
+        nombre: datos.nombre.trim(),
+        stock: datos.stock,
+        precio: datos.precio,
+        imagen: datos.imagen.trim() || articuloEditando.imagen,
+        detalle: datos.descripcion.trim(),
+      });
+      establecerArticuloEditando(null);
+      return;
+    }
+
+    if (articuloEditando) {
+      const categoriaOriginal = articuloEditando.categoria === 'Vacunación'
+        ? 'Vacunacion'
+        : articuloEditando.categoria === 'Consultas'
+          ? 'Consulta'
+          : 'Servicio';
+      const categoria = datos.categoria === 'Vacunacion'
+        ? 'Vacunación'
+        : datos.categoria === 'Consulta'
+          ? 'Consultas'
+          : datos.categoria === categoriaOriginal
+            ? articuloEditando.categoria
+            : 'Otros';
+      actualizarServicio(articuloEditando.codigo, {
+        nombre: datos.nombre.trim(),
+        categoria,
+        precio: datos.precio,
+        detalle: datos.descripcion.trim(),
+      });
+      establecerArticuloEditando(null);
+      return;
+    }
+
     if (datos.categoria === 'Producto') {
       agregarProducto({
         nombre: datos.nombre.trim(),
@@ -55,18 +102,58 @@ export const PaginaAdministracion = () => {
     }
   };
 
+  const manejarEdicionArticulo = (codigo: string) => {
+    const producto = productos.find((articulo) => articulo.codigo === codigo);
+    const servicio = servicios.find((articulo) => articulo.codigo === codigo);
+    establecerArticuloEditando(producto ?? servicio ?? null);
+  };
+
+  const valoresFormulario: DatosFormularioProductoServicio | undefined = articuloEditando
+    ? 'stock' in articuloEditando
+      ? {
+          nombre: articuloEditando.nombre,
+          categoria: 'Producto',
+          precio: articuloEditando.precio,
+          descripcion: articuloEditando.detalle ?? '',
+          stock: articuloEditando.stock,
+          imagen: articuloEditando.imagen,
+        }
+      : {
+          nombre: articuloEditando.nombre,
+          categoria: articuloEditando.categoria === 'Vacunación'
+            ? 'Vacunacion'
+            : articuloEditando.categoria === 'Consultas'
+              ? 'Consulta'
+              : 'Servicio',
+          precio: articuloEditando.precio,
+          descripcion: articuloEditando.detalle,
+          stock: 0,
+          imagen: articuloEditando.imagen ?? '/imagenes/consulta.webp',
+        }
+    : undefined;
+
   return (
     <div className="container my-4">
       <h2 className="mb-4 text-center">Panel de Administración - Veterinaria San Marcos</h2>
       
       <div className="row">
         <div className="col-md-5 mb-4">
-          <FormularioProductoServicio alEnviar={manejarRegistroProductoServicio} />
+          <FormularioProductoServicio
+            key={articuloEditando?.codigo ?? 'nuevo'}
+            valoresIniciales={valoresFormulario}
+            estaEditando={articuloEditando !== null}
+            alEnviar={manejarRegistroProductoServicio}
+            alCancelar={() => establecerArticuloEditando(null)}
+          />
         </div>
 
         <div className="col-md-7">
           <h4 className="mb-3">Lista de Servicios y Productos</h4>
-          <ListaProductoServicio articulos={articulos} alEliminar={manejarEliminacionArticulo} />
+          <ListaProductoServicio
+            articulos={articulos}
+            alEditar={manejarEdicionArticulo}
+            alEliminar={manejarEliminacionArticulo}
+          />
         </div>
       </div>
     </div>
