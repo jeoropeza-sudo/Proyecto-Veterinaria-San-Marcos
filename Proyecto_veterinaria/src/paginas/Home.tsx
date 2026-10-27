@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../Componentes/organismos/Navbar';
+import Navbar from '../componentes/organismos/Navbar';
 
 export const Home: React.FC = () => {
   return (

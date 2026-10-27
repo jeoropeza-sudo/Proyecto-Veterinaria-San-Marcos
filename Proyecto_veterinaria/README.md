@@ -1,5 +1,14 @@
 # React + TypeScript + Vite
 
+## Autenticación de demostración
+
+La aplicación ofrece acceso simulado por rol para probar la navegación protegida:
+
+- Administrador: `admin@sanmarcos.cl` / `admin1234`
+- Cliente: `cliente@sanmarcos.cl` / `cliente1234`
+
+La sesión se conserva en `localStorage` sin guardar la contraseña. Las credenciales y los roles son datos de demostración disponibles en el frontend; no usar con información real ni considerar un mecanismo de seguridad de producción. Una autenticación real requiere un backend que valide las credenciales y los permisos.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
