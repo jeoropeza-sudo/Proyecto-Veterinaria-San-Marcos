@@ -29,6 +29,9 @@ export function PiePagina() {
               <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/">Inicio</Link></li>
               <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/servicios">Servicios</Link></li>
               <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/productos">Productos</Link></li>
+              <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/nosotros">Nosotros</Link></li>
+              <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/novedades">Novedades</Link></li>
+              <li className="mb-2"><Link className="text-white-50 text-decoration-none" to="/contacto">Contacto</Link></li>
             </ul>
           </div>
 

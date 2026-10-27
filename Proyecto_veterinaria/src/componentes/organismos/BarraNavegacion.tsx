@@ -49,6 +49,15 @@ function BarraNavegacion() {
                             <li className="nav-item">
                                 <NavLink className={claseEnlaceNavegacion} to="/productos" onClick={cerrarMenu}>Productos</NavLink>
                             </li>
+                            <li className="nav-item">
+                                <NavLink className={claseEnlaceNavegacion} to="/nosotros" onClick={cerrarMenu}>Nosotros</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className={claseEnlaceNavegacion} to="/novedades" onClick={cerrarMenu}>Novedades</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className={claseEnlaceNavegacion} to="/contacto" onClick={cerrarMenu}>Contacto</NavLink>
+                            </li>
                         </ul>
 
                         <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2" id="contenedor-auth">

@@ -34,6 +34,9 @@ export const PaginaInicio: React.FC = () => {
                 <Link to="/productos" className="btn btn-lg px-4 text-white" style={{ backgroundColor: '#00C9A7', fontWeight: 600, borderRadius: '8px' }}>
                   Farmacia y Productos
                 </Link>
+                <Link to="/novedades" className="btn btn-lg px-4 fw-semibold" style={{ color: '#153259', border: '2px solid #153259', borderRadius: '8px' }}>
+                  Ver novedades
+                </Link>
               </div>
             </div>
 

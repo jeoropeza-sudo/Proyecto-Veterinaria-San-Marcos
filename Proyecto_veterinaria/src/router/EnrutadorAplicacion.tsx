@@ -3,10 +3,14 @@ import BarraNavegacion from '../componentes/organismos/BarraNavegacion';
 import { PiePagina } from '../componentes/PiePagina';
 import { useAutenticacion } from '../context/useAutenticacion';
 import { PaginaAdministracion } from '../paginas/PaginaAdministracion';
+import { PaginaContacto } from '../paginas/PaginaContacto';
 import { PaginaDetalle } from '../paginas/PaginaDetalle';
+import { PaginaDetalleNovedad } from '../paginas/PaginaDetalleNovedad';
 import { PaginaCarrito } from '../paginas/PaginaCarrito';
 import { PaginaInicio } from '../paginas/PaginaInicio';
 import { PaginaInicioSesion } from '../paginas/PaginaInicioSesion';
+import { PaginaNosotros } from '../paginas/PaginaNosotros';
+import { PaginaNovedades } from '../paginas/PaginaNovedades';
 import { PaginaProductos } from '../paginas/PaginaProductos';
 import { PaginaServicios } from '../paginas/PaginaServicios';
 import { useCatalogo } from '../context/useCatalogo';
@@ -27,6 +31,10 @@ export function EnrutadorAplicacion() {
       <div className="flex-grow-1">
         <Routes>
           <Route path="/" element={<PaginaInicio />} />
+          <Route path="/nosotros" element={<PaginaNosotros />} />
+          <Route path="/novedades" element={<PaginaNovedades />} />
+          <Route path="/novedades/:codigo" element={<PaginaDetalleNovedad />} />
+          <Route path="/contacto" element={<PaginaContacto />} />
           <Route path="/login" element={<PaginaInicioSesion />} />
           <Route path="/productos" element={<PaginaProductos />} />
           <Route path="/productos/:codigo" element={<PaginaDetalle />} />
