@@ -77,11 +77,6 @@ export function PaginaInicioSesion() {
                 </button>
               </form>
 
-              <div className="mt-4 small text-secondary">
-                <p className="fw-semibold mb-2">Cuentas de demostración</p>
-                <p className="mb-1">Administrador: admin@sanmarcos.cl / admin1234</p>
-                <p className="mb-0">Cliente: cliente@sanmarcos.cl / cliente1234</p>
-              </div>
               <Link className="d-inline-block mt-3" to="/">Volver al inicio</Link>
             </div>
           </section>
