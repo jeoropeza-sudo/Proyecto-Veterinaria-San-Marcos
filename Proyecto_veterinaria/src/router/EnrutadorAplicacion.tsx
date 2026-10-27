@@ -1,8 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
+import { Outlet, Route, Routes } from 'react-router-dom';
 import BarraNavegacion from '../componentes/organismos/BarraNavegacion';
 import { PiePagina } from '../componentes/PiePagina';
 import { useAutenticacion } from '../context/useAutenticacion';
 import { PaginaAdministracion } from '../paginas/PaginaAdministracion';
+import { PaginaInicioAdmin } from '../paginas/PaginaInicioAdmin';
+import { PaginaUsuariosAdmin } from '../paginas/PaginaUsuariosAdmin';
 import { PaginaContacto } from '../paginas/PaginaContacto';
 import { PaginaDetalle } from '../paginas/PaginaDetalle';
 import { PaginaDetalleNovedad } from '../paginas/PaginaDetalleNovedad';
@@ -45,10 +47,14 @@ export function EnrutadorAplicacion() {
             path="/admin"
             element={
               <RequerirRol rolesPermitidos={['Administrador']}>
-                <PaginaAdministracion />
+                <Outlet />
               </RequerirRol>
             }
-          />
+          >
+            <Route index element={<PaginaInicioAdmin />} />
+            <Route path="catalogo" element={<PaginaAdministracion />} />
+            <Route path="usuarios" element={<PaginaUsuariosAdmin />} />
+          </Route>
           <Route path="*" element={<main className="container py-5"><h1 className="h3">Página no encontrada</h1></main>} />
         </Routes>
       </div>

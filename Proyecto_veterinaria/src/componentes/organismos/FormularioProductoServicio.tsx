@@ -44,6 +44,7 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
   const [stock, establecerStock] = useState(String(valoresIniciales.stock));
   const [imagen, establecerImagen] = useState(valoresIniciales.imagen);
   const [errorNombre, establecerErrorNombre] = useState('');
+  const [errorPrecio, establecerErrorPrecio] = useState('');
 
   const manejarEnvio = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,12 +54,19 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
       return;
     }
 
+    const precioNumerico = Number(precio);
+    if (!Number.isFinite(precioNumerico) || precioNumerico <= 0) {
+      establecerErrorPrecio('El precio debe ser un valor mayor que 0');
+      return;
+    }
+
     establecerErrorNombre('');
+    establecerErrorPrecio('');
 
     alEnviar({
       nombre,
       categoria,
-      precio: Number(precio) || 0,
+      precio: precioNumerico,
       descripcion,
       stock: Number(stock) || 0,
       imagen,
@@ -149,9 +157,17 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
           type="number"
           id="precio"
           className="form-control"
+          min="1"
+          step="1"
+          required
+          aria-invalid={Boolean(errorPrecio)}
           value={precio}
-          onChange={(e) => establecerPrecio(e.target.value)}
+          onChange={(e) => {
+            establecerPrecio(e.target.value);
+            establecerErrorPrecio('');
+          }}
         />
+        {errorPrecio && <div className="text-danger mt-1" role="alert">{errorPrecio}</div>}
       </div>
 
       <div className="mb-3">

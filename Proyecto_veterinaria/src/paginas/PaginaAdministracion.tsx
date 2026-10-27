@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FormularioProductoServicio, type DatosFormularioProductoServicio } from '../componentes/organismos/FormularioProductoServicio';
 import { ListaProductoServicio, type ElementoAdministracion } from '../componentes/organismos/ListaProductoServicio';
 import { useCatalogo } from '../context/useCatalogo';
 import type { Producto, Servicio } from '../types';
+import '../admin.css';
 
 export const PaginaAdministracion = () => {
   const {
@@ -133,11 +135,23 @@ export const PaginaAdministracion = () => {
     : undefined;
 
   return (
-    <div className="container my-4">
-      <h2 className="mb-4 text-center">Panel de Administración - Veterinaria San Marcos</h2>
-      
-      <div className="row">
-        <div className="col-md-5 mb-4">
+    <main className="admin-page">
+      <div className="container admin-page__container">
+        <div className="admin-page__heading">
+          <div>
+            <Link className="admin-back-link" to="/admin">← Panel de administración</Link>
+            <p className="admin-eyebrow">INVENTARIO Y SERVICIOS</p>
+            <h1 className="admin-page__title">Gestión del catálogo</h1>
+            <p className="admin-page__description">Mantén actualizados los productos y servicios disponibles.</p>
+          </div>
+          <div className="admin-page__count" aria-label={`${articulos.length} artículos en el catálogo`}>
+            <strong>{articulos.length}</strong>
+            <span>artículos</span>
+          </div>
+        </div>
+
+        <div className="row g-4 align-items-start">
+          <div className="col-lg-5">
           <FormularioProductoServicio
             key={articuloEditando?.codigo ?? 'nuevo'}
             valoresIniciales={valoresFormulario}
@@ -147,15 +161,16 @@ export const PaginaAdministracion = () => {
           />
         </div>
 
-        <div className="col-md-7">
-          <h4 className="mb-3">Lista de Servicios y Productos</h4>
+          <section className="col-lg-7" aria-labelledby="lista-catalogo">
+          <h2 id="lista-catalogo" className="admin-section-title">Servicios y productos</h2>
           <ListaProductoServicio
             articulos={articulos}
             alEditar={manejarEdicionArticulo}
             alEliminar={manejarEliminacionArticulo}
           />
+          </section>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
