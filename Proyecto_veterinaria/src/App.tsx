@@ -1,16 +1,19 @@
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CatalogProvider } from './context/CatalogContext';
-import { AppRouter } from './router/AppRouter';
+import { ProveedorAutenticacion } from './context/ContextoAutenticacion';
+import { ProveedorCatalogo } from './context/ContextoCatalogo';
+import { ProveedorCarrito } from './context/ContextoCarrito';
+import { EnrutadorAplicacion } from './router/EnrutadorAplicacion';
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CatalogProvider>
-          <AppRouter />
-        </CatalogProvider>
-      </AuthProvider>
+      <ProveedorAutenticacion>
+        <ProveedorCatalogo>
+          <ProveedorCarrito>
+            <EnrutadorAplicacion />
+          </ProveedorCarrito>
+        </ProveedorCatalogo>
+      </ProveedorAutenticacion>
     </BrowserRouter>
   );
 }

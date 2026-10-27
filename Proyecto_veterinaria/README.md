@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# Veterinaria San Marcos
 
 ## Autenticación de demostración
 
@@ -11,7 +11,11 @@ La sesión se conserva en `localStorage` sin guardar la contraseña. Las credenc
 
 ## Catálogo
 
-Los servicios y productos se inicializan desde `src/services/dataService.ts` y se guardan en `localStorage` bajo `veterinaria.servicios` y `veterinaria.productos`. El panel de administración y las páginas de catálogo comparten estos datos; los cambios permanecen en el mismo navegador. Para volver a los datos iniciales, elimina esas dos claves del almacenamiento local del sitio.
+Los servicios y productos se inicializan desde `src/services/servicioDatos.ts` y se guardan en `localStorage` bajo `veterinaria.servicios` y `veterinaria.productos`. El panel de administración y las páginas de catálogo comparten estos datos; los cambios permanecen en el mismo navegador. Para volver a los datos iniciales, elimina esas dos claves del almacenamiento local del sitio.
+
+El carrito se guarda en `localStorage` bajo `veterinaria.carrito`. Se pueden agregar productos dentro del stock y servicios como solicitudes de reserva; para confirmar se requiere una sesión. El flujo de confirmación es solo demostrativo: no procesa pagos ni envía solicitudes a la clínica porque la app todavía no cuenta con backend.
+
+Los nombres de páginas, componentes, métodos y tipos propios del proyecto están en español. Se conservan en su idioma original las APIs de React y de las bibliotecas, además de los archivos que pertenecen a la plantilla base.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

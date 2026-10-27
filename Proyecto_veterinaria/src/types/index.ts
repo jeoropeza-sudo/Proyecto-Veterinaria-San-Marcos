@@ -19,19 +19,19 @@ export interface Servicio {
   duracion: string;
   precio: number;
   detalle: string;
+  imagen?: string;
 }
 
-export interface ItemCarrito {
-  producto: Producto | Servicio;
-  cantidad: number;
-}
+export type ItemCarrito =
+  | { tipo: 'producto'; producto: Producto; cantidad: number }
+  | { tipo: 'servicio'; producto: Servicio; cantidad: number };
 
 export interface Usuario {
   run: string;
   nombre: string;
   apellidos: string;
   correo: string;
-  password?: string;
+  contrasena?: string;
   fechaNacimiento?: string;
   rol: 'Administrador' | 'Cliente';
   region: string;
