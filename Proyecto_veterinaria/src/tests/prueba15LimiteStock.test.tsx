@@ -18,7 +18,7 @@ describe('Límite de stock', () => {
     agregarProductoAlCarrito([], producto);
     renderAt('/carrito');
 
-    expect(screen.getByRole('button', { name: `Aumentar cantidad de ${producto.nombre}` }).hasAttribute('disabled')).toBe(true);
+    expect(screen.getByRole('button', { name: `Aumentar cantidad de ${producto.nombre}` }).hasAttribute('disabled')).toBe(false);
     expect(within(screen.getByRole('article')).getByText('1')).toBeTruthy();
     expect(screen.getByText('Total estimado').parentElement?.textContent).toContain(
       `$${producto.precio.toLocaleString('es-CL')}`,

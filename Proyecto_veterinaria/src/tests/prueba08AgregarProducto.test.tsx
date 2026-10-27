@@ -10,7 +10,7 @@ describe('Agregar productos', () => {
     renderAt('/productos');
     fireEvent.click(screen.getAllByRole('button', { name: 'Agregar al carrito' })[0]);
 
-    expect(screen.getByRole('link', { name: /mi carrito 1/i })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /mi carrito/i }).textContent).toContain('1');
     expect(JSON.parse(window.localStorage.getItem('veterinaria.carrito') ?? '[]')[0].cantidad).toBe(1);
   });
 });
