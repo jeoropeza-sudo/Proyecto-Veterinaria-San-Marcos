@@ -1,14 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../componentes/organismos/Navbar';
 
 export const Home: React.FC = () => {
   return (
     <div className="home-page" style={{ backgroundColor: '#EBF3F5', minHeight: '100vh' }}>
-  
-      <Navbar />
-
-  
       <section className="py-5">
         <div className="container py-4">
           <div className="row align-items-center g-4">

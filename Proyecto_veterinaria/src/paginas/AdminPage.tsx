@@ -1,27 +1,58 @@
-// src/paginas/AdminPage.tsx
-import { useState } from 'react';
 import { ProductServiceForm, type ProductFormData } from '../componentes/organismos/ProductServiceForm';
 import { ProductServiceList, type ItemAdmin } from '../componentes/organismos/ProductServiceList';
+import { useCatalog } from '../context/useCatalog';
 
 export const AdminPage = () => {
-  const [items, setItems] = useState<ItemAdmin[]>([
-    { id: '1', nombre: 'Control Veterinario General', categoria: 'Servicio', precio: 25000 },
-    { id: '2', nombre: 'Antiparasitario Externo', categoria: 'Producto', precio: 12000 }
-  ]);
+  const { productos, servicios, addProducto, addServicio, deleteProducto, deleteServicio } = useCatalog();
+  const items: ItemAdmin[] = [
+    ...servicios.map((service) => ({
+      id: service.codigo,
+      nombre: service.nombre,
+      categoria: `Servicio · ${service.categoria}`,
+      precio: service.precio,
+    })),
+    ...productos.map((product) => ({
+      id: product.codigo,
+      nombre: product.nombre,
+      categoria: `Producto · ${product.categoria}`,
+      precio: product.precio,
+    })),
+  ];
 
   const handleAddProductService = (data: ProductFormData) => {
-    const newItem: ItemAdmin = {
-      id: Date.now().toString(),
-      nombre: data.nombre,
-      categoria: data.categoria,
-      precio: data.precio,
-    };
+    if (data.categoria === 'Producto') {
+      addProducto({
+        nombre: data.nombre.trim(),
+        categoria: 'Otros',
+        stock: data.stock,
+        precio: data.precio,
+        imagen: data.imagen.trim() || '/imagenes/condro.png',
+        detalle: data.descripcion.trim(),
+      });
+      return;
+    }
 
-    setItems((prevItems) => [newItem, ...prevItems]);
+    const categoryByForm = {
+      Servicio: 'Otros',
+      Consulta: 'Consultas',
+      Vacunacion: 'Vacunación',
+    };
+    addServicio({
+      nombre: data.nombre.trim(),
+      categoria: categoryByForm[data.categoria] ?? 'Otros',
+      especie: 'Perro / Gato',
+      duracion: '30 min',
+      precio: data.precio,
+      detalle: data.descripcion.trim() || 'Servicio veterinario de Veterinaria San Marcos.',
+    });
   };
 
-  const handleDeleteItem = (id: string) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  const handleDeleteItem = (codigo: string) => {
+    if (servicios.some((service) => service.codigo === codigo)) {
+      deleteServicio(codigo);
+    } else {
+      deleteProducto(codigo);
+    }
   };
 
   return (

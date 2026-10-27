@@ -3,13 +3,16 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
+import { CatalogProvider } from '../context/CatalogContext';
 import { AppRouter } from '../router/AppRouter';
 
 function renderAt(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <AuthProvider>
-        <AppRouter />
+        <CatalogProvider>
+          <AppRouter />
+        </CatalogProvider>
       </AuthProvider>
     </MemoryRouter>,
   );

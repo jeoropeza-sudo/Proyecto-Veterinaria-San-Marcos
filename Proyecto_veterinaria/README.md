@@ -9,6 +9,10 @@ La aplicación ofrece acceso simulado por rol para probar la navegación protegi
 
 La sesión se conserva en `localStorage` sin guardar la contraseña. Las credenciales y los roles son datos de demostración disponibles en el frontend; no usar con información real ni considerar un mecanismo de seguridad de producción. Una autenticación real requiere un backend que valide las credenciales y los permisos.
 
+## Catálogo
+
+Los servicios y productos se inicializan desde `src/services/dataService.ts` y se guardan en `localStorage` bajo `veterinaria.servicios` y `veterinaria.productos`. El panel de administración y las páginas de catálogo comparten estos datos; los cambios permanecen en el mismo navegador. Para volver a los datos iniciales, elimina esas dos claves del almacenamiento local del sitio.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
