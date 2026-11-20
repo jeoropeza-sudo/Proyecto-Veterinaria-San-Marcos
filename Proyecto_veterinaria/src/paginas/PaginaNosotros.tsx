@@ -31,6 +31,10 @@ export function PaginaNosotros() {
         </div>
       </header>
 
+      <Link to="/servicios" className="btn text-white fw-bold" style={{ backgroundColor: '#153259' }}>
+              Conoce nuestros servicios
+            </Link>
+
       <section className="container-fluid px-4 px-lg-5 py-5">
         <div className="row align-items-center g-4 g-lg-5">
           <div className="col-12 col-lg-6">

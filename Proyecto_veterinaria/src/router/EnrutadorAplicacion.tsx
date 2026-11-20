@@ -3,6 +3,7 @@ import BarraNavegacion from '../componentes/organismos/BarraNavegacion';
 import { PiePagina } from '../componentes/PiePagina';
 import { useAutenticacion } from '../context/useAutenticacion';
 import { PaginaAdministracion } from '../paginas/PaginaAdministracion';
+import { PaginaConsultasAdmin } from '../paginas/PaginaConsultasAdmin';
 import { PaginaInicioAdmin } from '../paginas/PaginaInicioAdmin';
 import { PaginaUsuariosAdmin } from '../paginas/PaginaUsuariosAdmin';
 import { PaginaContacto } from '../paginas/PaginaContacto';
@@ -54,6 +55,7 @@ export function EnrutadorAplicacion() {
             <Route index element={<PaginaInicioAdmin />} />
             <Route path="catalogo" element={<PaginaAdministracion />} />
             <Route path="usuarios" element={<PaginaUsuariosAdmin />} />
+            <Route path="consultas" element={<PaginaConsultasAdmin />} />
           </Route>
           <Route path="*" element={<main className="container py-5"><h1 className="h3">Página no encontrada</h1></main>} />
         </Routes>

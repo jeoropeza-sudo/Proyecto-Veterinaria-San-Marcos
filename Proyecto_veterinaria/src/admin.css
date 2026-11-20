@@ -15,6 +15,9 @@
   font-size: 0.72rem;
   font-weight: 800;
 }
+.admin-home__module-grid > :nth-child(3) {
+  grid-column: 1 / -1;
+}
 
 .admin-page__heading {
   display: flex;

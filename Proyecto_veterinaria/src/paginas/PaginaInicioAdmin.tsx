@@ -23,6 +23,14 @@ export function PaginaInicioAdmin() {
       accion: 'Administrar catálogo',
       clase: 'admin-home__module--catalog',
     },
+    {
+      numero: '03',
+      titulo: 'Gestión de consultas',
+      descripcion: 'Revisa, responde y administra los mensajes enviados desde contacto.',
+      destino: '/admin/consultas',
+      accion: 'Administrar consultas',
+      clase: 'admin-home__module--users',
+    },
   ];
 
   return (

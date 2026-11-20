@@ -14,6 +14,8 @@ export function PaginaNovedades() {
         </div>
       </header>
 
+      
+
       <section className="container-fluid px-4 px-lg-5 py-5">
         <div className="row g-4">
           {novedades.map((novedad) => (
