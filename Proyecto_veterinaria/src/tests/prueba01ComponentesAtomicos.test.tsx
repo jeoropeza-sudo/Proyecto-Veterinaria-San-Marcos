@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import Badge from '../Componentes/atomos/Badge';
-import Button from '../Componentes/atomos/Button';
+import Badge from '../componentes/atomos/Badge';
+import Button from '../componentes/atomos/Button';
 
 describe('Componentes atómicos', () => {
   it('renderiza Button y Badge con texto y clases según sus props', () => {

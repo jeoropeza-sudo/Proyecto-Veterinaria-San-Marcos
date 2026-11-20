@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Badge from '../Componentes/atomos/Badge';
+import Badge from '../componentes/atomos/Badge';
 
 export const PaginaInicio: React.FC = () => {
   return (

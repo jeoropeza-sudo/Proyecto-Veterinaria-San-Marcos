@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FormularioProductoServicio, type DatosFormularioProductoServicio } from '../componentes/organismos/FormularioProductoServicio';
 import { ListaProductoServicio, type ElementoAdministracion } from '../componentes/organismos/ListaProductoServicio';
@@ -18,20 +18,35 @@ export const PaginaAdministracion = () => {
     eliminarServicio,
   } = useCatalogo();
   const [articuloEditando, establecerArticuloEditando] = useState<Producto | Servicio | null>(null);
-  const articulos: ElementoAdministracion[] = [
+  const [busqueda, establecerBusqueda] = useState('');
+  const [tipoFiltro, establecerTipoFiltro] = useState<'Todos' | 'Producto' | 'Servicio'>('Todos');
+  const articulos: ElementoAdministracion[] = useMemo(() => [
     ...servicios.map((servicio) => ({
       codigo: servicio.codigo,
       nombre: servicio.nombre,
-      categoria: `Servicio · ${servicio.categoria}`,
+      tipo: 'Servicio' as const,
+      categoria: servicio.categoria,
       precio: servicio.precio,
     })),
     ...productos.map((producto) => ({
       codigo: producto.codigo,
       nombre: producto.nombre,
-      categoria: `Producto · ${producto.categoria}`,
+      tipo: 'Producto' as const,
+      categoria: producto.categoria,
       precio: producto.precio,
+      stock: producto.stock,
     })),
-  ];
+  ], [productos, servicios]);
+  const articulosFiltrados = useMemo(() => {
+    const texto = busqueda.trim().toLocaleLowerCase();
+    return articulos.filter((articulo) => {
+      const coincideTipo = tipoFiltro === 'Todos' || articulo.tipo === tipoFiltro;
+      const coincideTexto = !texto
+        || [articulo.codigo, articulo.nombre, articulo.categoria, articulo.tipo]
+          .some((valor) => valor.toLocaleLowerCase().includes(texto));
+      return coincideTipo && coincideTexto;
+    });
+  }, [articulos, busqueda, tipoFiltro]);
 
   const manejarRegistroProductoServicio = (datos: DatosFormularioProductoServicio) => {
     if (articuloEditando && 'stock' in articuloEditando) {
@@ -144,14 +159,33 @@ export const PaginaAdministracion = () => {
             <h1 className="admin-page__title">Gestión del catálogo</h1>
             <p className="admin-page__description">Mantén actualizados los productos y servicios disponibles.</p>
           </div>
-          <div className="admin-page__count" aria-label={`${articulos.length} artículos en el catálogo`}>
-            <strong>{articulos.length}</strong>
-            <span>artículos</span>
-          </div>
+          <Link className="admin-catalog__back" to="/admin">Volver al panel <span aria-hidden="true">↗</span></Link>
         </div>
 
-        <div className="row g-4 align-items-start">
-          <div className="col-lg-5">
+        <section className="admin-catalog__metrics" aria-label="Resumen del catálogo">
+          <div className="admin-catalog__metric">
+            <span>Productos</span>
+            <strong>{productos.length}</strong>
+          </div>
+          <div className="admin-catalog__metric">
+            <span>Servicios</span>
+            <strong>{servicios.length}</strong>
+          </div>
+          <div className="admin-catalog__metric admin-catalog__metric--total">
+            <span>Total de artículos</span>
+            <strong>{articulos.length}</strong>
+          </div>
+        </section>
+
+        <div className="admin-catalog__workspace">
+          <section className="admin-catalog__form-panel" aria-labelledby="formulario-catalogo">
+            <div className="admin-catalog__panel-heading">
+              <span className="admin-catalog__panel-icon" aria-hidden="true">{articuloEditando ? '✎' : '+'}</span>
+              <div>
+                <p className="admin-eyebrow">{articuloEditando ? 'EDICIÓN' : 'CATÁLOGO'}</p>
+                <h2 id="formulario-catalogo">{articuloEditando ? 'Editar artículo' : 'Agregar artículo'}</h2>
+              </div>
+            </div>
           <FormularioProductoServicio
             key={articuloEditando?.codigo ?? 'nuevo'}
             valoresIniciales={valoresFormulario}
@@ -159,15 +193,48 @@ export const PaginaAdministracion = () => {
             alEnviar={manejarRegistroProductoServicio}
             alCancelar={() => establecerArticuloEditando(null)}
           />
-        </div>
+          </section>
 
-          <section className="col-lg-7" aria-labelledby="lista-catalogo">
-          <h2 id="lista-catalogo" className="admin-section-title">Servicios y productos</h2>
-          <ListaProductoServicio
-            articulos={articulos}
-            alEditar={manejarEdicionArticulo}
-            alEliminar={manejarEliminacionArticulo}
-          />
+          <section className="admin-catalog__list-panel" aria-labelledby="lista-catalogo">
+            <div className="admin-catalog__list-heading">
+              <div>
+                <p className="admin-eyebrow">INVENTARIO</p>
+                <h2 id="lista-catalogo">Productos y servicios</h2>
+                <p>Busca, filtra y administra los artículos publicados.</p>
+              </div>
+              <span className="admin-catalog__result-count">{articulosFiltrados.length} de {articulos.length}</span>
+            </div>
+            <div className="admin-catalog__filters">
+              <div>
+                <label className="form-label" htmlFor="admin-catalog-search">Buscar</label>
+                <input
+                  id="admin-catalog-search"
+                  className="form-control"
+                  type="search"
+                  value={busqueda}
+                  onChange={(event) => establecerBusqueda(event.target.value)}
+                  placeholder="Nombre, código o categoría"
+                />
+              </div>
+              <div>
+                <label className="form-label" htmlFor="admin-catalog-type">Tipo de artículo</label>
+                <select
+                  id="admin-catalog-type"
+                  className="form-select"
+                  value={tipoFiltro}
+                  onChange={(event) => establecerTipoFiltro(event.target.value as 'Todos' | 'Producto' | 'Servicio')}
+                >
+                  <option value="Todos">Todos</option>
+                  <option value="Producto">Productos</option>
+                  <option value="Servicio">Servicios</option>
+                </select>
+              </div>
+            </div>
+            <ListaProductoServicio
+              articulos={articulosFiltrados}
+              alEditar={manejarEdicionArticulo}
+              alEliminar={manejarEliminacionArticulo}
+            />
           </section>
         </div>
       </div>
