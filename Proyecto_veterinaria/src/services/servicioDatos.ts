@@ -1,6 +1,6 @@
 import type { Producto, Servicio } from '../types';
 
-const CLAVE_PRODUCTOS = 'veterinaria.productos';
+const API_PRODUCTOS = 'http://localhost:8081/api/productos';
 const CLAVE_SERVICIOS = 'veterinaria.servicios';
 
 function obtenerImagenServicio(categoria: string): string {
@@ -45,32 +45,9 @@ const serviciosIniciales: Servicio[] = [
   imagen: obtenerImagenServicio(servicio.categoria),
 }));
 
-const productosIniciales: Producto[] = [
-  { codigo: 'ME001', categoria: 'Antibióticos', nombre: 'Amoxibay 250mg', principio: 'Amoxicilina', presentacion: 'Blíster 10 comp.', especie: 'Perro / Gato', stock: 45, precio: 4200, imagen: '/imagenes/amoxibay.webp', detalle: 'Presentación: blíster de 10 comprimidos.' },
-  { codigo: 'ME002', categoria: 'Antibióticos', nombre: 'Enrox 50mg', principio: 'Enrofloxacino', presentacion: 'Blíster 10 comp.', especie: 'Perro / Gato', stock: 30, precio: 6800, imagen: '/imagenes/en.jpg', detalle: 'Presentación: blíster de 10 comprimidos.' },
-  { codigo: 'ME004', categoria: 'Antiparasitarios', nombre: 'Nexgard', principio: 'Afoxolaner', presentacion: 'Masticable 1 unid.', especie: 'Perro', stock: 60, precio: 9500, imagen: '/imagenes/nex.webp', detalle: 'Presentación: comprimido masticable unitario.' },
-  { codigo: 'ME005', categoria: 'Antiparasitarios', nombre: 'Bravecto', principio: 'Fluralaner', presentacion: 'Masticable 1 unid.', especie: 'Perro', stock: 40, precio: 18900, imagen: '/imagenes/bra.jpg', detalle: 'Presentación: comprimido masticable unitario.' },
-  { codigo: 'ME006', categoria: 'Antiparasitarios', nombre: 'Revolution Plus', principio: 'Selamectina + Sarolaner', presentacion: 'Pipeta 1 unid.', especie: 'Gato', stock: 35, precio: 14500, imagen: '/imagenes/rev.jpg', detalle: 'Presentación: pipeta unitaria.' },
-  { codigo: 'ME009', categoria: 'Antiinflamatorios', nombre: 'Meloxicam 1mg', principio: 'Meloxicam', presentacion: 'Blíster 10 comp.', especie: 'Perro / Gato', stock: 55, precio: 4500, imagen: '/imagenes/melo.jpg', detalle: 'Presentación: blíster de 10 comprimidos.' },
-  { codigo: 'ME013', categoria: 'Dermatología', nombre: 'Apoquel 16mg', principio: 'Oclacitinib', presentacion: 'Blíster 10 comp.', especie: 'Perro', stock: 18, precio: 22000, imagen: '/imagenes/apoquel.webp', detalle: 'Presentación: blíster de 10 comprimidos.' },
-  { codigo: 'ME018', categoria: 'Vacunas', nombre: 'Nobivac DHPPi', principio: 'Vacuna polivalente', presentacion: 'Vial 1 dosis', especie: 'Perro', stock: 48, precio: 8500, imagen: '/imagenes/dhpp.jpeg', detalle: 'Presentación: vial de una dosis.' },
-  { codigo: 'ME022', categoria: 'Suplementos', nombre: 'Condrovet forte', principio: 'Condroitín + Glucosamina', presentacion: 'Blíster 30 comp.', especie: 'Perro', stock: 25, precio: 14500, imagen: '/imagenes/condro.png', detalle: 'Presentación: blíster de 30 comprimidos.' },
-];
-
 export interface DatosCatalogo {
   productos: Producto[];
   servicios: Servicio[];
-}
-
-function esProducto(value: unknown): value is Producto {
-  if (typeof value !== 'object' || value === null) return false;
-  const producto = value as Record<string, unknown>;
-  return typeof producto.codigo === 'string'
-    && typeof producto.categoria === 'string'
-    && typeof producto.nombre === 'string'
-    && typeof producto.stock === 'number'
-    && typeof producto.precio === 'number'
-    && typeof producto.imagen === 'string';
 }
 
 function esServicio(value: unknown): value is Servicio {
@@ -86,31 +63,23 @@ function esServicio(value: unknown): value is Servicio {
     && (servicio.imagen === undefined || typeof servicio.imagen === 'string');
 }
 
-function leerColeccion<T>(
-  key: string,
-  validator: (articulo: unknown) => articulo is T,
-): T[] {
-  const contenidoBruto = window.localStorage.getItem(key);
-  if (contenidoBruto === null) {
-    throw new Error(`No se encontraron datos inicializados para ${key}.`);
+function leerServiciosLocal(): Servicio[] {
+  if (window.localStorage.getItem(CLAVE_SERVICIOS) === null) {
+    window.localStorage.setItem(CLAVE_SERVICIOS, JSON.stringify(serviciosIniciales));
   }
-
-  let analizado: unknown;
-  try {
-    analizado = JSON.parse(contenidoBruto);
-  } catch {
-    throw new Error(`Los datos guardados para ${key} están dañados.`);
+  const contenidoBruto = window.localStorage.getItem(CLAVE_SERVICIOS)!;
+  const analizado: unknown = JSON.parse(contenidoBruto);
+  if (!Array.isArray(analizado) || !analizado.every(esServicio)) {
+    throw new Error('Los datos guardados para servicios tienen un formato inválido.');
   }
-
-  if (!Array.isArray(analizado) || !analizado.every(validator)) {
-    throw new Error(`Los datos guardados para ${key} tienen un formato inválido.`);
-  }
-
-  return analizado;
+  return analizado.map((servicio) => ({
+    ...servicio,
+    imagen: servicio.imagen || obtenerImagenServicio(servicio.categoria),
+  }));
 }
 
-function guardarColeccion<T>(key: string, coleccion: T[]): void {
-  window.localStorage.setItem(key, JSON.stringify(coleccion));
+function guardarServiciosLocal(coleccion: Servicio[]): void {
+  window.localStorage.setItem(CLAVE_SERVICIOS, JSON.stringify(coleccion));
 }
 
 function crearCodigo(prefix: string, existingCodes: string[]): string {
@@ -122,70 +91,95 @@ function crearCodigo(prefix: string, existingCodes: string[]): string {
   return `${prefix}${String(highestNumber + 1).padStart(3, '0')}`;
 }
 
-export function cargarCatalogo(): DatosCatalogo {
-  if (window.localStorage.getItem(CLAVE_PRODUCTOS) === null) {
-    guardarColeccion(CLAVE_PRODUCTOS, productosIniciales);
+async function obtenerProductosApi(): Promise<Producto[]> {
+  const respuesta = await fetch(API_PRODUCTOS);
+  if (!respuesta.ok) {
+    throw new Error(`Error al conectar con ms-productos (${respuesta.status})`);
   }
-  if (window.localStorage.getItem(CLAVE_SERVICIOS) === null) {
-    guardarColeccion(CLAVE_SERVICIOS, serviciosIniciales);
-  }
+  return respuesta.json();
+}
 
-  const storedServices = leerColeccion(CLAVE_SERVICIOS, esServicio);
-  const servicios = storedServices.map((servicio) => ({
-    ...servicio,
-    imagen: servicio.imagen || obtenerImagenServicio(servicio.categoria),
-  }));
-  if (servicios.some((servicio, index) => servicio.imagen !== storedServices[index].imagen)) {
-    guardarColeccion(CLAVE_SERVICIOS, servicios);
-  }
+export async function cargarCatalogo(): Promise<DatosCatalogo> {
+  const productos = await obtenerProductosApi();
+  const servicios = leerServiciosLocal();
+  return { productos, servicios };
+}
 
-  return {
-    productos: leerColeccion(CLAVE_PRODUCTOS, esProducto),
-    servicios,
+export async function agregarProducto(producto: Omit<Producto, 'codigo'>): Promise<DatosCatalogo> {
+  const actuales = await obtenerProductosApi();
+  const nuevoProducto: Producto = {
+    ...producto,
+    codigo: crearCodigo('PR', actuales.map((articulo) => articulo.codigo)),
   };
+
+  const respuesta = await fetch(API_PRODUCTOS, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(nuevoProducto),
+  });
+
+  if (!respuesta.ok) {
+    const detalleError = await respuesta.text();
+    throw new Error(detalleError || 'No se pudo crear el producto en el microservicio.');
+  }
+
+  return cargarCatalogo();
 }
 
-export function agregarProducto(producto: Omit<Producto, 'codigo'>): DatosCatalogo {
-  const actual = cargarCatalogo();
-  const nuevoProducto = { ...producto, codigo: crearCodigo('PR', actual.productos.map((articulo) => articulo.codigo)) };
-  const productos = [...actual.productos, nuevoProducto];
-  guardarColeccion(CLAVE_PRODUCTOS, productos);
-  return { ...actual, productos };
+export async function actualizarProducto(
+  codigo: string,
+  cambios: Partial<Omit<Producto, 'codigo'>>,
+): Promise<DatosCatalogo> {
+  const actuales = await obtenerProductosApi();
+  const existente = actuales.find((p) => p.codigo === codigo);
+  if (!existente) {
+    throw new Error(`No se encontró el producto ${codigo}.`);
+  }
+
+  const productoActualizado: Producto = { ...existente, ...cambios, codigo };
+
+  const respuesta = await fetch(`${API_PRODUCTOS}/${encodeURIComponent(codigo)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(productoActualizado),
+  });
+
+  if (!respuesta.ok) {
+    throw new Error(`No se pudo actualizar el producto ${codigo}.`);
+  }
+
+  return cargarCatalogo();
 }
 
-export function agregarServicio(servicio: Omit<Servicio, 'codigo'>): DatosCatalogo {
-  const actual = cargarCatalogo();
-  const nuevoServicio = {
+export async function eliminarProducto(codigo: string): Promise<DatosCatalogo> {
+  const respuesta = await fetch(`${API_PRODUCTOS}/${encodeURIComponent(codigo)}`, {
+    method: 'DELETE',
+  });
+
+  if (!respuesta.ok) {
+    throw new Error(`No se pudo eliminar el producto ${codigo}.`);
+  }
+
+  return cargarCatalogo();
+}
+
+export async function agregarServicio(servicio: Omit<Servicio, 'codigo'>): Promise<DatosCatalogo> {
+  const actual = await cargarCatalogo();
+  const nuevoServicio: Servicio = {
     ...servicio,
     imagen: servicio.imagen || obtenerImagenServicio(servicio.categoria),
     codigo: crearCodigo('SV', actual.servicios.map((articulo) => articulo.codigo)),
   };
   const servicios = [...actual.servicios, nuevoServicio];
-  guardarColeccion(CLAVE_SERVICIOS, servicios);
+  guardarServiciosLocal(servicios);
   return { ...actual, servicios };
 }
 
-export function actualizarProducto(
-  codigo: string,
-  cambios: Partial<Omit<Producto, 'codigo'>>,
-): DatosCatalogo {
-  const actual = cargarCatalogo();
-  const indice = actual.productos.findIndex((producto) => producto.codigo === codigo);
-  if (indice === -1) {
-    throw new Error(`No se encontró el producto ${codigo}.`);
-  }
-
-  const productos = [...actual.productos];
-  productos[indice] = { ...productos[indice], ...cambios, codigo };
-  guardarColeccion(CLAVE_PRODUCTOS, productos);
-  return { ...actual, productos };
-}
-
-export function actualizarServicio(
+export async function actualizarServicio(
   codigo: string,
   cambios: Partial<Omit<Servicio, 'codigo'>>,
-): DatosCatalogo {
-  const actual = cargarCatalogo();
+): Promise<DatosCatalogo> {
+  const actual = await cargarCatalogo();
   const indice = actual.servicios.findIndex((servicio) => servicio.codigo === codigo);
   if (indice === -1) {
     throw new Error(`No se encontró el servicio ${codigo}.`);
@@ -201,26 +195,16 @@ export function actualizarServicio(
       || (categoriaCambio ? obtenerImagenServicio(servicioActualizado.categoria) : servicioActualizado.imagen)
       || obtenerImagenServicio(servicioActualizado.categoria),
   };
-  guardarColeccion(CLAVE_SERVICIOS, servicios);
+  guardarServiciosLocal(servicios);
   return { ...actual, servicios };
 }
 
-export function eliminarProducto(codigo: string): DatosCatalogo {
-  const actual = cargarCatalogo();
-  const productos = actual.productos.filter((articulo) => articulo.codigo !== codigo);
-  if (productos.length === actual.productos.length) {
-    throw new Error(`No se encontró el producto ${codigo}.`);
-  }
-  guardarColeccion(CLAVE_PRODUCTOS, productos);
-  return { ...actual, productos };
-}
-
-export function eliminarServicio(codigo: string): DatosCatalogo {
-  const actual = cargarCatalogo();
+export async function eliminarServicio(codigo: string): Promise<DatosCatalogo> {
+  const actual = await cargarCatalogo();
   const servicios = actual.servicios.filter((articulo) => articulo.codigo !== codigo);
   if (servicios.length === actual.servicios.length) {
     throw new Error(`No se encontró el servicio ${codigo}.`);
   }
-  guardarColeccion(CLAVE_SERVICIOS, servicios);
+  guardarServiciosLocal(servicios);
   return { ...actual, servicios };
 }
