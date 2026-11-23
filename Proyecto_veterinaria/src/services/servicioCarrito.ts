@@ -1,87 +1,149 @@
 import type { ItemCarrito, Producto, Servicio } from '../types';
 
+const API_URL = 'http://localhost:8085/api/v1/carrito';
 const CLAVE_ALMACENAMIENTO_CARRITO = 'veterinaria.carrito';
 
-function esArticuloCarrito(value: unknown): value is ItemCarrito {
-  if (typeof value !== 'object' || value === null) return false;
-  const entrada = value as Record<string, unknown>;
-  if ((entrada.tipo !== 'producto' && entrada.tipo !== 'servicio') || typeof entrada.cantidad !== 'number' || entrada.cantidad < 1) {
-    return false;
+// Obtiene el ID del usuario activo (por defecto 1 si aún no inicia sesión)
+function obtenerUsuarioId(): number {
+  const sesion = window.localStorage.getItem('veterinaria.sesion');
+  if (sesion) {
+    try {
+      const parsed = JSON.parse(sesion);
+      if (typeof parsed.id === 'number') return parsed.id;
+    } catch {
+      // ignorar si no es JSON válido
+    }
   }
+  return 1;
+}
 
-  const articulo = entrada.producto;
-  if (typeof articulo !== 'object' || articulo === null) return false;
-  const elementoCatalogo = articulo as Record<string, unknown>;
-  const camposComunesValidos = typeof elementoCatalogo.codigo === 'string'
-    && typeof elementoCatalogo.nombre === 'string'
-    && typeof elementoCatalogo.categoria === 'string'
-    && typeof elementoCatalogo.precio === 'number';
-  return camposComunesValidos && (entrada.tipo === 'producto'
-    ? typeof elementoCatalogo.stock === 'number' && typeof elementoCatalogo.imagen === 'string'
-    : typeof elementoCatalogo.duracion === 'string'
-      && typeof elementoCatalogo.especie === 'string'
-      && typeof elementoCatalogo.detalle === 'string');
+function guardarLocal(articulos: ItemCarrito[]): ItemCarrito[] {
+  window.localStorage.setItem(CLAVE_ALMACENAMIENTO_CARRITO, JSON.stringify(articulos));
+  return articulos;
 }
 
 export function cargarCarrito(): ItemCarrito[] {
   const carritoGuardado = window.localStorage.getItem(CLAVE_ALMACENAMIENTO_CARRITO);
   if (carritoGuardado === null) return [];
-
-  let carritoAnalizado: unknown;
   try {
-    carritoAnalizado = JSON.parse(carritoGuardado);
+    const parsed = JSON.parse(carritoGuardado);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    throw new Error('El carrito guardado está dañado. Limpia los datos del sitio e inténtalo nuevamente.');
+    return [];
   }
-
-  if (!Array.isArray(carritoAnalizado) || !carritoAnalizado.every(esArticuloCarrito)) {
-    throw new Error('El carrito guardado tiene un formato inválido. Limpia los datos del sitio e inténtalo nuevamente.');
-  }
-  return carritoAnalizado;
 }
 
-function guardarCarrito(articulos: ItemCarrito[]): ItemCarrito[] {
-  window.localStorage.setItem(CLAVE_ALMACENAMIENTO_CARRITO, JSON.stringify(articulos));
-  return articulos;
+// Trae el carrito desde el microservicio Spring Boot y sincroniza el estado local
+export async function cargarCarritoDesdeApi(): Promise<ItemCarrito[]> {
+  const usuarioId = obtenerUsuarioId();
+  const response = await fetch(`${API_URL}/${usuarioId}`);
+  if (!response.ok) {
+    throw new Error('No se pudo conectar con el microservicio de carrito.');
+  }
+  const data = await response.json();
+  const itemsBackend = Array.isArray(data.items) ? data.items : [];
+
+  const articulosMapeados: ItemCarrito[] = itemsBackend.map((item: {
+    tipo: 'producto' | 'servicio';
+    codigo: string;
+    nombreProducto: string;
+    precioUnitario: number;
+    cantidad: number;
+    detalleJson?: string;
+  }) => {
+    const objetoOriginal = item.detalleJson
+      ? JSON.parse(item.detalleJson)
+      : {
+          codigo: item.codigo,
+          nombre: item.nombreProducto,
+          precio: item.precioUnitario,
+          categoria: 'General',
+          stock: 99,
+          imagen: '',
+        };
+
+    return {
+      tipo: item.tipo,
+      producto: objetoOriginal,
+      cantidad: item.cantidad,
+    } as ItemCarrito;
+  });
+
+  return guardarLocal(articulosMapeados);
 }
 
-function agregarProductoAlCarritoInterno(articulos: ItemCarrito[], producto: Producto): ItemCarrito[] {
-  const existente = articulos.find((entrada) => entrada.tipo === 'producto' && entrada.producto.codigo === producto.codigo);
-  const cantidad = (existente?.cantidad ?? 0) + 1;
-  if (cantidad > producto.stock) {
-    throw new Error(`No hay más unidades disponibles de ${producto.nombre}.`);
-  }
-  if (existente) {
-    return articulos.map((entrada) =>
-      entrada.tipo === 'producto' && entrada.producto.codigo === producto.codigo
-        ? { ...entrada, cantidad: cantidad }
-        : entrada,
-    );
-  }
-  return [...articulos, { tipo: 'producto', producto: producto, cantidad: 1 }];
+// Sincronización en segundo plano hacia Spring Boot
+async function sincronizarAgregarApi(tipo: 'producto' | 'servicio', item: Producto | Servicio) {
+  const usuarioId = obtenerUsuarioId();
+  await fetch(`${API_URL}/${usuarioId}/items`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      tipo,
+      codigo: item.codigo,
+      nombreProducto: item.nombre,
+      precioUnitario: item.precio,
+      cantidad: 1,
+      detalleJson: JSON.stringify(item),
+    }),
+  });
 }
 
-function agregarServicioAlCarritoInterno(articulos: ItemCarrito[], servicio: Servicio): ItemCarrito[] {
-  const existente = articulos.find((entrada) => entrada.tipo === 'servicio' && entrada.producto.codigo === servicio.codigo);
-  if (existente) {
-    return articulos.map((entrada) =>
-      entrada.tipo === 'servicio' && entrada.producto.codigo === servicio.codigo
-        ? { ...entrada, cantidad: entrada.cantidad + 1 }
-        : entrada,
-    );
-  }
-  return [...articulos, { tipo: 'servicio', producto: servicio, cantidad: 1 }];
+async function sincronizarCantidadApi(tipo: 'producto' | 'servicio', codigo: string, cantidad: number) {
+  const usuarioId = obtenerUsuarioId();
+  await fetch(`${API_URL}/${usuarioId}/items/${tipo}/${codigo}?cantidad=${cantidad}`, {
+    method: 'PUT',
+  });
+}
+
+async function sincronizarEliminarApi(tipo: 'producto' | 'servicio', codigo: string) {
+  const usuarioId = obtenerUsuarioId();
+  await fetch(`${API_URL}/${usuarioId}/items/${tipo}/${codigo}`, {
+    method: 'DELETE',
+  });
+}
+
+async function sincronizarVaciarApi() {
+  const usuarioId = obtenerUsuarioId();
+  await fetch(`${API_URL}/${usuarioId}`, {
+    method: 'DELETE',
+  });
 }
 
 export function agregarProductoAlCarrito(articulos: ItemCarrito[], producto: Producto): ItemCarrito[] {
   if (producto.stock < 1) {
     throw new Error(`${producto.nombre} no tiene unidades disponibles.`);
   }
-  return guardarCarrito(agregarProductoAlCarritoInterno(articulos, producto));
+  const existente = articulos.find((entrada) => entrada.tipo === 'producto' && entrada.producto.codigo === producto.codigo);
+  const cantidad = (existente?.cantidad ?? 0) + 1;
+  if (cantidad > producto.stock) {
+    throw new Error(`No hay más unidades disponibles de ${producto.nombre}.`);
+  }
+
+  const nuevosArticulos = existente
+    ? articulos.map((entrada) =>
+        entrada.tipo === 'producto' && entrada.producto.codigo === producto.codigo
+          ? { ...entrada, cantidad }
+          : entrada,
+      )
+    : [...articulos, { tipo: 'producto' as const, producto, cantidad: 1 }];
+
+  void sincronizarAgregarApi('producto', producto);
+  return guardarLocal(nuevosArticulos);
 }
 
 export function solicitarReservaServicio(articulos: ItemCarrito[], servicio: Servicio): ItemCarrito[] {
-  return guardarCarrito(agregarServicioAlCarritoInterno(articulos, servicio));
+  const existente = articulos.find((entrada) => entrada.tipo === 'servicio' && entrada.producto.codigo === servicio.codigo);
+  const nuevosArticulos = existente
+    ? articulos.map((entrada) =>
+        entrada.tipo === 'servicio' && entrada.producto.codigo === servicio.codigo
+          ? { ...entrada, cantidad: entrada.cantidad + 1 }
+          : entrada,
+      )
+    : [...articulos, { tipo: 'servicio' as const, producto: servicio, cantidad: 1 }];
+
+  void sincronizarAgregarApi('servicio', servicio);
+  return guardarLocal(nuevosArticulos);
 }
 
 export function establecerCantidadArticulo(
@@ -97,18 +159,23 @@ export function establecerCantidadArticulo(
     throw new Error(`La cantidad supera el stock disponible de ${entrada.producto.nombre}.`);
   }
 
-  return guardarCarrito(articulos.map((articulo) => {
-    if (articulo.tipo !== tipo || articulo.producto.codigo !== codigo) return articulo;
-    return articulo.tipo === 'producto'
+  const nuevosArticulos = articulos.map((articulo) =>
+    articulo.tipo === tipo && articulo.producto.codigo === codigo
       ? { ...articulo, cantidad }
-      : { ...articulo, cantidad };
-  }));
+      : articulo,
+  );
+
+  void sincronizarCantidadApi(tipo, codigo, cantidad);
+  return guardarLocal(nuevosArticulos);
 }
 
 export function quitarArticuloCarrito(articulos: ItemCarrito[], tipo: ItemCarrito['tipo'], codigo: string): ItemCarrito[] {
-  return guardarCarrito(articulos.filter((articulo) => !(articulo.tipo === tipo && articulo.producto.codigo === codigo)));
+  const nuevosArticulos = articulos.filter((articulo) => !(articulo.tipo === tipo && articulo.producto.codigo === codigo));
+  void sincronizarEliminarApi(tipo, codigo);
+  return guardarLocal(nuevosArticulos);
 }
 
 export function vaciarCarrito(): ItemCarrito[] {
-  return guardarCarrito([]);
+  void sincronizarVaciarApi();
+  return guardarLocal([]);
 }
