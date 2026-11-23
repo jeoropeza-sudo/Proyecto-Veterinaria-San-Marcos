@@ -10,6 +10,16 @@ export interface Producto {
   imagen: string;
   detalle?: string;
 }
+export interface Reserva {
+  id?: number;
+  nombreCliente: string;
+  emailCliente: string;
+  nombreMascota: string;
+  servicio: string;
+  fecha: string;
+  hora: string;
+  estado?: 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA';
+}
 
 export interface Servicio {
   codigo: string;
