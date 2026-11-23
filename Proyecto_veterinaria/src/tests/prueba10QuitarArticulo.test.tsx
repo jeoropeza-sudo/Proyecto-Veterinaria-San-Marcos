@@ -8,8 +8,8 @@ import { prepararEntornoInterfaz, renderAt } from './helpersInterfaz';
 prepararEntornoInterfaz();
 
 describe('Quitar artículos', () => {
-  it('muestra el estado vacío al quitar el último artículo', () => {
-    agregarProductoAlCarrito([], cargarCatalogo().productos[0]);
+  it('muestra el estado vacío al quitar el último artículo', async () => {
+    agregarProductoAlCarrito([], (await cargarCatalogo()).productos[0]);
     renderAt('/carrito');
     fireEvent.click(screen.getByRole('button', { name: 'Quitar' }));
 

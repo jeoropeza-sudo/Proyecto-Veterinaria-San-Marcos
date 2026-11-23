@@ -20,6 +20,7 @@ export const PaginaAdministracion = () => {
   const [articuloEditando, establecerArticuloEditando] = useState<Producto | Servicio | null>(null);
   const [busqueda, establecerBusqueda] = useState('');
   const [tipoFiltro, establecerTipoFiltro] = useState<'Todos' | 'Producto' | 'Servicio'>('Todos');
+  const [errorEliminacion, establecerErrorEliminacion] = useState<string | null>(null);
   const articulos: ElementoAdministracion[] = useMemo(() => [
     ...servicios.map((servicio) => ({
       codigo: servicio.codigo,
@@ -48,9 +49,9 @@ export const PaginaAdministracion = () => {
     });
   }, [articulos, busqueda, tipoFiltro]);
 
-  const manejarRegistroProductoServicio = (datos: DatosFormularioProductoServicio) => {
+  const manejarRegistroProductoServicio = async (datos: DatosFormularioProductoServicio): Promise<void> => {
     if (articuloEditando && 'stock' in articuloEditando) {
-      actualizarProducto(articuloEditando.codigo, {
+      await actualizarProducto(articuloEditando.codigo, {
         nombre: datos.nombre.trim(),
         stock: datos.stock,
         precio: datos.precio,
@@ -74,7 +75,7 @@ export const PaginaAdministracion = () => {
           : datos.categoria === categoriaOriginal
             ? articuloEditando.categoria
             : 'Otros';
-      actualizarServicio(articuloEditando.codigo, {
+      await actualizarServicio(articuloEditando.codigo, {
         nombre: datos.nombre.trim(),
         categoria,
         precio: datos.precio,
@@ -85,7 +86,7 @@ export const PaginaAdministracion = () => {
     }
 
     if (datos.categoria === 'Producto') {
-      agregarProducto({
+      await agregarProducto({
         nombre: datos.nombre.trim(),
         categoria: 'Otros',
         stock: datos.stock,
@@ -101,7 +102,7 @@ export const PaginaAdministracion = () => {
       Consulta: 'Consultas',
       Vacunacion: 'Vacunación',
     };
-    agregarServicio({
+    await agregarServicio({
       nombre: datos.nombre.trim(),
       categoria: categoriaPorFormulario[datos.categoria] ?? 'Otros',
       especie: 'Perro / Gato',
@@ -111,11 +112,18 @@ export const PaginaAdministracion = () => {
     });
   };
 
-  const manejarEliminacionArticulo = (codigo: string) => {
-    if (servicios.some((servicio) => servicio.codigo === codigo)) {
-      eliminarServicio(codigo);
-    } else {
-      eliminarProducto(codigo);
+  const manejarEliminacionArticulo = async (codigo: string) => {
+    establecerErrorEliminacion(null);
+    try {
+      if (servicios.some((servicio) => servicio.codigo === codigo)) {
+        await eliminarServicio(codigo);
+      } else {
+        await eliminarProducto(codigo);
+      }
+    } catch (error) {
+      establecerErrorEliminacion(error instanceof Error
+        ? error.message
+        : 'No se pudo eliminar el artículo.');
     }
   };
 
@@ -196,6 +204,7 @@ export const PaginaAdministracion = () => {
           </section>
 
           <section className="admin-catalog__list-panel" aria-labelledby="lista-catalogo">
+            {errorEliminacion && <div className="alert alert-danger" role="alert">{errorEliminacion}</div>}
             <div className="admin-catalog__list-heading">
               <div>
                 <p className="admin-eyebrow">INVENTARIO</p>

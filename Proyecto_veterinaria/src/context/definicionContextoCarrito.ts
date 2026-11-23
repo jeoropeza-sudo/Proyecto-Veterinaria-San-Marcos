@@ -9,6 +9,7 @@ export interface ValorContextoCarrito {
   establecerCantidad: (tipo: ItemCarrito['tipo'], codigo: string, cantidad: number) => boolean;
   quitarArticulo: (tipo: ItemCarrito['tipo'], codigo: string) => boolean;
   vaciar: () => boolean;
+  vaciarProductos: () => boolean;
 }
 
 export const ContextoCarrito = createContext<ValorContextoCarrito | null>(null);

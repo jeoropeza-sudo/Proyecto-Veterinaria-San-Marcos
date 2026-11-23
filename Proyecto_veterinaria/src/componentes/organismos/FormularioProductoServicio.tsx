@@ -27,7 +27,7 @@ function esCategoriaFormulario(value: string): value is CategoriaFormularioProdu
 interface PropiedadesFormularioProductoServicio {
   valoresIniciales?: DatosFormularioProductoServicio;
   estaEditando?: boolean;
-  alEnviar: (datos: DatosFormularioProductoServicio) => void;
+  alEnviar: (datos: DatosFormularioProductoServicio) => void | Promise<void>;
   alCancelar?: () => void;
 }
 
@@ -46,9 +46,12 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
   const [errorNombre, establecerErrorNombre] = useState('');
   const [errorPrecio, establecerErrorPrecio] = useState('');
   const [errorStock, establecerErrorStock] = useState('');
+  const [errorEnvio, establecerErrorEnvio] = useState('');
+  const [estaEnviando, establecerEstaEnviando] = useState(false);
 
-  const manejarEnvio = (e: React.FormEvent) => {
+  const manejarEnvio = async (e: React.FormEvent) => {
     e.preventDefault();
+    establecerErrorEnvio('');
 
     if (!nombre.trim()) {
       establecerErrorNombre('El nombre es obligatorio');
@@ -71,29 +74,38 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
     establecerErrorPrecio('');
     establecerErrorStock('');
 
-    alEnviar({
-      nombre,
-      categoria,
-      precio: precioNumerico,
-      descripcion,
-      stock: categoria === 'Producto' ? stockNumerico : 0,
-      imagen,
-    });
+    establecerEstaEnviando(true);
+    try {
+      await alEnviar({
+        nombre,
+        categoria,
+        precio: precioNumerico,
+        descripcion,
+        stock: categoria === 'Producto' ? stockNumerico : 0,
+        imagen,
+      });
 
-  
-    if (!estaEditando) {
-      establecerNombre('');
-      establecerCategoria('Servicio');
-      establecerPrecio('');
-      establecerDescripcion('');
-      establecerStock('0');
-      establecerImagen('/imagenes/condro.png');
+      if (!estaEditando) {
+        establecerNombre('');
+        establecerCategoria('Servicio');
+        establecerPrecio('');
+        establecerDescripcion('');
+        establecerStock('0');
+        establecerImagen('/imagenes/condro.png');
+      }
+    } catch (error) {
+      establecerErrorEnvio(error instanceof Error
+        ? error.message
+        : 'No se pudo guardar el artículo. Revisa los datos e inténtalo nuevamente.');
+    } finally {
+      establecerEstaEnviando(false);
     }
   };
 
   return (
     <form onSubmit={manejarEnvio} className="p-4 border rounded shadow-sm bg-light">
       <h3 className="mb-3">Registrar Servicio o Producto</h3>
+      {errorEnvio && <div className="alert alert-danger" role="alert">{errorEnvio}</div>}
 
       <div className="mb-3">
         <label htmlFor="nombre" className="form-label">
@@ -104,12 +116,15 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
           id="nombre"
           className={`form-control ${errorNombre ? 'is-invalid' : ''}`}
           value={nombre}
+          required
+          aria-invalid={Boolean(errorNombre)}
+          aria-describedby={errorNombre ? 'nombre-error' : undefined}
           onChange={(e) => {
             establecerNombre(e.target.value);
             if (e.target.value.trim()) establecerErrorNombre('');
           }}
         />
-        {errorNombre && <div className="invalid-feedback">{errorNombre}</div>}
+        {errorNombre && <div id="nombre-error" className="invalid-feedback" role="alert">{errorNombre}</div>}
       </div>
 
       {categoria === 'Producto' && (
@@ -124,13 +139,14 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
               step="1"
               required
               aria-invalid={Boolean(errorStock)}
+              aria-describedby={errorStock ? 'stock-error' : undefined}
               value={stock}
               onChange={(e) => {
                 establecerStock(e.target.value);
                 establecerErrorStock('');
               }}
             />
-            {errorStock && <div className="invalid-feedback">{errorStock}</div>}
+            {errorStock && <div id="stock-error" className="invalid-feedback" role="alert">{errorStock}</div>}
           </div>
           <div className="mb-3">
             <label htmlFor="imagen" className="form-label">Ruta de imagen (desde public)</label>
@@ -171,18 +187,19 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
         <input
           type="number"
           id="precio"
-          className="form-control"
+          className={`form-control ${errorPrecio ? 'is-invalid' : ''}`}
           min="1"
           step="1"
           required
           aria-invalid={Boolean(errorPrecio)}
+          aria-describedby={errorPrecio ? 'precio-error' : undefined}
           value={precio}
           onChange={(e) => {
             establecerPrecio(e.target.value);
             establecerErrorPrecio('');
           }}
         />
-        {errorPrecio && <div className="text-danger mt-1" role="alert">{errorPrecio}</div>}
+        {errorPrecio && <div id="precio-error" className="invalid-feedback" role="alert">{errorPrecio}</div>}
       </div>
 
       <div className="mb-3">
@@ -198,11 +215,11 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
         />
       </div>
 
-      <button type="submit" className="btn btn-primary w-100">
-        {estaEditando ? 'Guardar cambios' : `Registrar ${categoria === 'Producto' ? 'Producto' : 'Servicio'}`}
+      <button type="submit" className="btn btn-primary w-100" disabled={estaEnviando}>
+        {estaEnviando ? 'Guardando…' : estaEditando ? 'Guardar cambios' : `Registrar ${categoria === 'Producto' ? 'Producto' : 'Servicio'}`}
       </button>
       {estaEditando && alCancelar && (
-        <button type="button" className="btn btn-outline-secondary w-100 mt-2" onClick={alCancelar}>
+        <button type="button" className="btn btn-outline-secondary w-100 mt-2" onClick={alCancelar} disabled={estaEnviando}>
           Cancelar edición
         </button>
       )}

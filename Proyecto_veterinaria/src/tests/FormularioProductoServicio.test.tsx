@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { FormularioProductoServicio } from '../componentes/organismos/FormularioProductoServicio';
@@ -29,5 +29,17 @@ describe('Formulario administrativo de catálogo', () => {
 
     expect(screen.getByText(/stock debe ser un número entero/i)).toBeInTheDocument();
     expect(alEnviar).not.toHaveBeenCalled();
+  });
+
+  it('muestra en el formulario el error devuelto al guardar', async () => {
+    const alEnviar = vi.fn().mockRejectedValue(new Error('El microservicio rechazó el producto.'));
+    render(<FormularioProductoServicio alEnviar={alEnviar} />);
+
+    fireEvent.change(screen.getByLabelText('Nombre del servicio/producto'), { target: { value: 'Consulta' } });
+    fireEvent.change(screen.getByLabelText('Precio'), { target: { value: '1000' } });
+    fireEvent.submit(screen.getByRole('button', { name: /registrar servicio/i }).closest('form')!);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('El microservicio rechazó el producto.');
+    await waitFor(() => expect(alEnviar).toHaveBeenCalledOnce());
   });
 });

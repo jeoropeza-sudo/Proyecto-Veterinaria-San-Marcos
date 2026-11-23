@@ -8,7 +8,7 @@ export interface EstadoAutenticacion {
 
 export interface ValorContextoAutenticacion extends EstadoAutenticacion {
   haySesion: boolean;
-  iniciarSesion: (correo: string, contrasena: string) => boolean;
+  iniciarSesion: (correo: string, contrasena: string) => Promise<void>;
   cerrarSesion: () => void;
 }
 

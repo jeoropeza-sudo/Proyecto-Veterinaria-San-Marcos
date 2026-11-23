@@ -1,37 +1,53 @@
 import type { UsuarioSesion } from '../types/sesion';
+import { leerRespuestaApi } from './clienteApi';
 
 const CLAVE_ALMACENAMIENTO_SESION = 'veterinaria.session';
+const API_AUTENTICACION = 'http://localhost:8083/api/aute';
 
-const cuentasDemostracion: Array<{ correo: string; contrasena: string; usuario: UsuarioSesion }> = [
-  {
-    correo: 'admin@sanmarcos.cl',
-    contrasena: 'admin1234',
-    usuario: {
-      run: '11.111.111-1',
-      nombre: 'Alexis',
-      apellidos: 'Administrador',
-      correo: 'admin@sanmarcos.cl',
-      rol: 'Administrador',
-      region: 'O’Higgins',
-      comuna: 'Rancagua',
-      direccion: '',
-    },
-  },
-  {
-    correo: 'cliente@sanmarcos.cl',
-    contrasena: 'cliente1234',
-    usuario: {
-      run: '22.222.222-2',
-      nombre: 'Cliente',
-      apellidos: 'Demostración',
-      correo: 'cliente@sanmarcos.cl',
-      rol: 'Cliente',
-      region: 'O’Higgins',
-      comuna: 'Rancagua',
-      direccion: '',
-    },
-  },
-];
+interface RespuestaLogin {
+  token: string;
+  id: number;
+  email: string;
+  rol: string;
+}
+
+interface RespuestaRegistro {
+  mensaje: string;
+  id: number;
+  email: string;
+  rol: string;
+}
+
+function mapearRol(rol: string): UsuarioSesion['rol'] {
+  switch (rol.trim().toLocaleUpperCase()) {
+    case 'ADMIN':
+    case 'ADMINISTRADOR':
+      return 'Administrador';
+    case 'CLIENTE':
+      return 'Cliente';
+    default:
+      throw new Error('El servidor devolvió un rol de usuario desconocido.');
+  }
+}
+
+function crearSesion(respuesta: RespuestaLogin): UsuarioSesion {
+  if (
+    typeof respuesta.token !== 'string'
+    || !respuesta.token
+    || typeof respuesta.id !== 'number'
+    || typeof respuesta.email !== 'string'
+    || typeof respuesta.rol !== 'string'
+  ) {
+    throw new Error('El servidor devolvió datos de sesión incompletos.');
+  }
+
+  return {
+    id: respuesta.id,
+    token: respuesta.token,
+    correo: respuesta.email,
+    rol: mapearRol(respuesta.rol),
+  };
+}
 
 function esUsuarioSesion(value: unknown): value is UsuarioSesion {
   if (typeof value !== 'object' || value === null) {
@@ -41,15 +57,13 @@ function esUsuarioSesion(value: unknown): value is UsuarioSesion {
   const usuario = value as Record<string, unknown>;
 
   return (
-    typeof usuario.run === 'string' &&
-    typeof usuario.nombre === 'string' &&
-    typeof usuario.apellidos === 'string' &&
+    typeof usuario.id === 'number' &&
+    typeof usuario.token === 'string' &&
     typeof usuario.correo === 'string' &&
     (usuario.rol === 'Administrador' || usuario.rol === 'Cliente') &&
-    typeof usuario.region === 'string' &&
-    typeof usuario.comuna === 'string' &&
-    typeof usuario.direccion === 'string' &&
-    !('contrasena' in usuario)
+    !('contrasena' in usuario) &&
+    ['run', 'nombre', 'apellidos', 'fechaNacimiento', 'region', 'comuna', 'direccion']
+      .every((campo) => usuario[campo] === undefined || typeof usuario[campo] === 'string')
   );
 }
 
@@ -73,15 +87,31 @@ export function obtenerSesionGuardada(): UsuarioSesion | null {
   return sesionAnalizada;
 }
 
-export function autenticar(correo: string, contrasena: string): UsuarioSesion | null {
-  const correoNormalizado = correo.trim().toLocaleLowerCase();
-  const cuenta = cuentasDemostracion.find(
-    (candidato) =>
-      candidato.correo === correoNormalizado &&
-      candidato.contrasena === contrasena,
-  );
+export async function autenticar(correo: string, contrasena: string): Promise<UsuarioSesion> {
+  const respuesta = await fetch(`${API_AUTENTICACION}/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: correo.trim(), password: contrasena }),
+  });
+  return crearSesion(await leerRespuestaApi<RespuestaLogin>(respuesta));
+}
 
-  return cuenta?.usuario ?? null;
+export async function registrar(correo: string, contrasena: string): Promise<RespuestaRegistro> {
+  const respuesta = await fetch(`${API_AUTENTICACION}/registrar`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: correo.trim(), password: contrasena }),
+  });
+  const resultado = await leerRespuestaApi<RespuestaRegistro>(respuesta);
+  if (
+    typeof resultado.mensaje !== 'string'
+    || typeof resultado.id !== 'number'
+    || typeof resultado.email !== 'string'
+    || typeof resultado.rol !== 'string'
+  ) {
+    throw new Error('El servidor devolvió una respuesta de registro incompleta.');
+  }
+  return resultado;
 }
 
 export function guardarSesion(usuario: UsuarioSesion): void {

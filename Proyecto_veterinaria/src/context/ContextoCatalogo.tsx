@@ -46,14 +46,8 @@ export function ProveedorCatalogo({ children }: { children: ReactNode }) {
   }, []);
 
   const actualizarCatalogo = async (operacion: () => Promise<DatosCatalogo>) => {
-    try {
-      const datosActualizados = await operacion();
-      establecerEstado({ ...datosActualizados, error: null });
-    } catch (error) {
-      const mensaje = error instanceof Error ? error.message : 'No se pudo actualizar el catálogo.';
-      establecerEstado((actual) => ({ ...actual, error: mensaje }));
-      throw error;
-    }
+    const datosActualizados = await operacion();
+    establecerEstado({ ...datosActualizados, error: null });
   };
 
   const agregarProducto = (producto: Omit<Producto, 'codigo'>) =>

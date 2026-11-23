@@ -12,8 +12,10 @@ import { PaginaDetalleNovedad } from '../paginas/PaginaDetalleNovedad';
 import { PaginaCarrito } from '../paginas/PaginaCarrito';
 import { PaginaInicio } from '../paginas/PaginaInicio';
 import { PaginaInicioSesion } from '../paginas/PaginaInicioSesion';
+import { PaginaRegistro } from '../paginas/PaginaRegistro';
 import { PaginaNosotros } from '../paginas/PaginaNosotros';
 import { PaginaNovedades } from '../paginas/PaginaNovedades';
+import { PaginaPerfil } from '../paginas/PaginaPerfil';
 import { PaginaProductos } from '../paginas/PaginaProductos';
 import { PaginaServicios } from '../paginas/PaginaServicios';
 import { useCatalogo } from '../context/useCatalogo';
@@ -39,9 +41,18 @@ export function EnrutadorAplicacion() {
           <Route path="/novedades/:codigo" element={<PaginaDetalleNovedad />} />
           <Route path="/contacto" element={<PaginaContacto />} />
           <Route path="/login" element={<PaginaInicioSesion />} />
+          <Route path="/registro" element={<PaginaRegistro />} />
           <Route path="/productos" element={<PaginaProductos />} />
           <Route path="/productos/:codigo" element={<PaginaDetalle />} />
           <Route path="/carrito" element={<PaginaCarrito />} />
+          <Route
+            path="/perfil"
+            element={
+              <RequerirRol rolesPermitidos={['Cliente']}>
+                <PaginaPerfil />
+              </RequerirRol>
+            }
+          />
           <Route path="/servicios" element={<PaginaServicios />} />
           <Route path="/servicios/:codigo" element={<PaginaDetalle />} />
           <Route

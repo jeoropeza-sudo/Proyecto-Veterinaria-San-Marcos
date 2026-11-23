@@ -8,6 +8,8 @@ prepararEntornoInterfaz();
 
 function renderizarComoAdministrador() {
   window.localStorage.setItem('veterinaria.session', JSON.stringify({
+    id: 1,
+    token: 'test-token',
     run: '11.111.111-1',
     nombre: 'Alexis',
     apellidos: 'Administrador',

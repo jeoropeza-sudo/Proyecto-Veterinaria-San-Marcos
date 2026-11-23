@@ -8,14 +8,14 @@ import { prepararEntornoInterfaz, renderAt } from './helpersInterfaz';
 prepararEntornoInterfaz();
 
 describe('Totales del carrito', () => {
-  it('actualiza subtotal y total al aumentar la cantidad', () => {
-    const producto = cargarCatalogo().productos[0];
+  it('actualiza subtotal y total al aumentar la cantidad', async () => {
+    const producto = (await cargarCatalogo()).productos[0];
     agregarProductoAlCarrito([], producto);
     renderAt('/carrito');
     fireEvent.click(screen.getByRole('button', { name: `Aumentar cantidad de ${producto.nombre}` }));
 
     const subtotal = `$${(producto.precio * 2).toLocaleString('es-CL')}`;
     expect(within(screen.getByRole('article')).getByText(subtotal)).toBeTruthy();
-    expect(screen.getByText('Total estimado').parentElement?.textContent).toContain(subtotal);
+    expect(screen.getByText('Total estimado de productos').parentElement?.textContent).toContain(subtotal);
   });
 });

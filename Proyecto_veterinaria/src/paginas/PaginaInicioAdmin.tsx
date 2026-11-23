@@ -38,7 +38,7 @@ export function PaginaInicioAdmin() {
       <div className="container admin-page__container">
         <section className="admin-home__intro" aria-labelledby="admin-home-title">
           <p className="admin-eyebrow">VETERINARIA SAN MARCOS · ADMINISTRACIÓN</p>
-          <h1 id="admin-home-title" className="admin-home__title">Hola, {usuario?.nombre ?? 'administrador'}.</h1>
+          <h1 id="admin-home-title" className="admin-home__title">Hola, {usuario?.nombre || usuario?.correo || 'administrador'}.</h1>
           <p className="admin-home__summary">¿Qué necesitas gestionar hoy?</p>
         </section>
 

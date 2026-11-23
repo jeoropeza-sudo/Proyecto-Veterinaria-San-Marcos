@@ -76,8 +76,13 @@ function BarraNavegacion() {
                             )}
                             {usuario ? (
                                 <>
+                                    {usuario.rol === 'Cliente' && (
+                                        <NavLink className="btn btn-outline-light btn-sm fw-bold" to="/perfil" onClick={cerrarMenu}>
+                                            Mi perfil
+                                        </NavLink>
+                                    )}
                                     <span className="text-white fw-semibold px-lg-2 py-1 text-center">
-                                        {usuario.nombre}
+                                        {usuario.nombre || usuario.correo}
                                     </span>
                                     <button
                                         type="button"

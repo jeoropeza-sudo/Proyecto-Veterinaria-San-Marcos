@@ -112,3 +112,7 @@ export function quitarArticuloCarrito(articulos: ItemCarrito[], tipo: ItemCarrit
 export function vaciarCarrito(): ItemCarrito[] {
   return guardarCarrito([]);
 }
+
+export function vaciarProductosCarrito(articulos: ItemCarrito[]): ItemCarrito[] {
+  return guardarCarrito(articulos.filter((articulo) => articulo.tipo !== 'producto'));
+}

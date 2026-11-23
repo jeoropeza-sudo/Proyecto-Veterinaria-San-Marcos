@@ -7,8 +7,8 @@ import { prepararEntornoInterfaz, renderAt } from './helpersInterfaz';
 prepararEntornoInterfaz();
 
 describe('Catálogo público', () => {
-  it('renderiza una tarjeta por cada producto disponible en el catálogo', () => {
-    const cantidadEsperada = cargarCatalogo().productos.length;
+  it('renderiza una tarjeta por cada producto disponible en el catálogo', async () => {
+    const cantidadEsperada = (await cargarCatalogo()).productos.length;
     renderAt('/productos');
 
     expect(screen.getAllByRole('article')).toHaveLength(cantidadEsperada);

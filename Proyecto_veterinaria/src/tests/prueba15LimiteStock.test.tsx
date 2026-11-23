@@ -8,8 +8,8 @@ import { prepararEntornoInterfaz, renderAt } from './helpersInterfaz';
 prepararEntornoInterfaz();
 
 describe('Límite de stock', () => {
-  it('impide aumentar la cantidad por encima del stock disponible', () => {
-    const catalogo = cargarCatalogo();
+  it('impide aumentar la cantidad por encima del stock disponible', async () => {
+    const catalogo = await cargarCatalogo();
     const producto = { ...catalogo.productos[0], stock: 1 };
     window.localStorage.setItem(
       'veterinaria.productos',
@@ -20,7 +20,7 @@ describe('Límite de stock', () => {
 
     expect(screen.getByRole('button', { name: `Aumentar cantidad de ${producto.nombre}` }).hasAttribute('disabled')).toBe(true);
     expect(within(screen.getByRole('article')).getByText('1')).toBeTruthy();
-    expect(screen.getByText('Total estimado').parentElement?.textContent).toContain(
+    expect(screen.getByText('Total estimado de productos').parentElement?.textContent).toContain(
       `$${producto.precio.toLocaleString('es-CL')}`,
     );
   });
