@@ -61,14 +61,16 @@ function BarraNavegacion() {
                         </ul>
 
                         <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center gap-2" id="contenedor-auth">
-                            <NavLink
-                                className="btn btn-sm text-white fw-bold"
-                                style={{ backgroundColor: '#36BBD9' }}
-                                to="/carrito"
-                                onClick={cerrarMenu}
-                            >
-                                Mi carrito <span className="badge text-bg-light ms-1">{cantidadCarrito}</span>
-                            </NavLink>
+                            {usuario?.rol !== 'Administrador' && (
+                                <NavLink
+                                    className="btn btn-sm text-white fw-bold"
+                                    style={{ backgroundColor: '#36BBD9' }}
+                                    to="/carrito"
+                                    onClick={cerrarMenu}
+                                >
+                                    Mi carrito <span className="badge text-bg-light ms-1">{cantidadCarrito}</span>
+                                </NavLink>
+                            )}
                             {usuario?.rol === 'Administrador' && (
                                 <NavLink className="btn btn-outline-light btn-sm fw-bold" to="/admin" onClick={cerrarMenu}>
                                     Administración
@@ -91,13 +93,23 @@ function BarraNavegacion() {
                                     </button>
                                 </>
                             ) : (
-                                <Link
-                                    className="btn btn-outline-light btn-sm fw-bold"
-                                    to="/login"
-                                    onClick={cerrarMenu}
-                                >
-                                    Ingresar
-                                </Link>
+                                <>
+                                    <Link
+                                        className="btn btn-sm text-white fw-bold"
+                                        style={{ backgroundColor: '#04BFAD' }}
+                                        to="/registro"
+                                        onClick={cerrarMenu}
+                                    >
+                                        Crear cuenta
+                                    </Link>
+                                    <Link
+                                        className="btn btn-outline-light btn-sm fw-bold"
+                                        to="/login"
+                                        onClick={cerrarMenu}
+                                    >
+                                        Ingresar
+                                    </Link>
+                                </>
                             )}
                         </div>
                     </div>

@@ -11,6 +11,9 @@ export interface DatosFormularioProductoServicio {
 
 export type CategoriaFormularioProductoServicio = 'Servicio' | 'Producto' | 'Consulta' | 'Vacunacion';
 
+type CampoFormularioProductoServicio = 'nombre' | 'precio' | 'stock';
+type ErroresFormularioProductoServicio = Partial<Record<CampoFormularioProductoServicio, string>>;
+
 const valoresPredeterminados: DatosFormularioProductoServicio = {
   nombre: '',
   categoria: 'Servicio',
@@ -43,28 +46,43 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
   const [descripcion, establecerDescripcion] = useState(valoresIniciales.descripcion);
   const [stock, establecerStock] = useState(String(valoresIniciales.stock));
   const [imagen, establecerImagen] = useState(valoresIniciales.imagen);
-  const [errorNombre, establecerErrorNombre] = useState('');
+  const [erroresCampos, establecerErroresCampos] = useState<ErroresFormularioProductoServicio>({});
 
   const manejarEnvio = (e: React.FormEvent) => {
     e.preventDefault();
-
+    const errores: ErroresFormularioProductoServicio = {};
     if (!nombre.trim()) {
-      establecerErrorNombre('El nombre es obligatorio');
-      return;
+      errores.nombre = 'Ingresa el nombre del servicio o producto.';
     }
 
-    establecerErrorNombre('');
+    const precioNumerico = Number(precio);
+    if (String(precio).trim() === '') {
+      errores.precio = 'Ingresa un precio.';
+    } else if (!Number.isFinite(precioNumerico) || precioNumerico < 0) {
+      errores.precio = 'El precio debe ser un número igual o mayor que cero.';
+    }
+
+    if (categoria === 'Producto') {
+      const stockNumerico = Number(stock);
+      if (stock.trim() === '') {
+        errores.stock = 'Ingresa el stock inicial.';
+      } else if (!Number.isInteger(stockNumerico) || stockNumerico < 0) {
+        errores.stock = 'El stock debe ser un número entero igual o mayor que cero.';
+      }
+    }
+
+    establecerErroresCampos(errores);
+    if (Object.keys(errores).length > 0) return;
 
     alEnviar({
-      nombre,
+      nombre: nombre.trim(),
       categoria,
-      precio: Number(precio) || 0,
+      precio: precioNumerico,
       descripcion,
-      stock: Number(stock) || 0,
+      stock: Number(stock),
       imagen,
     });
 
-  
     if (!estaEditando) {
       establecerNombre('');
       establecerCategoria('Servicio');
@@ -76,7 +94,7 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
   };
 
   return (
-    <form onSubmit={manejarEnvio} className="p-4 border rounded shadow-sm bg-light">
+    <form onSubmit={manejarEnvio} className="p-4 border rounded shadow-sm bg-light" noValidate>
       <h3 className="mb-3">Registrar Servicio o Producto</h3>
 
       <div className="mb-3">
@@ -86,14 +104,18 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
         <input
           type="text"
           id="nombre"
-          className={`form-control ${errorNombre ? 'is-invalid' : ''}`}
+          className={`form-control${erroresCampos.nombre ? ' is-invalid' : ''}`}
           value={nombre}
+          aria-invalid={Boolean(erroresCampos.nombre)}
+          aria-describedby={erroresCampos.nombre ? 'nombre-error' : undefined}
           onChange={(e) => {
             establecerNombre(e.target.value);
-            if (e.target.value.trim()) establecerErrorNombre('');
+            establecerErroresCampos((actuales) => ({ ...actuales, nombre: undefined }));
           }}
         />
-        {errorNombre && <div className="invalid-feedback">{errorNombre}</div>}
+        {erroresCampos.nombre && (
+          <div className="invalid-feedback" id="nombre-error">{erroresCampos.nombre}</div>
+        )}
       </div>
 
       {categoria === 'Producto' && (
@@ -103,11 +125,20 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
             <input
               type="number"
               id="stock"
-              className="form-control"
+              className={`form-control${erroresCampos.stock ? ' is-invalid' : ''}`}
               min="0"
+              step="1"
               value={stock}
-              onChange={(e) => establecerStock(e.target.value)}
+              aria-invalid={Boolean(erroresCampos.stock)}
+              aria-describedby={erroresCampos.stock ? 'stock-error' : undefined}
+              onChange={(e) => {
+                establecerStock(e.target.value);
+                establecerErroresCampos((actuales) => ({ ...actuales, stock: undefined }));
+              }}
             />
+            {erroresCampos.stock && (
+              <div className="invalid-feedback" id="stock-error">{erroresCampos.stock}</div>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="imagen" className="form-label">Ruta de imagen (desde public)</label>
@@ -148,10 +179,20 @@ export const FormularioProductoServicio: React.FC<PropiedadesFormularioProductoS
         <input
           type="number"
           id="precio"
-          className="form-control"
+          className={`form-control${erroresCampos.precio ? ' is-invalid' : ''}`}
+          min="0"
+          step="any"
           value={precio}
-          onChange={(e) => establecerPrecio(e.target.value)}
+          aria-invalid={Boolean(erroresCampos.precio)}
+          aria-describedby={erroresCampos.precio ? 'precio-error' : undefined}
+          onChange={(e) => {
+            establecerPrecio(e.target.value);
+            establecerErroresCampos((actuales) => ({ ...actuales, precio: undefined }));
+          }}
         />
+        {erroresCampos.precio && (
+          <div className="invalid-feedback" id="precio-error">{erroresCampos.precio}</div>
+        )}
       </div>
 
       <div className="mb-3">

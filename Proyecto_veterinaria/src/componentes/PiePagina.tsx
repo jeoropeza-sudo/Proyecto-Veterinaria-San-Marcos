@@ -18,9 +18,6 @@ export function PiePagina() {
             <p className="small text-white-50 mt-3">
               Atención veterinaria integral en Rancagua desde 2009. Cuidamos a tus mascotas con el profesionalismo y cariño que se merecen.
             </p>
-            <p className="small text-white-50 mb-0">
-              <strong>Proyecto académico:</strong> Desarrollo FullStack II (Duoc UC).
-            </p>
           </div>
 
           <div className="col-12 col-md-3">

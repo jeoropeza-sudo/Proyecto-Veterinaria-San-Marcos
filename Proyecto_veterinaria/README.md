@@ -1,19 +1,18 @@
 # Veterinaria San Marcos
 
-## Autenticación de demostración
+## Autenticación
 
-La aplicación ofrece acceso simulado por rol para probar la navegación protegida:
+El registro y el inicio de sesión se validan mediante el API de autenticación disponible en el gateway local (`http://localhost:8090/api/aute`). El token y los datos de sesión se conservan en `localStorage`; la contraseña no se almacena en el navegador.
 
-- Administrador: `admin@sanmarcos.cl` / `admin1234`
-- Cliente: `cliente@sanmarcos.cl` / `cliente1234`
+## Consultas de contacto
 
-La sesión se conserva en `localStorage` sin guardar la contraseña. Las credenciales y los roles son datos de demostración disponibles en el frontend; no usar con información real ni considerar un mecanismo de seguridad de producción. Una autenticación real requiere un backend que valide las credenciales y los permisos.
+El formulario de contacto envía nombre, correo, motivo y mensaje al API de consultas (`POST http://localhost:8090/api/consultas`).
 
 ## Catálogo
 
 Los servicios y productos se inicializan desde `src/services/servicioDatos.ts` y se guardan en `localStorage` bajo `veterinaria.servicios` y `veterinaria.productos`. El panel de administración y las páginas de catálogo comparten estos datos; permite agregar, editar y eliminar registros, y los cambios permanecen en el mismo navegador. Para volver a los datos iniciales, elimina esas dos claves del almacenamiento local del sitio.
 
-El carrito se guarda en `localStorage` bajo `veterinaria.carrito`. Se pueden agregar productos dentro del stock y servicios como solicitudes de reserva; para confirmar se requiere una sesión. El flujo de confirmación es solo demostrativo: no procesa pagos ni envía solicitudes a la clínica porque la app todavía no cuenta con backend.
+El carrito se guarda en `localStorage` bajo `veterinaria.carrito`. Se pueden agregar productos dentro del stock y servicios como solicitudes de reserva; para confirmar se requiere una sesión. La confirmación actual no procesa pagos ni crea una orden de compra.
 
 Los nombres de páginas, componentes, métodos y tipos propios del proyecto están en español. Se conservan en su idioma original las APIs de React y de las bibliotecas, además de los archivos que pertenecen a la plantilla base.
 

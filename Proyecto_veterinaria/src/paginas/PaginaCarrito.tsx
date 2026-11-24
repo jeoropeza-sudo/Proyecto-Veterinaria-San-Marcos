@@ -24,16 +24,9 @@ export function PaginaCarrito() {
     }
 
     if (articulos.length === 0) return;
-    const tieneProductos = articulos.some((articulo) => articulo.tipo === 'producto');
-    const tieneServicios = articulos.some((articulo) => articulo.tipo === 'servicio');
     const completado = vaciar();
     if (completado) {
-      const tipoSolicitud = tieneProductos && tieneServicios
-        ? 'compra y reserva'
-        : tieneProductos
-          ? 'compra'
-          : 'solicitud de reserva';
-      establecerConfirmacion(`Tu ${tipoSolicitud} de demostración se preparó correctamente. No se envió a la veterinaria porque este proyecto aún no tiene un sistema de pagos ni backend.`);
+      establecerConfirmacion('Tu selección se preparó correctamente. Gracias por preferir Veterinaria San Marcos.');
     }
   };
 
@@ -175,9 +168,6 @@ export function PaginaCarrito() {
                     <strong>Total estimado</strong>
                     <strong className="fs-5" style={{ color: '#153259' }}>${total.toLocaleString('es-CL')}</strong>
                   </div>
-                  <p className="small text-secondary">
-                    Los valores de servicios son referenciales. El pago o confirmación definitiva requiere coordinación con la veterinaria.
-                  </p>
                   {!usuario && (
                     <p className="small rounded-3 p-3" style={{ backgroundColor: '#e5f8f6' }}>
                       Iniciarás sesión solo al confirmar la compra o reserva. Tu carrito se conservará.

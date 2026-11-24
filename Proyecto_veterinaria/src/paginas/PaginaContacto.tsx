@@ -1,13 +1,61 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { enviarConsulta, type DatosConsulta } from '../services/servicioConsultas';
+import { validarCorreo } from '../utils/validadorCorreo';
+
+type CampoConsulta = keyof DatosConsulta;
+type ErroresConsulta = Partial<Record<CampoConsulta, string>>;
 
 export function PaginaContacto() {
   const [mensajeEnviado, establecerMensajeEnviado] = useState(false);
+  const [erroresCampos, establecerErroresCampos] = useState<ErroresConsulta>({});
+  const [error, establecerError] = useState<string | null>(null);
+  const [estaEnviando, establecerEstaEnviando] = useState(false);
 
-  const manejarEnvio = (evento: FormEvent<HTMLFormElement>) => {
+  const limpiarErrorCampo = (campo: CampoConsulta) => {
+    establecerErroresCampos((actuales) => ({ ...actuales, [campo]: undefined }));
+    establecerMensajeEnviado(false);
+  };
+
+  const manejarEnvio = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
-    establecerMensajeEnviado(true);
-    evento.currentTarget.reset();
+    establecerError(null);
+    establecerMensajeEnviado(false);
+    const formulario = evento.currentTarget;
+    const formularioDatos = new FormData(formulario);
+    const obtenerValor = (campo: CampoConsulta): string => {
+      const valor = formularioDatos.get(campo);
+      return typeof valor === 'string' ? valor : '';
+    };
+    const datos: DatosConsulta = {
+      nombre: obtenerValor('nombre').trim(),
+      correo: obtenerValor('correo').trim(),
+      asunto: obtenerValor('asunto').trim(),
+      mensaje: obtenerValor('mensaje').trim(),
+    };
+    const errores: ErroresConsulta = {};
+    if (!datos.nombre) errores.nombre = 'Ingresa tu nombre.';
+    if (!datos.correo) {
+      errores.correo = 'Ingresa tu correo electrónico.';
+    } else if (!validarCorreo(datos.correo)) {
+      errores.correo = 'Ingresa un correo electrónico válido.';
+    }
+    if (!datos.asunto) errores.asunto = 'Selecciona el motivo de contacto.';
+    if (!datos.mensaje) errores.mensaje = 'Escribe tu consulta.';
+    establecerErroresCampos(errores);
+    if (Object.keys(errores).length > 0) return;
+
+    establecerEstaEnviando(true);
+    try {
+      await enviarConsulta(datos);
+      establecerMensajeEnviado(true);
+      establecerErroresCampos({});
+      formulario.reset();
+    } catch (error) {
+      establecerError(error instanceof Error ? error.message : 'No pudimos enviar tu consulta. Inténtalo nuevamente más tarde.');
+    } finally {
+      establecerEstaEnviando(false);
+    }
   };
 
   return (
@@ -46,35 +94,91 @@ export function PaginaContacto() {
               <div className="card-body p-4 p-lg-5">
                 <h2 className="h4 fw-bold mb-4" style={{ color: '#153259' }}>Envíanos una consulta</h2>
                 {mensajeEnviado && (
-                  <div className="alert alert-info" role="status">
-                    El formulario se validó correctamente. Esta versión académica no envía mensajes a la clínica.
+                  <div className="alert alert-success" role="status">
+                    Tu consulta fue enviada correctamente.
                   </div>
                 )}
-                <form onSubmit={manejarEnvio}>
+                {error && <div className="alert alert-danger" role="alert">{error}</div>}
+                <form onSubmit={manejarEnvio} noValidate>
                   <div className="mb-3">
                     <label className="form-label fw-semibold" htmlFor="contacto-nombre">Nombre</label>
-                    <input className="form-control" id="contacto-nombre" name="nombre" type="text" autoComplete="name" required />
+                    <input
+                      className={`form-control${erroresCampos.nombre ? ' is-invalid' : ''}`}
+                      id="contacto-nombre"
+                      name="nombre"
+                      type="text"
+                      autoComplete="name"
+                      aria-invalid={Boolean(erroresCampos.nombre)}
+                      aria-describedby={erroresCampos.nombre ? 'contacto-nombre-error' : undefined}
+                      onChange={() => limpiarErrorCampo('nombre')}
+                      required
+                    />
+                    {erroresCampos.nombre && (
+                      <div className="invalid-feedback" id="contacto-nombre-error">{erroresCampos.nombre}</div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label fw-semibold" htmlFor="contacto-correo">Correo electrónico</label>
-                    <input className="form-control" id="contacto-correo" name="correo" type="email" autoComplete="email" required />
+                    <input
+                      className={`form-control${erroresCampos.correo ? ' is-invalid' : ''}`}
+                      id="contacto-correo"
+                      name="correo"
+                      type="email"
+                      autoComplete="email"
+                      aria-invalid={Boolean(erroresCampos.correo)}
+                      aria-describedby={erroresCampos.correo ? 'contacto-correo-error' : undefined}
+                      onChange={() => limpiarErrorCampo('correo')}
+                      required
+                    />
+                    {erroresCampos.correo && (
+                      <div className="invalid-feedback" id="contacto-correo-error">{erroresCampos.correo}</div>
+                    )}
                   </div>
                   <div className="mb-3">
                     <label className="form-label fw-semibold" htmlFor="contacto-asunto">Motivo de contacto</label>
-                    <select className="form-select" id="contacto-asunto" name="asunto" defaultValue="" required>
+                    <select
+                      className={`form-select${erroresCampos.asunto ? ' is-invalid' : ''}`}
+                      id="contacto-asunto"
+                      name="asunto"
+                      defaultValue=""
+                      aria-invalid={Boolean(erroresCampos.asunto)}
+                      aria-describedby={erroresCampos.asunto ? 'contacto-asunto-error' : undefined}
+                      onChange={() => limpiarErrorCampo('asunto')}
+                      required
+                    >
                       <option value="" disabled>Selecciona una opción</option>
                       <option value="consulta">Consulta general</option>
                       <option value="servicios">Servicios y precios</option>
                       <option value="urgencia">Información sobre urgencias</option>
                       <option value="sugerencia">Sugerencia</option>
                     </select>
+                    {erroresCampos.asunto && (
+                      <div className="invalid-feedback" id="contacto-asunto-error">{erroresCampos.asunto}</div>
+                    )}
                   </div>
                   <div className="mb-4">
                     <label className="form-label fw-semibold" htmlFor="contacto-mensaje">Mensaje</label>
-                    <textarea className="form-control" id="contacto-mensaje" name="mensaje" rows={5} required />
+                    <textarea
+                      className={`form-control${erroresCampos.mensaje ? ' is-invalid' : ''}`}
+                      id="contacto-mensaje"
+                      name="mensaje"
+                      rows={5}
+                      aria-invalid={Boolean(erroresCampos.mensaje)}
+                      aria-describedby={erroresCampos.mensaje ? 'contacto-mensaje-error' : undefined}
+                      onChange={() => limpiarErrorCampo('mensaje')}
+                      required
+                    />
+                    {erroresCampos.mensaje && (
+                      <div className="invalid-feedback" id="contacto-mensaje-error">{erroresCampos.mensaje}</div>
+                    )}
                   </div>
-                  <button type="submit" className="btn text-white fw-bold w-100" style={{ backgroundColor: '#153259' }}>
-                    Enviar consulta
+                  <button
+                    type="submit"
+                    className="btn text-white fw-bold w-100"
+                    style={{ backgroundColor: '#153259' }}
+                    disabled={estaEnviando}
+                  >
+                    {estaEnviando ? 'Enviando...' : 'Enviar consulta'}
                   </button>
                 </form>
               </div>

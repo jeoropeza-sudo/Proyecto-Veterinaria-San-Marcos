@@ -1,12 +1,17 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAutenticacion } from '../context/useAutenticacion';
+import { validarCorreo } from '../utils/validadorCorreo';
 
 interface LoginLocationState {
   from?: {
     pathname?: string;
   };
+  success?: string;
 }
+
+type CampoInicioSesion = 'correo' | 'contrasena';
+type ErroresInicioSesion = Partial<Record<CampoInicioSesion, string>>;
 
 function obtenerRutaRedireccion(estado: unknown): string {
   if (typeof estado !== 'object' || estado === null || !('from' in estado)) {
@@ -17,22 +22,48 @@ function obtenerRutaRedireccion(estado: unknown): string {
   return from?.startsWith('/') && !from.startsWith('//') ? from : '/';
 }
 
+function obtenerMensajeRegistro(estado: unknown): string | null {
+  if (typeof estado !== 'object' || estado === null || !('success' in estado)) {
+    return null;
+  }
+
+  return typeof estado.success === 'string' ? estado.success : null;
+}
+
 export function PaginaInicioSesion() {
   const { usuario, iniciarSesion } = useAutenticacion();
   const location = useLocation();
   const [correo, establecerCorreo] = useState('');
   const [contrasena, establecerContrasena] = useState('');
+  const [erroresCampos, establecerErroresCampos] = useState<ErroresInicioSesion>({});
   const [error, establecerError] = useState<string | null>(null);
+  const [estaEnviando, establecerEstaEnviando] = useState(false);
+  const mensajeRegistro = obtenerMensajeRegistro(location.state);
 
   if (usuario) {
     return <Navigate to={obtenerRutaRedireccion(location.state)} replace />;
   }
 
-  const manejarEnvio = (event: FormEvent<HTMLFormElement>) => {
+  const manejarEnvio = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const errores: ErroresInicioSesion = {};
+    if (!correo.trim()) {
+      errores.correo = 'Ingresa tu correo electrónico.';
+    } else if (!validarCorreo(correo)) {
+      errores.correo = 'Ingresa un correo electrónico válido.';
+    }
+    if (!contrasena) errores.contrasena = 'Ingresa tu contraseña.';
+    establecerErroresCampos(errores);
+    if (Object.keys(errores).length > 0) return;
+
     establecerError(null);
-    if (!iniciarSesion(correo, contrasena)) {
-      establecerError('No se pudo iniciar sesión. Revisa las credenciales e inténtalo nuevamente.');
+    establecerEstaEnviando(true);
+    try {
+      await iniciarSesion(correo, contrasena);
+    } catch (error) {
+      establecerError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
+    } finally {
+      establecerEstaEnviando(false);
     }
   };
 
@@ -45,44 +76,67 @@ export function PaginaInicioSesion() {
               <h1 className="h3 mb-2">Iniciar sesión</h1>
               <p className="text-secondary mb-4">Ingresa para continuar en Veterinaria San Marcos.</p>
 
+              {mensajeRegistro && <div className="alert alert-success" role="status">{mensajeRegistro}</div>}
               {error && <div className="alert alert-danger" role="alert">{error}</div>}
 
-              <form onSubmit={manejarEnvio}>
+              <form onSubmit={manejarEnvio} noValidate>
                 <div className="mb-3">
                   <label htmlFor="login-correo" className="form-label">Correo electrónico</label>
                   <input
                     id="login-correo"
-                    className="form-control"
+                    className={`form-control${erroresCampos.correo ? ' is-invalid' : ''}`}
                     type="email"
                     autoComplete="username"
                     value={correo}
-                    onChange={(event) => establecerCorreo(event.target.value)}
+                    aria-invalid={Boolean(erroresCampos.correo)}
+                    aria-describedby={erroresCampos.correo ? 'login-correo-error' : undefined}
+                    onChange={(event) => {
+                      establecerCorreo(event.target.value);
+                      establecerErroresCampos((actuales) => ({ ...actuales, correo: undefined }));
+                    }}
                     required
                   />
+                  {erroresCampos.correo && (
+                    <div className="invalid-feedback" id="login-correo-error">{erroresCampos.correo}</div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label htmlFor="login-contrasena" className="form-label">Contraseña</label>
                   <input
                     id="login-contrasena"
-                    className="form-control"
+                    className={`form-control${erroresCampos.contrasena ? ' is-invalid' : ''}`}
                     type="password"
                     autoComplete="current-password"
                     value={contrasena}
-                    onChange={(event) => establecerContrasena(event.target.value)}
+                    aria-invalid={Boolean(erroresCampos.contrasena)}
+                    aria-describedby={erroresCampos.contrasena ? 'login-contrasena-error' : undefined}
+                    onChange={(event) => {
+                      establecerContrasena(event.target.value);
+                      establecerErroresCampos((actuales) => ({ ...actuales, contrasena: undefined }));
+                    }}
                     required
                   />
+                  {erroresCampos.contrasena && (
+                    <div className="invalid-feedback" id="login-contrasena-error">{erroresCampos.contrasena}</div>
+                  )}
                 </div>
-                <button className="btn text-white fw-bold w-100" style={{ backgroundColor: '#153259' }} type="submit">
-                  Ingresar
+                <button
+                  className="btn text-white fw-bold w-100"
+                  style={{ backgroundColor: '#153259' }}
+                  type="submit"
+                  disabled={estaEnviando}
+                >
+                  {estaEnviando ? 'Ingresando...' : 'Ingresar'}
                 </button>
               </form>
 
+              <p className="text-center text-secondary mt-4 mb-2">¿No tienes una cuenta?</p>
+              <Link className="btn btn-outline-primary fw-bold w-100" to="/registro">
+                Crear cuenta
+              </Link>
               <Link className="d-inline-block mt-3" to="/">Volver al inicio</Link>
             </div>
           </section>
-          <p className="small text-secondary mt-3">
-            Autenticación de demostración para el proyecto académico; no protege datos reales ni sustituye un backend.
-          </p>
         </div>
       </div>
     </main>

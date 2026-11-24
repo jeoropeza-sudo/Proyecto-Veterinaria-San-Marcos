@@ -12,6 +12,7 @@ import { PaginaInicioSesion } from '../paginas/PaginaInicioSesion';
 import { PaginaNosotros } from '../paginas/PaginaNosotros';
 import { PaginaNovedades } from '../paginas/PaginaNovedades';
 import { PaginaProductos } from '../paginas/PaginaProductos';
+import { PaginaRegistro } from '../paginas/PaginaRegistro';
 import { PaginaServicios } from '../paginas/PaginaServicios';
 import { useCatalogo } from '../context/useCatalogo';
 import { useCarrito } from '../context/useCarrito';
@@ -36,6 +37,7 @@ export function EnrutadorAplicacion() {
           <Route path="/novedades/:codigo" element={<PaginaDetalleNovedad />} />
           <Route path="/contacto" element={<PaginaContacto />} />
           <Route path="/login" element={<PaginaInicioSesion />} />
+          <Route path="/registro" element={<PaginaRegistro />} />
           <Route path="/productos" element={<PaginaProductos />} />
           <Route path="/productos/:codigo" element={<PaginaDetalle />} />
           <Route path="/carrito" element={<PaginaCarrito />} />

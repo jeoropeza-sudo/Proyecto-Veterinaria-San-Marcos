@@ -21,24 +21,10 @@ function obtenerEstadoInicial(): EstadoAutenticacion {
 export function ProveedorAutenticacion({ children }: { children: ReactNode }) {
   const [estado, establecerEstado] = useState<EstadoAutenticacion>(obtenerEstadoInicial);
 
-  const iniciarSesion = (correo: string, contrasena: string): boolean => {
-    const usuario = autenticar(correo, contrasena);
-    if (!usuario) {
-      establecerEstado((actual) => ({ ...actual, error: 'Correo o contraseña incorrectos.' }));
-      return false;
-    }
-
-    try {
-      guardarSesion(usuario);
-      establecerEstado({ usuario, error: null });
-      return true;
-    } catch {
-      establecerEstado((actual) => ({
-        ...actual,
-        error: 'No se pudo guardar la sesión en este navegador.',
-      }));
-      return false;
-    }
+  const iniciarSesion = async (correo: string, contrasena: string): Promise<void> => {
+    const { usuario, token } = await autenticar(correo, contrasena);
+    guardarSesion(usuario, token);
+    establecerEstado({ usuario, error: null });
   };
 
   const cerrarSesion = (): void => {
