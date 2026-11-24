@@ -8,6 +8,7 @@ export interface ValorContextoCarrito {
   solicitarServicio: (servicio: Servicio) => boolean;
   establecerCantidad: (tipo: ItemCarrito['tipo'], codigo: string, cantidad: number) => boolean;
   quitarArticulo: (tipo: ItemCarrito['tipo'], codigo: string) => boolean;
+  quitarArticulos: (tipo: ItemCarrito['tipo'], codigos: string[]) => boolean;
   vaciar: () => boolean;
 }
 

@@ -7,7 +7,7 @@ export function PaginaDetalle() {
   const { codigo } = useParams<{ codigo: string }>();
   const { pathname } = useLocation();
   const { productos, servicios } = useCatalogo();
-  const { agregarProducto, solicitarServicio } = useCarrito();
+  const { articulos, agregarProducto, solicitarServicio } = useCarrito();
   const [mensajeAccion, establecerMensajeAccion] = useState<string | null>(null);
   const isProductPage = pathname.startsWith('/productos/');
   const producto = isProductPage
@@ -172,8 +172,12 @@ export function PaginaDetalle() {
                 className="btn text-white fw-bold mt-4"
                 style={{ backgroundColor: '#04BFAD' }}
                 onClick={() => {
-                  if (servicio && solicitarServicio(servicio)) {
-                    establecerMensajeAccion('La solicitud de reserva se agregó al carrito. Para confirmarla, inicia sesión.');
+                  if (servicio && articulos.some((articulo) => (
+                    articulo.tipo === 'servicio' && articulo.producto.codigo === servicio.codigo
+                  ))) {
+                    establecerMensajeAccion('Este servicio ya está en tu solicitud de reserva.');
+                  } else if (servicio && solicitarServicio(servicio)) {
+                    establecerMensajeAccion('La solicitud de reserva se agregó al carrito.');
                   }
                 }}
               >

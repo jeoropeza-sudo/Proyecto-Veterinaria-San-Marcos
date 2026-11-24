@@ -38,3 +38,14 @@ export interface Usuario {
   comuna: string;
   direccion: string;
 }
+
+export interface Reserva {
+  id: number;
+  nombreCliente: string;
+  emailCliente: string;
+  nombreMascota: string;
+  servicio: string;
+  fecha: string;
+  hora: string;
+  estado: string;
+}

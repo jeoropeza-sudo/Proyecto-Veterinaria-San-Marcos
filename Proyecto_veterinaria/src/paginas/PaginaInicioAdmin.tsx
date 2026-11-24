@@ -5,12 +5,12 @@ import '../admin.css';
 
 export function PaginaInicioAdmin() {
   const { usuario } = useAutenticacion();
-  const { productos, servicios } = useCatalogo();
+  const { productos, servicios, cargando } = useCatalogo();
   const modulos = [
     {
       numero: '01',
       titulo: 'Gestión de usuarios',
-      descripcion: 'Administra los datos de identificación, contacto y rol de los usuarios.',
+      descripcion: 'Consulta los perfiles, datos de contacto y roles registrados.',
       destino: '/admin/usuarios',
       accion: 'Administrar usuarios',
       clase: 'admin-home__module--users',
@@ -45,11 +45,11 @@ export function PaginaInicioAdmin() {
         <section className="admin-home__metrics" aria-label="Resumen del catálogo">
           <div className="admin-home__metric">
             <span>Productos activos</span>
-            <strong>{productos.length}</strong>
+            <strong>{cargando ? '…' : productos.length}</strong>
           </div>
           <div className="admin-home__metric">
             <span>Servicios disponibles</span>
-            <strong>{servicios.length}</strong>
+            <strong>{cargando ? '…' : servicios.length}</strong>
           </div>
           <div className="admin-home__metric admin-home__metric--status">
             <span className="admin-status-dot" aria-hidden="true" />

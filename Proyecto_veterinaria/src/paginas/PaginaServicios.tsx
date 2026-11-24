@@ -3,7 +3,7 @@ import { TarjetaServicio } from '../componentes/moleculas/TarjetaServicio';
 import { useCatalogo } from '../context/useCatalogo';
 
 export function PaginaServicios() {
-  const { servicios } = useCatalogo();
+  const { servicios, cargando } = useCatalogo();
   const [busqueda, establecerBusqueda] = useState('');
   const [categoria, establecerCategoria] = useState('Todas');
   const categorias = [...new Set(servicios.map((servicio) => servicio.categoria))];
@@ -59,9 +59,13 @@ export function PaginaServicios() {
         </div>
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <h2 className="h5 mb-0">Prestaciones disponibles</h2>
-          <span className="small text-secondary">{serviciosFiltrados.length} servicios encontrados</span>
+          <span className="small text-secondary">
+            {cargando ? 'Cargando catálogo…' : `${serviciosFiltrados.length} servicios encontrados`}
+          </span>
         </div>
-        {serviciosFiltrados.length === 0 ? (
+        {cargando ? (
+          <div className="text-center py-5 text-secondary" role="status">Cargando servicios…</div>
+        ) : serviciosFiltrados.length === 0 ? (
           <p className="alert alert-info">No hay servicios que coincidan con la búsqueda.</p>
         ) : (
           <div className="row g-4">

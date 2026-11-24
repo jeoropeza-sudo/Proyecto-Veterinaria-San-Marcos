@@ -76,6 +76,11 @@ function BarraNavegacion() {
                                     Administración
                                 </NavLink>
                             )}
+                            {usuario?.rol === 'Cliente' && (
+                                <NavLink className="btn btn-outline-light btn-sm fw-bold" to="/perfil" onClick={cerrarMenu}>
+                                    Mi perfil
+                                </NavLink>
+                            )}
                             {usuario ? (
                                 <>
                                     <span className="text-white fw-semibold px-lg-2 py-1 text-center">

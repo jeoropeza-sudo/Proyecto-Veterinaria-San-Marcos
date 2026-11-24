@@ -3,6 +3,7 @@ import {
   agregarProductoAlCarrito,
   vaciarCarrito,
   cargarCarrito,
+  quitarArticulosCarrito,
   quitarArticuloCarrito,
   solicitarReservaServicio,
   establecerCantidadArticulo,
@@ -46,10 +47,12 @@ export function ProveedorCarrito({ children }: { children: ReactNode }) {
     actualizarCarrito((articulos) => establecerCantidadArticulo(articulos, tipo, codigo, cantidad));
   const quitarArticulo = (tipo: ItemCarrito['tipo'], codigo: string) =>
     actualizarCarrito((articulos) => quitarArticuloCarrito(articulos, tipo, codigo));
+  const quitarArticulos = (tipo: ItemCarrito['tipo'], codigos: string[]) =>
+    actualizarCarrito((articulos) => quitarArticulosCarrito(articulos, tipo, codigos));
   const vaciar = () => actualizarCarrito(() => vaciarCarrito());
 
   return (
-    <ContextoCarrito.Provider value={{ ...estado, agregarProducto, solicitarServicio, establecerCantidad, quitarArticulo, vaciar }}>
+    <ContextoCarrito.Provider value={{ ...estado, agregarProducto, solicitarServicio, establecerCantidad, quitarArticulo, quitarArticulos, vaciar }}>
       {children}
     </ContextoCarrito.Provider>
   );

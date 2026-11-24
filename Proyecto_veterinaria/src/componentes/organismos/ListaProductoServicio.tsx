@@ -5,12 +5,13 @@ export interface ElementoAdministracion {
   nombre: string;
   categoria: string;
   precio: number;
+  stock: number | null;
 }
 
 interface PropiedadesListaProductoServicio {
   articulos: ElementoAdministracion[];
   alEditar: (codigo: string) => void;
-  alEliminar: (codigo: string) => void;
+  alEliminar: (codigo: string) => void | Promise<void>;
 }
 
 export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> = ({
@@ -23,25 +24,29 @@ export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> =
       <table className="table table-striped table-bordered">
         <thead className="table-dark">
           <tr>
+            <th>Código</th>
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Precio</th>
+            <th>Stock</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {articulos.length === 0 ? (
             <tr>
-              <td colSpan={4} className="text-center">
+              <td colSpan={6} className="text-center">
                 No hay productos o servicios registrados.
               </td>
             </tr>
           ) : (
             articulos.map((articulo) => (
               <tr key={articulo.codigo}>
+                <td>{articulo.codigo}</td>
                 <td>{articulo.nombre}</td>
                 <td>{articulo.categoria}</td>
-                <td>${articulo.precio}</td>
+                <td>${articulo.precio.toLocaleString('es-CL')}</td>
+                <td>{articulo.stock ?? '—'}</td>
                 <td>
                   <button
                     type="button"
@@ -53,7 +58,7 @@ export const ListaProductoServicio: React.FC<PropiedadesListaProductoServicio> =
                   <button
                     type="button"
                     className="btn btn-danger btn-sm"
-                    onClick={() => alEliminar(articulo.codigo)}
+                    onClick={() => { void alEliminar(articulo.codigo); }}
                   >
                     Eliminar
                   </button>

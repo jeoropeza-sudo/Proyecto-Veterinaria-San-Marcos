@@ -2,33 +2,26 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Reserva } from '../types';
 import {
+  actualizarEstadoConsultaApi,
+  eliminarConsultaApi,
+  obtenerConsultasAdmin,
+  type ConsultaAdmin,
+} from '../services/servicioPerfilCliente';
+import {
   obtenerReservas,
   cambiarEstadoReserva,
   eliminarReserva,
 } from '../services/servicioReservas';
 import '../admin.css';
 
-interface Consulta {
-  id: number;
-  nombre: string;
-  correo: string;
-  telefono?: string | null;
-  asunto: string;
-  mensaje: string;
-  respondida: boolean;
-  fechaCreacion?: string;
-}
-
 export function PaginaConsultasAdmin() {
   const [vistaActiva, setVistaActiva] = useState<'reservas' | 'consultas'>('reservas');
 
-  // Estados para Reservas (puerto 8086)
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [cargandoReservas, setCargandoReservas] = useState(true);
   const [errorReservas, setErrorReservas] = useState<string | null>(null);
 
-  // Estados para Consultas (puerto 8080)
-  const [consultas, setConsultas] = useState<Consulta[]>([]);
+  const [consultas, setConsultas] = useState<ConsultaAdmin[]>([]);
   const [cargandoConsultas, setCargandoConsultas] = useState(true);
   const [errorConsultas, setErrorConsultas] = useState<string | null>(null);
 
@@ -40,9 +33,7 @@ export function PaginaConsultasAdmin() {
       setReservas(datos);
     } catch (err) {
       console.error('Error al cargar reservas:', err);
-      setErrorReservas(
-        'No se pudieron cargar las reservas. Verifica que el microservicio ms-reserva esté corriendo en el puerto 8086.'
-      );
+      setErrorReservas('No se pudieron cargar las reservas. Inténtalo nuevamente.');
     } finally {
       setCargandoReservas(false);
     }
@@ -52,15 +43,10 @@ export function PaginaConsultasAdmin() {
     setCargandoConsultas(true);
     setErrorConsultas(null);
     try {
-      const respuesta = await fetch('http://localhost:8080/api/consultas');
-      if (!respuesta.ok) throw new Error(`Error HTTP ${respuesta.status}`);
-      const datos: Consulta[] = await respuesta.json();
-      setConsultas(datos);
+      setConsultas(await obtenerConsultasAdmin());
     } catch (err) {
       console.error('Error al cargar consultas:', err);
-      setErrorConsultas(
-        'No se pudieron cargar las consultas. Verifica que el backend esté corriendo en el puerto 8080.'
-      );
+      setErrorConsultas('No se pudieron cargar las consultas. Inténtalo nuevamente.');
     } finally {
       setCargandoConsultas(false);
     }
@@ -95,10 +81,7 @@ export function PaginaConsultasAdmin() {
 
   const marcarComoGestionada = async (id: number) => {
     try {
-      const respuesta = await fetch(`http://localhost:8080/api/consultas/${id}/responder`, {
-        method: 'PUT',
-      });
-      if (!respuesta.ok) throw new Error(`Error HTTP ${respuesta.status}`);
+      await actualizarEstadoConsultaApi(id);
       await cargarConsultas();
     } catch (err) {
       console.error('Error al actualizar estado:', err);
@@ -110,10 +93,7 @@ export function PaginaConsultasAdmin() {
     const confirmar = window.confirm(`¿Estás seguro de eliminar la consulta de "${nombre}"?`);
     if (!confirmar) return;
     try {
-      const respuesta = await fetch(`http://localhost:8080/api/consultas/${id}`, {
-        method: 'DELETE',
-      });
-      if (!respuesta.ok) throw new Error(`Error HTTP ${respuesta.status}`);
+      await eliminarConsultaApi(id);
       await cargarConsultas();
     } catch (err) {
       console.error('Error al eliminar consulta:', err);
@@ -160,7 +140,6 @@ export function PaginaConsultasAdmin() {
           </div>
         </div>
 
-        {/* Pestañas para alternar entre Reservas y Consultas */}
         <div className="d-flex gap-2 mb-4">
           <button
             type="button"
@@ -184,7 +163,6 @@ export function PaginaConsultasAdmin() {
           </button>
         </div>
 
-        {/* VISTA DE RESERVAS (ms-reserva en puerto 8086) */}
         {vistaActiva === 'reservas' && (
           <>
             {errorReservas && (
@@ -270,7 +248,6 @@ export function PaginaConsultasAdmin() {
           </>
         )}
 
-        {/* VISTA DE CONSULTAS (puerto 8080) */}
         {vistaActiva === 'consultas' && (
           <>
             {errorConsultas && (

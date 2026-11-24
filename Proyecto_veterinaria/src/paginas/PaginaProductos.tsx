@@ -3,7 +3,7 @@ import { TarjetaProducto } from '../componentes/moleculas/TarjetaProducto';
 import { useCatalogo } from '../context/useCatalogo';
 
 export function PaginaProductos() {
-  const { productos } = useCatalogo();
+  const { productos, cargando } = useCatalogo();
   const [busqueda, establecerBusqueda] = useState('');
   const [categoria, establecerCategoria] = useState('Todas');
   const categorias = [...new Set(productos.map((producto) => producto.categoria))];
@@ -59,9 +59,13 @@ export function PaginaProductos() {
         </div>
         <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
           <h2 className="h5 mb-0">Catálogo</h2>
-          <span className="small text-secondary">{productosFiltrados.length} productos encontrados</span>
+          <span className="small text-secondary">
+            {cargando ? 'Cargando catálogo…' : `${productosFiltrados.length} productos encontrados`}
+          </span>
         </div>
-        {productosFiltrados.length === 0 ? (
+        {cargando ? (
+          <div className="text-center py-5 text-secondary" role="status">Cargando productos…</div>
+        ) : productosFiltrados.length === 0 ? (
           <p className="alert alert-info">No hay productos que coincidan con la búsqueda.</p>
         ) : (
           <div className="row g-4">

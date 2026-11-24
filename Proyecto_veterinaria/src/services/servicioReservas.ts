@@ -1,32 +1,30 @@
 import type { Reserva } from '../types';
+import { ejecutarApi, solicitarApi } from './clienteApi';
 
-const API_URL = 'http://localhost:8086/api/reservas';
+const API_PATH = '/api/reservas';
+
+export type NuevaReserva = Omit<Reserva, 'id'>;
 
 export const obtenerReservas = async (): Promise<Reserva[]> => {
-  const res = await fetch(API_URL);
-  if (!res.ok) throw new Error('Error al obtener las reservas');
-  return res.json();
+  return solicitarApi<Reserva[]>(API_PATH);
 };
 
-export const crearReserva = async (reserva: Reserva): Promise<Reserva> => {
-  const res = await fetch(API_URL, {
+export const obtenerReservasCliente = async (email: string): Promise<Reserva[]> => {
+  return solicitarApi<Reserva[]>(`${API_PATH}/cliente/${encodeURIComponent(email)}`);
+};
+
+export const crearReserva = async (reserva: NuevaReserva): Promise<Reserva> => {
+  return solicitarApi<Reserva>(API_PATH, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reserva),
   });
-  if (!res.ok) throw new Error('Error al registrar la reserva');
-  return res.json();
 };
 
 export const cambiarEstadoReserva = async (id: number, estado: string): Promise<Reserva> => {
-  const res = await fetch(`${API_URL}/${id}/estado?estado=${estado}`, {
-    method: 'PATCH',
-  });
-  if (!res.ok) throw new Error('Error al cambiar estado');
-  return res.json();
+  const query = new URLSearchParams({ estado });
+  return solicitarApi<Reserva>(`${API_PATH}/${id}/estado?${query.toString()}`, { method: 'PATCH' });
 };
 
 export const eliminarReserva = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('Error al eliminar la reserva');
+  await ejecutarApi(`${API_PATH}/${id}`, { method: 'DELETE' });
 };

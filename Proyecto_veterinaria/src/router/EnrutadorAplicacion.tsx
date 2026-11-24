@@ -1,19 +1,23 @@
 import { Route, Routes } from 'react-router-dom';
-import BarraNavegacion from '../componentes/organismos/BarraNavegacion';
+import BarraNavegacion from '../Componentes/organismos/BarraNavegacion';
 import { PiePagina } from '../componentes/PiePagina';
 import { useAutenticacion } from '../context/useAutenticacion';
 import { PaginaAdministracion } from '../paginas/PaginaAdministracion';
+import { PaginaConsultasAdmin } from '../paginas/PaginaConsultasAdmin';
 import { PaginaContacto } from '../paginas/PaginaContacto';
 import { PaginaDetalle } from '../paginas/PaginaDetalle';
 import { PaginaDetalleNovedad } from '../paginas/PaginaDetalleNovedad';
 import { PaginaCarrito } from '../paginas/PaginaCarrito';
 import { PaginaInicio } from '../paginas/PaginaInicio';
+import { PaginaInicioAdmin } from '../paginas/PaginaInicioAdmin';
 import { PaginaInicioSesion } from '../paginas/PaginaInicioSesion';
 import { PaginaNosotros } from '../paginas/PaginaNosotros';
 import { PaginaNovedades } from '../paginas/PaginaNovedades';
+import { PaginaPerfilCliente } from '../paginas/PaginaPerfilCliente';
 import { PaginaProductos } from '../paginas/PaginaProductos';
 import { PaginaRegistro } from '../paginas/PaginaRegistro';
 import { PaginaServicios } from '../paginas/PaginaServicios';
+import { PaginaUsuariosAdmin } from '../paginas/PaginaUsuariosAdmin';
 import { useCatalogo } from '../context/useCatalogo';
 import { useCarrito } from '../context/useCarrito';
 import { RequerirRol } from './RequerirRol';
@@ -44,10 +48,42 @@ export function EnrutadorAplicacion() {
           <Route path="/servicios" element={<PaginaServicios />} />
           <Route path="/servicios/:codigo" element={<PaginaDetalle />} />
           <Route
+            path="/perfil"
+            element={
+              <RequerirRol rolesPermitidos={['Cliente']}>
+                <PaginaPerfilCliente />
+              </RequerirRol>
+            }
+          />
+          <Route
             path="/admin"
             element={
               <RequerirRol rolesPermitidos={['Administrador']}>
+                <PaginaInicioAdmin />
+              </RequerirRol>
+            }
+          />
+          <Route
+            path="/admin/catalogo"
+            element={
+              <RequerirRol rolesPermitidos={['Administrador']}>
                 <PaginaAdministracion />
+              </RequerirRol>
+            }
+          />
+          <Route
+            path="/admin/consultas"
+            element={
+              <RequerirRol rolesPermitidos={['Administrador']}>
+                <PaginaConsultasAdmin />
+              </RequerirRol>
+            }
+          />
+          <Route
+            path="/admin/usuarios"
+            element={
+              <RequerirRol rolesPermitidos={['Administrador']}>
+                <PaginaUsuariosAdmin />
               </RequerirRol>
             }
           />
