@@ -19,7 +19,7 @@ function obtenerRutaRedireccion(estado: unknown): string {
   }
 
   const from = (estado as LoginLocationState).from?.pathname;
-  return from?.startsWith('/') && !from.startsWith('//') ? from : '/';
+  return typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') ? from : '/';
 }
 
 function obtenerMensajeRegistro(estado: unknown): string | null {
