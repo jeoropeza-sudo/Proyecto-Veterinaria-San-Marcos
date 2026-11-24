@@ -4,45 +4,8 @@ import type { Servicio } from '../../types';
 import { useCarrito } from '../../context/useCarrito';
 
 export function TarjetaServicio({ servicio }: { servicio: Servicio }) {
-<<<<<<< Updated upstream
   const { solicitarServicio } = useCarrito();
   const [solicitudRealizada, establecerSolicitudRealizada] = useState(false);
-=======
-  const { usuario } = useAutenticacion();
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [nombreCliente, setNombreCliente] = useState(
-    usuario ? `${usuario.nombre} ${usuario.apellidos}` : ''
-  );
-  const [emailCliente, setEmailCliente] = useState(usuario?.correo || '');
-  const [nombreMascota, setNombreMascota] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [hora, setHora] = useState('');
-  const [enviando, setEnviando] = useState(false);
-  const [solicitudRealizada, setSolicitudRealizada] = useState(false);
-
-  const manejarReserva = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setEnviando(true);
-    try {
-      await crearReserva({
-        nombreCliente,
-        emailCliente,
-        nombreMascota,
-        servicio: servicio.nombre,
-        fecha,
-        hora,
-      });
-      setSolicitudRealizada(true);
-      setMostrarModal(false);
-      alert(`¡Reserva confirmada para ${servicio.nombre}!`);
-    } catch (error) {
-      console.error(error);
-      alert('No se pudo conectar con el servidor de reservas (puerto 8086).');
-    } finally {
-      setEnviando(false);
-    }
-  };
->>>>>>> Stashed changes
 
   return (
     <article className="card h-100 border-0 shadow-sm overflow-hidden">
