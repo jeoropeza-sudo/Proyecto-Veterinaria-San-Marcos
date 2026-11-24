@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import BarraNavegacion from '../Componentes/organismos/BarraNavegacion';
-import { PiePagina } from '../componentes/PiePagina';
+import { PiePagina } from '../Componentes/PiePagina';
 import { useAutenticacion } from '../context/useAutenticacion';
 import { PaginaAdministracion } from '../paginas/PaginaAdministracion';
 import { PaginaConsultasAdmin } from '../paginas/PaginaConsultasAdmin';

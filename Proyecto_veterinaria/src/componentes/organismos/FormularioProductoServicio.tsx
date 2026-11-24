@@ -134,8 +134,11 @@ export function FormularioProductoServicio({
   };
 
   return (
-    <form onSubmit={manejarEnvio} className="p-4 border rounded shadow-sm bg-light" noValidate>
-      <h2 className="h4 mb-3">{estaEditando ? 'Editar artículo' : 'Registrar artículo'}</h2>
+    <form onSubmit={manejarEnvio} className="catalog-admin-form" noValidate>
+      <div className="catalog-admin-form-heading">
+        <p>{estaEditando ? 'MODE DE EDICIÓN' : 'NUEVO REGISTRO'}</p>
+        <h2>{estaEditando ? 'Editar artículo' : 'Registrar artículo'}</h2>
+      </div>
       {errorEnvio && <div className="alert alert-danger" role="alert">{errorEnvio}</div>}
 
       {!estaEditando && (
@@ -153,36 +156,38 @@ export function FormularioProductoServicio({
         </div>
       )}
 
-      <div className="mb-3">
-        <label htmlFor="nombre-articulo" className="form-label">Nombre</label>
-        <input
-          id="nombre-articulo"
-          className={`form-control${errores.nombre ? ' is-invalid' : ''}`}
-          value={nombre}
-          aria-invalid={Boolean(errores.nombre)}
-          aria-describedby={errores.nombre ? 'nombre-articulo-error' : undefined}
-          onChange={(evento) => {
-            establecerNombre(evento.target.value);
-            cambiarCampo('nombre');
-          }}
-        />
-        {errores.nombre && <div className="invalid-feedback" id="nombre-articulo-error">{errores.nombre}</div>}
-      </div>
+      <div className="catalog-admin-form-grid">
+        <div className="mb-3">
+          <label htmlFor="nombre-articulo" className="form-label">Nombre</label>
+          <input
+            id="nombre-articulo"
+            className={`form-control${errores.nombre ? ' is-invalid' : ''}`}
+            value={nombre}
+            aria-invalid={Boolean(errores.nombre)}
+            aria-describedby={errores.nombre ? 'nombre-articulo-error' : undefined}
+            onChange={(evento) => {
+              establecerNombre(evento.target.value);
+              cambiarCampo('nombre');
+            }}
+          />
+          {errores.nombre && <div className="invalid-feedback" id="nombre-articulo-error">{errores.nombre}</div>}
+        </div>
 
-      <div className="mb-3">
-        <label htmlFor="categoria-articulo" className="form-label">Categoría</label>
-        <input
-          id="categoria-articulo"
-          className={`form-control${errores.categoria ? ' is-invalid' : ''}`}
-          value={categoria}
-          aria-invalid={Boolean(errores.categoria)}
-          aria-describedby={errores.categoria ? 'categoria-articulo-error' : undefined}
-          onChange={(evento) => {
-            establecerCategoria(evento.target.value);
-            cambiarCampo('categoria');
-          }}
-        />
-        {errores.categoria && <div className="invalid-feedback" id="categoria-articulo-error">{errores.categoria}</div>}
+        <div className="mb-3">
+          <label htmlFor="categoria-articulo" className="form-label">Categoría</label>
+          <input
+            id="categoria-articulo"
+            className={`form-control${errores.categoria ? ' is-invalid' : ''}`}
+            value={categoria}
+            aria-invalid={Boolean(errores.categoria)}
+            aria-describedby={errores.categoria ? 'categoria-articulo-error' : undefined}
+            onChange={(evento) => {
+              establecerCategoria(evento.target.value);
+              cambiarCampo('categoria');
+            }}
+          />
+          {errores.categoria && <div className="invalid-feedback" id="categoria-articulo-error">{errores.categoria}</div>}
+        </div>
       </div>
 
       <div className="mb-3">
@@ -303,7 +308,7 @@ export function FormularioProductoServicio({
         />
       </div>
 
-      <button type="submit" className="btn btn-primary w-100" disabled={enviando}>
+      <button type="submit" className="btn catalog-admin-submit w-100" disabled={enviando}>
         {enviando ? 'Guardando…' : estaEditando ? 'Guardar cambios' : `Registrar ${tipo.toLowerCase()}`}
       </button>
       {estaEditando && alCancelar && (

@@ -4,6 +4,7 @@ import { FormularioProductoServicio, type DatosFormularioProductoServicio } from
 import { ListaProductoServicio, type ElementoAdministracion } from '../Componentes/organismos/ListaProductoServicio';
 import { useCatalogo } from '../context/useCatalogo';
 import type { Producto, Servicio } from '../types';
+import '../admin.css';
 
 type Articulo = Producto | Servicio;
 
@@ -26,6 +27,8 @@ export function PaginaAdministracion() {
   const [articuloEditando, establecerArticuloEditando] = useState<Articulo | null>(null);
   const [errorOperacion, establecerErrorOperacion] = useState<string | null>(null);
   const [mensajeExito, establecerMensajeExito] = useState<string | null>(null);
+  const [vistaActiva, establecerVistaActiva] = useState<'Todos' | 'Producto' | 'Servicio'>('Todos');
+  const [busqueda, establecerBusqueda] = useState('');
 
   const articulos: ElementoAdministracion[] = [
     ...productos.map((producto) => ({
@@ -165,47 +168,89 @@ export function PaginaAdministracion() {
         }
     : undefined;
 
+  const articulosVisibles = articulos.filter((articulo) => {
+    const coincideTipo = vistaActiva === 'Todos'
+      || (vistaActiva === 'Producto' && articulo.categoria.startsWith('Producto'))
+      || (vistaActiva === 'Servicio' && articulo.categoria.startsWith('Servicio'));
+    const texto = `${articulo.codigo} ${articulo.nombre} ${articulo.categoria}`.toLowerCase();
+    return coincideTipo && texto.includes(busqueda.trim().toLowerCase());
+  });
+
   return (
-    <main className="container py-4">
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-          <p className="text-uppercase small fw-semibold text-secondary mb-1">Administración</p>
-          <h1 className="h2 mb-0" style={{ color: '#153259' }}>Gestión de productos y servicios</h1>
-        </div>
-        <Link to="/admin" className="btn btn-outline-primary">← Volver al panel</Link>
-      </div>
-
-      {errorOperacion && <div className="alert alert-danger" role="alert">{errorOperacion}</div>}
-      {mensajeExito && <div className="alert alert-success" role="status">{mensajeExito}</div>}
-
-      {cargando ? (
-        <div className="text-center py-5" role="status">Cargando catálogo…</div>
-      ) : (
-        <div className="row g-4 align-items-start">
-          <div className="col-lg-5">
-            <FormularioProductoServicio
-              key={articuloEditando?.codigo ?? 'nuevo'}
-              valoresIniciales={valoresFormulario}
-              estaEditando={articuloEditando !== null}
-              alEnviar={manejarRegistroArticulo}
-              alCancelar={() => establecerArticuloEditando(null)}
-            />
+    <main className="admin-page catalog-admin-page">
+      <div className="container admin-page__container">
+        <header className="catalog-admin-header">
+          <div>
+            <p className="admin-eyebrow mb-1">VETERINARIA SAN MARCOS · ADMINISTRACIÓN</p>
+            <h1>Gestión de productos y servicios</h1>
+            <p>Administra el catálogo desde un solo lugar.</p>
           </div>
-          <div className="col-lg-7">
-            <section className="card border-0 shadow-sm">
-              <div className="card-body">
-                <h2 className="h4 mb-3">Catálogo conectado</h2>
-                <p className="text-secondary">Los cambios se guardan en los servicios de productos y servicios.</p>
+          <Link to="/admin" className="btn catalog-admin-back">← Volver al panel</Link>
+        </header>
+
+        {errorOperacion && <div className="alert alert-danger" role="alert">{errorOperacion}</div>}
+        {mensajeExito && <div className="alert alert-success" role="status">{mensajeExito}</div>}
+
+        {cargando ? (
+          <div className="catalog-admin-loading" role="status">
+            <span className="spinner-border spinner-border-sm" aria-hidden="true" />
+            Cargando catálogo…
+          </div>
+        ) : (
+          <>
+            <section className="catalog-admin-summary" aria-label="Resumen del catálogo">
+              <button type="button" className={vistaActiva === 'Todos' ? 'catalog-summary-card active' : 'catalog-summary-card'} onClick={() => establecerVistaActiva('Todos')}>
+                <span className="catalog-summary-icon">CAT</span>
+                <span><strong>{articulos.length}</strong><small>Todos los registros</small></span>
+              </button>
+              <button type="button" className={vistaActiva === 'Producto' ? 'catalog-summary-card active' : 'catalog-summary-card'} onClick={() => establecerVistaActiva('Producto')}>
+                <span className="catalog-summary-icon">PRO</span>
+                <span><strong>{productos.length}</strong><small>Productos</small></span>
+              </button>
+              <button type="button" className={vistaActiva === 'Servicio' ? 'catalog-summary-card active' : 'catalog-summary-card'} onClick={() => establecerVistaActiva('Servicio')}>
+                <span className="catalog-summary-icon">SER</span>
+                <span><strong>{servicios.length}</strong><small>Servicios</small></span>
+              </button>
+            </section>
+
+            <div className="catalog-admin-grid">
+              <aside className="catalog-admin-form-column">
+                <FormularioProductoServicio
+                  key={articuloEditando?.codigo ?? 'nuevo'}
+                  valoresIniciales={valoresFormulario}
+                  estaEditando={articuloEditando !== null}
+                  alEnviar={manejarRegistroArticulo}
+                  alCancelar={() => establecerArticuloEditando(null)}
+                />
+              </aside>
+
+              <section className="catalog-admin-list-card" aria-labelledby="catalog-list-title">
+                <div className="catalog-admin-list-header">
+                  <div>
+                    <p className="admin-eyebrow mb-1">CATÁLOGO CONECTADO</p>
+                    <h2 id="catalog-list-title">Artículos registrados</h2>
+                  </div>
+                  <label className="catalog-admin-search">
+                    <span className="visually-hidden">Buscar en el catálogo</span>
+                    <input
+                      type="search"
+                      value={busqueda}
+                      onChange={(evento) => establecerBusqueda(evento.target.value)}
+                      placeholder="Buscar nombre o código"
+                    />
+                  </label>
+                </div>
+
                 <ListaProductoServicio
-                  articulos={articulos}
+                  articulos={articulosVisibles}
                   alEditar={manejarEdicionArticulo}
                   alEliminar={manejarEliminacionArticulo}
                 />
-              </div>
-            </section>
-          </div>
-        </div>
-      )}
+              </section>
+            </div>
+          </>
+        )}
+      </div>
     </main>
   );
 }

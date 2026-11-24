@@ -10,7 +10,7 @@ export function PaginaInicioAdmin() {
     {
       numero: '01',
       titulo: 'Gestión de usuarios',
-      descripcion: 'Consulta los perfiles, datos de contacto y roles registrados.',
+      descripcion: 'Crea cuentas y administra los perfiles y datos de contacto.',
       destino: '/admin/usuarios',
       accion: 'Administrar usuarios',
       clase: 'admin-home__module--users',

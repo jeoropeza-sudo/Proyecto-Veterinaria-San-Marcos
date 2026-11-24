@@ -25,12 +25,35 @@ export interface DatosActualizacionPerfil {
   direccion: string;
 }
 
+export interface DatosCrearUsuarioAdmin extends DatosActualizacionPerfil {
+  email: string;
+  password: string;
+  rol: 'ADMIN' | 'CLIENTE';
+}
+
 export interface DetalleOrdenCliente {
   codigoProducto: string;
   nombreProducto: string;
   cantidad: number;
   precioUnitario: number;
   subtotal: number;
+}
+
+export interface ComprobantePruebaCliente {
+  id: number;
+  ordenId: number;
+  codigoPrueba: string;
+  tipoDocumento: string;
+  estadoEmision: string;
+  fechaEmision: string;
+  emisorRazonSocial: string;
+  emisorRut: string;
+  emailCliente: string;
+  neto: number;
+  tasaIva: number;
+  iva: number;
+  total: number;
+  validez: string;
 }
 
 export interface OrdenCliente {
@@ -41,6 +64,7 @@ export interface OrdenCliente {
   estado: string;
   total: number;
   items: DetalleOrdenCliente[];
+  comprobante?: ComprobantePruebaCliente | null;
 }
 
 export interface ItemNuevaOrden {
@@ -72,6 +96,27 @@ export function crearOrden(items: ItemNuevaOrden[]): Promise<OrdenCliente> {
 
 export function obtenerUsuariosAdmin(): Promise<PerfilCliente[]> {
   return solicitarApi<PerfilCliente[]>('/api/usuarios/admin/todos');
+}
+
+export function crearUsuarioAdmin(datos: DatosCrearUsuarioAdmin): Promise<{ id: number; email: string; rol: string }> {
+  return solicitarApi<{ id: number; email: string; rol: string }>('/api/aute/admin/usuarios', {
+    method: 'POST',
+    body: JSON.stringify(datos),
+  });
+}
+
+export function actualizarUsuarioAdmin(
+  idAuth: number,
+  datos: DatosActualizacionPerfil,
+): Promise<PerfilCliente> {
+  return solicitarApi<PerfilCliente>(`/api/usuarios/admin/${idAuth}`, {
+    method: 'PUT',
+    body: JSON.stringify(datos),
+  });
+}
+
+export function eliminarUsuarioAdmin(idAuth: number): Promise<void> {
+  return ejecutarApi(`/api/aute/admin/usuarios/${idAuth}`, { method: 'DELETE' });
 }
 
 export function actualizarEstadoConsultaApi(id: number): Promise<void> {

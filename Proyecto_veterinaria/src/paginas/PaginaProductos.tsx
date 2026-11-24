@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { TarjetaProducto } from '../componentes/moleculas/TarjetaProducto';
+import { TarjetaProducto } from '../Componentes/moleculas/TarjetaProducto';
 import { useCatalogo } from '../context/useCatalogo';
 
 export function PaginaProductos() {

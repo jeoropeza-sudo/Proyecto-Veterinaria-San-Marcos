@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { FormularioProductoServicio } from '../componentes/organismos/FormularioProductoServicio';
+import { FormularioProductoServicio } from '../Componentes/organismos/FormularioProductoServicio';
 
 describe('Validación del formulario de producto o servicio', () => {
   it('explica los errores de nombre, precio y stock antes de guardar', () => {

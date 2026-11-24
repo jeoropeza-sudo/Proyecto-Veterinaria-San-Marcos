@@ -33,6 +33,10 @@ function formatearMonto(monto: number): string {
   return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(monto);
 }
 
+function formatearPorcentaje(tasa: number): string {
+  return new Intl.NumberFormat('es-CL', { style: 'percent', maximumFractionDigits: 0 }).format(tasa);
+}
+
 function datosDelPerfil(perfil: PerfilCliente): DatosActualizacionPerfil {
   return {
     run: perfil.run ?? '',
@@ -264,8 +268,10 @@ export function PaginaPerfilCliente() {
           <div className="card h-100 border-0 shadow-sm">
             <div className="card-body p-4">
               <h2 id="ordenes-title" className="h4 mb-1">Boletas y compras</h2>
-              <p className="small text-secondary">Historial de órdenes registradas en tu cuenta.</p>
-              <p className="small text-secondary">El servicio disponible registra órdenes; no emite boletas tributarias.</p>
+              <p className="small text-secondary">Historial de órdenes y comprobantes de prueba asociados.</p>
+              <div className="alert alert-warning small py-2" role="note">
+                Los comprobantes actuales son simulaciones para pruebas y no tienen validez tributaria ni folio autorizado por el SII.
+              </div>
               {errorOrdenes && <div className="alert alert-danger" role="alert">{errorOrdenes}</div>}
               {cargandoOrdenes ? (
                 <p className="text-secondary" role="status">Cargando compras…</p>
@@ -281,6 +287,33 @@ export function PaginaPerfilCliente() {
                       </div>
                       <p className="small text-secondary mt-2 mb-2">{formatearFecha(orden.fechaCreacion)}</p>
                       <p className="fw-semibold mb-2">Total: {formatearMonto(orden.total)}</p>
+                      {orden.comprobante && (
+                        <section className="rounded-3 p-3 mb-3" style={{ backgroundColor: '#f1f8fb', border: '1px solid #d9e8ef' }} aria-label={`Comprobante de prueba ${orden.comprobante.codigoPrueba}`}>
+                          <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <div>
+                              <p className="small text-uppercase fw-semibold mb-1" style={{ color: '#153259' }}>
+                                Simulación de boleta electrónica · DTE {orden.comprobante.tipoDocumento}
+                              </p>
+                              <strong>{orden.comprobante.codigoPrueba}</strong>
+                            </div>
+                            <span className="badge rounded-pill text-bg-warning">Solo pruebas</span>
+                          </div>
+                          <p className="small text-secondary mb-2">
+                            Emisor: {orden.comprobante.emisorRazonSocial} · RUT: {orden.comprobante.emisorRut}
+                          </p>
+                          <dl className="row small mb-2">
+                            <dt className="col-7 fw-normal text-secondary">Neto</dt>
+                            <dd className="col-5 text-end mb-1">{formatearMonto(orden.comprobante.neto)}</dd>
+                            <dt className="col-7 fw-normal text-secondary">IVA ({formatearPorcentaje(orden.comprobante.tasaIva)})</dt>
+                            <dd className="col-5 text-end mb-1">{formatearMonto(orden.comprobante.iva)}</dd>
+                            <dt className="col-7 fw-semibold">Total</dt>
+                            <dd className="col-5 text-end fw-semibold mb-0">{formatearMonto(orden.comprobante.total)}</dd>
+                          </dl>
+                          <p className="small text-secondary mb-0">
+                            No es un documento emitido ni autorizado por el SII.
+                          </p>
+                        </section>
+                      )}
                       <details>
                         <summary className="small fw-semibold">Ver artículos</summary>
                         <ul className="small mt-2 mb-0">

@@ -4,6 +4,10 @@ async function enviarSolicitud(path: string, init: RequestInit = {}): Promise<Re
   const headers = new Headers(init.headers);
   const token = window.localStorage.getItem('veterinaria.token');
 
+  if (path.startsWith('/api/ordenes') && !token) {
+    throw new Error('Tu sesión no tiene un token válido. Inicia sesión nuevamente para consultar tus compras.');
+  }
+
   if (init.body && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
@@ -22,6 +26,10 @@ async function enviarSolicitud(path: string, init: RequestInit = {}): Promise<Re
   }
 
   if (!response.ok) {
+    if (response.status === 401 && path.startsWith('/api/ordenes')) {
+      throw new Error('Tu sesión expiró o el token no es válido. Inicia sesión nuevamente para consultar tus compras.');
+    }
+
     const cuerpo = await response.text();
     let mensaje: string | null = null;
     try {
